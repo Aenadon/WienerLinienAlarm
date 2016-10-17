@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:gravity="center_vertical"
+    android:stretchColumns="0"
+    android:padding="10dp">
+
+    <TableRow tools:ignore="UselessParent"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/alarm_list_station"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mon-Tue, Thu-Fri, Sat-Sun"/>
+        <TextView
+            android:id="@+id/alarm_list_direction"
+            android:gravity="center"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12:00"/>
+    </TableRow>
+
+</TableLayout>

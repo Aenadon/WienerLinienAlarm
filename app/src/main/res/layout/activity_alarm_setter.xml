@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="aenadon.wienerlinienalarm.AlarmSetterActivity">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/alarm_frequency"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimary"/>
+
+        <RadioGroup
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+
+             <RadioButton
+                 android:id="@+id/radio_frequency_one_time"
+                 android:text="@string/alarm_frequency_once"
+                 android:checked="true"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:onClick="onClickHandler"/>
+
+             <RadioButton
+                 android:id="@+id/radio_frequency_recurring"
+                 android:text="@string/alarm_frequency_recurring"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:onClick="onClickHandler"/>
+
+        </RadioGroup>
+
+        <!--Separator--> <View android:layout_width="match_parent" android:layout_height="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/alarm_choose_date"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimary"/>
+
+        <LinearLayout
+            android:baselineAligned="false"
+            android:id="@+id/choose_date_time_days_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/choose_date_container"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <Button
+                    android:id="@+id/choose_date_button"
+                    style="?android:buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/alarm_choose_date"
+                    android:onClick="onClickHandler" />
+                <TextView
+                    android:id="@+id/choose_date_text"
+                    android:gravity="center"
+                    android:text="@string/alarm_no_date_set"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/choose_days_container"
+                android:visibility="gone"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/choose_days_button"
+                    style="?android:buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/alarm_choose_days"
+                    android:onClick="onClickHandler"/>
+                <TextView
+                    android:id="@+id/choose_days_text"
+                    android:gravity="center"
+                    android:text="@string/alarm_no_days_set"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/choose_time_container"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <Button
+                    android:id="@+id/choose_time_button"
+                    style="?android:buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/alarm_choose_time"
+                    android:onClick="onClickHandler" />
+                <TextView
+                    android:id="@+id/choose_time_text"
+                    android:gravity="center"
+                    android:text="@string/alarm_no_time_set"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <!--Separator--> <View android:layout_width="match_parent" android:layout_height="10dp" />
+        <TextView
+            android:id="@+id/choose_station_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/alarm_choose_station_direction"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimary"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_weight="7"
+                android:gravity="center"
+                android:text="@string/alarm_no_station_selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/choose_station_button"
+                android:layout_weight="1"
+                style="?android:buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alarm_choose_station_button"
+                android:onClick="onClickHandler" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
