@@ -1,23 +1,32 @@
 package aenadon.wienerlinienalarm;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 public class AlarmSetterActivity extends AppCompatActivity {
 
@@ -40,6 +49,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        new GetApiFiles(this).execute();
     }
 
     public void onClickHandler(View view) {
@@ -68,8 +79,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
     private void adjustToFrequency(int setTo) {
         if (ALARM_MODE == setTo) return; // if nothing changed, do nothing
 
-        LinearLayout chooseDateContainer = (LinearLayout) findViewById (R.id.choose_date_container);
-        LinearLayout chooseDaysContainer = (LinearLayout) findViewById (R.id.choose_days_container);
+        LinearLayout chooseDateContainer = (LinearLayout) findViewById(R.id.choose_date_container);
+        LinearLayout chooseDaysContainer = (LinearLayout) findViewById(R.id.choose_days_container);
         // LinearLayout chooseTimeContainer; --> always on screen!
 
         switch (setTo) {
@@ -102,7 +113,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
                 chosenDate = new int[]{year, monthOfYear, dayOfMonth};
 
-                TextView t = (TextView) findViewById (R.id.choose_date_text);
+                TextView t = (TextView) findViewById(R.id.choose_date_text);
                 t.setText(formattedDate);
             }
         }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
@@ -115,15 +126,16 @@ public class AlarmSetterActivity extends AppCompatActivity {
         Calendar now = GregorianCalendar.getInstance();
 
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
-                chosenTime = new int[]{hourOfDay, minute};
+                                                                             @Override
+                                                                             public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+                                                                                 chosenTime = new int[]{hourOfDay, minute};
 
-                TextView t = (TextView) findViewById (R.id.choose_time_text);
-                t.setText(hourOfDay + ":" + String.format(Locale.ENGLISH, "%02d", minute));
-                // TODO check for past times!!!
-            }
-        },
+                                                                                 TextView t = (TextView) findViewById(R.id.choose_time_text);
+                                                                                 t.setText(hourOfDay + ":" + String.format(Locale.ENGLISH, "%02d", minute));
+
+                                                                                 // TODO check for past times!!!
+                                                                             }
+                                                                         },
                 now.get(Calendar.HOUR_OF_DAY), // sets the clock to now
                 now.get(Calendar.MINUTE),      // sets the clock to now
                 true); // 24 hour format. No hassle with AM/PM
@@ -154,8 +166,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
                         tempChoices[which] = isChecked;
                     }
                 })
-                .setPositiveButton(R.string.ok, dayDialogListener(tempChoices)) // TODO STRING
-                .setNegativeButton(R.string.cancel, dayDialogListener(tempChoices)) // TODO STRING
+                .setPositiveButton(R.string.ok, dayDialogListener(tempChoices))
+                .setNegativeButton(R.string.cancel, dayDialogListener(tempChoices))
                 .show();
     }
 
@@ -183,34 +195,11 @@ public class AlarmSetterActivity extends AppCompatActivity {
                             if (chosenDays[i]) selectedDays++;
                         }
 
-/*                        String selection;
-                        if (weekDaysSelected() && weekendSelected()) {
-                            selection = getString(R.string.everyday);
-                        } else if (weekDaysSelected()) {
-                            selection = getString(R.string.weekdays);
-                            for (int i = 5; i < 7; i++) {
-                                if (chosenDays[i]) selection += "," + daysShort[i];
-                            }
-                        } else if (weekendSelected()) {
-                            selection = "";
-                            for (int i = 0; i < 5; i++) {
-                                if (chosenDays[i]) selection += daysShort[i] + ",";
-                            }
-                            selection += getString(R.string.weekend);
-
-                        } else {
-                            ArrayList<String> resDays = new ArrayList<>();
-                            for (int i = 0; i < chosenDays.length; i++) {
-                                if (chosenDays[i]) resDays.add(daysShort[i]);
-                            }
-                            selection = TextUtils.join(",", resDays.toArray());
-                        }*/
-
                         String selection = (noDaysChosen()) ?
                                 getString(R.string.alarm_no_days_set) :
                                 getResources().getQuantityString(R.plurals.days_chosen, selectedDays, selectedDays);
 
-                        TextView t = (TextView) findViewById (R.id.choose_days_text);
+                        TextView t = (TextView) findViewById(R.id.choose_days_text);
                         t.setText(selection);
                         dialog.dismiss();
                         break;
@@ -222,17 +211,82 @@ public class AlarmSetterActivity extends AppCompatActivity {
         };
     }
 
-    private boolean weekDaysSelected() {
-        return chosenDays[0] && chosenDays[1] && chosenDays[2] && chosenDays[3] && chosenDays[4];
-    }
-    private boolean weekendSelected() {
-        return chosenDays[5] && chosenDays[6];
-    }
     private boolean noDaysChosen() {
         return !(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4] || chosenDays[5] || chosenDays[6]);
     }
 
     private void pickStation() {
-        Toast.makeText(this, "To be implemented", Toast.LENGTH_LONG).show();
+        startActivityForResult(new Intent(this, StationPicker.class), 0);
+    }
+
+    class GetApiFiles extends AsyncTask<Void, Void, Boolean> {
+
+        ProgressDialog warten;
+        Context mContext;
+
+        GetApiFiles(Context c) {
+            mContext = c;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            warten = new ProgressDialog(mContext);
+            warten.setCancelable(false);
+            warten.setIndeterminate(true);
+            warten.setMessage("Stationsinfo wird heruntergeladen..."); // TODO R STRING
+            warten.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                Response<ResponseBody> versionResponse = RetrofitInfo.getCSVInfo().create(RetrofitInfo.CSVCalls.class).getVersionCSV().execute(); // check file version
+                String versionResponseString = versionResponse.body().string();
+
+                if (!versionResponse.isSuccessful()) return false;
+                File csv = new File(mContext.getFilesDir(), C.CSV_FILENAME);
+                String csvString = C.getCSVfromFile(mContext);
+                if (csv.exists() && csvString != null) {
+                    String x = csvString.split(C.CSV_FILE_SEPARATOR)[C.CSV_PART_VERSION];
+                    if (x.equals(versionResponseString))
+                        return true; // if we already have the latest version, skip the redownload
+                }
+
+                Response<ResponseBody> haltestellenResponse = RetrofitInfo.getCSVInfo().create(RetrofitInfo.CSVCalls.class).getHaltestellenCSV().execute();
+                Response<ResponseBody> steigResponse = RetrofitInfo.getCSVInfo().create(RetrofitInfo.CSVCalls.class).getSteigeCSV().execute();
+
+                if (!haltestellenResponse.isSuccessful() || !steigResponse.isSuccessful()) {
+                    throw new IOException("At least one server response not successful " +
+                            "(" + haltestellenResponse.code() + "/" + steigResponse.code() + ")"); // [...] (403/403)
+                } else {
+                    if (csv.exists()) csv.delete();
+                    String combined =
+                            versionResponseString      // last update date
+                                    + C.CSV_FILE_SEPARATOR +             // separator
+                                    haltestellenResponse.body().string() // haltestellen CSV
+                                    + C.CSV_FILE_SEPARATOR +             // separator
+                                    steigResponse.body().string();       // steige CSV
+
+                    FileOutputStream fos = new FileOutputStream(csv);
+                    fos.write(combined.getBytes());
+                    fos.close();
+                    return true;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            warten.dismiss();
+
+            if (!success) {
+                AlertDialogs.serverNotAvailable(mContext);
+                findViewById(R.id.choose_station_button).setEnabled(false); // disable station picker
+            }
+        }
     }
 }

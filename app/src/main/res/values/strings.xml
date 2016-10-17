@@ -41,6 +41,15 @@
         <item quantity="other">%d days chosen</item>
     </plurals>
 
+    <string name="please_wait">Please wait&#8230;</string>
+    <string name="search_for_station">Search for station</string>
+    <string name="choose_station">Choose station</string>
+    <string name="choose_steig">Choose line/platform</string>
+
+    <string name="connection_error_title">Connection error</string>
+    <string name="connection_error_text">The connection to the Wiener Linien servers cannot be established.</string>
+    <string name="connection_error_text_add">The station picker will not work.</string>
+
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 </resources>
