@@ -59,7 +59,8 @@ public class StationPicker extends AppCompatActivity {
             String stationId = columns[0]; // 123456789
             stationsOriginal.add(new Halteobjekt( // create an Halteobjekt for every station entry
                     rawStationName.substring(1, rawStationName.length() - 1), // "Station" --> Station
-                    stationId
+                    stationId,
+                    null // we don't need array index for the stations
             ));
         }
         Collections.sort(stationsOriginal);
@@ -105,15 +106,19 @@ public class StationPicker extends AppCompatActivity {
                 stationName = stationsDisplay.get(position).getName();
                 stationId = stationsDisplay.get(position).getId(); // pass name and id to the SteigPicker so he can offer the steigs
 
-                /*Intent i = new Intent(getApplicationContext(), SteigPicker.class);
+                Intent i = new Intent(getApplicationContext(), SteigPicker.class);
                 i.putExtra(C.STATION_NAME, stationName).putExtra(C.STATION_ID, stationId);
-                startActivityForResult(i, 0);*/
+                startActivityForResult(i, 0);
             }
         };
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) finish();
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            setResult(Activity.RESULT_OK, data);
+            finish();
+        }
     }
 }

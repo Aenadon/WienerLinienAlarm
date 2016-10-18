@@ -24,13 +24,20 @@
     <string name="alarm_recurring_dialog_expl">Alarm should occur every:</string>
 
     <!--All Weekdays-->
-    <string name="monday">Monday</string>       <string name="monday_short">Mon</string>
-    <string name="tuesday">Tuedsay</string>     <string name="tuesday_short">Tue</string>
-    <string name="wednesday">Wednesday</string> <string name="wednesday_short">Wed</string>
-    <string name="thursday">Thursday</string>   <string name="thursday_short">Thu</string>
-    <string name="friday">Friday</string>       <string name="friday_short">Fri</string>
-    <string name="saturday">Saturday</string>   <string name="saturday_short">Sat</string>
-    <string name="sunday">Sunday</string>       <string name="sunday_short">Sun</string>
+    <string name="monday">Monday</string>
+    <string name="monday_short">Mon</string>
+    <string name="tuesday">Tuedsay</string>
+    <string name="tuesday_short">Tue</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="wednesday_short">Wed</string>
+    <string name="thursday">Thursday</string>
+    <string name="thursday_short">Thu</string>
+    <string name="friday">Friday</string>
+    <string name="friday_short">Fri</string>
+    <string name="saturday">Saturday</string>
+    <string name="saturday_short">Sat</string>
+    <string name="sunday">Sunday</string>
+    <string name="sunday_short">Sun</string>
 
     <string name="weekdays">Weekdays</string>
     <string name="weekend">Weekend</string>
@@ -41,14 +48,18 @@
         <item quantity="other">%d days chosen</item>
     </plurals>
 
+    <string name="updating_stations">Updating station list&#8230;</string>
     <string name="please_wait">Please wait&#8230;</string>
     <string name="search_for_station">Search for station</string>
     <string name="choose_station">Choose station</string>
     <string name="choose_steig">Choose line/platform</string>
 
-    <string name="connection_error_title">Connection error</string>
+    <string name="connection_error_title">Connection error :(</string>
     <string name="connection_error_text">The connection to the Wiener Linien servers cannot be established.</string>
     <string name="connection_error_text_add">The station picker will not work.</string>
+
+    <string name="no_steigs_error_title">No lines available :(</string>
+    <string name="no_steigs_error_text">The API does not return any lines for this stations. Please choose another station.</string>
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>

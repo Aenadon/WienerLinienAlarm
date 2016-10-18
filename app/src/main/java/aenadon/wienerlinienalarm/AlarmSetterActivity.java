@@ -1,5 +1,6 @@
 package aenadon.wienerlinienalarm;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,6 +42,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
     private Date selectedAlarmTime;    // exact timestamp as date
 
     private boolean[] chosenDays = new boolean[7]; // true,true,false,false,false,false,true ==> Monday, Tuesday, Sunday
+
+    private String[] pickedStationData = new String[4];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,16 +129,14 @@ public class AlarmSetterActivity extends AppCompatActivity {
         Calendar now = GregorianCalendar.getInstance();
 
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
-                                                                             @Override
-                                                                             public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
-                                                                                 chosenTime = new int[]{hourOfDay, minute};
-
-                                                                                 TextView t = (TextView) findViewById(R.id.choose_time_text);
-                                                                                 t.setText(hourOfDay + ":" + String.format(Locale.ENGLISH, "%02d", minute));
-
-                                                                                 // TODO check for past times!!!
-                                                                             }
-                                                                         },
+            @Override
+            public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+                chosenTime = new int[]{hourOfDay, minute};
+                TextView t = (TextView) findViewById(R.id.choose_time_text);
+                t.setText(hourOfDay + ":" + String.format(Locale.ENGLISH, "%02d", minute));
+                // TODO check for past times!!!
+            }
+        },
                 now.get(Calendar.HOUR_OF_DAY), // sets the clock to now
                 now.get(Calendar.MINUTE),      // sets the clock to now
                 true); // 24 hour format. No hassle with AM/PM
@@ -172,17 +173,6 @@ public class AlarmSetterActivity extends AppCompatActivity {
     }
 
     private DialogInterface.OnClickListener dayDialogListener(final boolean[] tempChoices) {
-        final String[] daysShort = new String[]{
-                getString(R.string.monday_short),
-                getString(R.string.tuesday_short),
-                getString(R.string.wednesday_short),
-                getString(R.string.thursday_short),
-                getString(R.string.friday_short),
-                getString(R.string.saturday_short),
-                getString(R.string.sunday_short),
-        };
-
-
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -219,6 +209,15 @@ public class AlarmSetterActivity extends AppCompatActivity {
         startActivityForResult(new Intent(this, StationPicker.class), 0);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            pickedStationData = data.getStringArrayExtra("stationInfo");
+            ((TextView) findViewById(R.id.choose_station_text)).setText(pickedStationData[0] + "\n" + pickedStationData[1]);
+        }
+    }
+
     class GetApiFiles extends AsyncTask<Void, Void, Boolean> {
 
         ProgressDialog warten;
@@ -233,7 +232,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
             warten = new ProgressDialog(mContext);
             warten.setCancelable(false);
             warten.setIndeterminate(true);
-            warten.setMessage("Stationsinfo wird heruntergeladen..."); // TODO R STRING
+            warten.setMessage(getString(R.string.updating_stations));
             warten.show();
         }
 

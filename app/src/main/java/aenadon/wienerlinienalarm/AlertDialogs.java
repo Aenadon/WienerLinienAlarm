@@ -8,9 +8,16 @@ import android.content.DialogInterface;
 class AlertDialogs {
 
     static void serverNotAvailable(Context ctx) {
-        createOneButtonBox(ctx,
+        createResultCanceledBox(ctx,
                 ctx.getString(R.string.connection_error_title),
                 ctx.getString(R.string.connection_error_text) + " " + ctx.getString(R.string.connection_error_text_add),
+                ctx.getString(R.string.ok));
+    }
+
+    static void noSteigsAvailable(Context ctx) {
+        createResultCanceledBox(ctx,
+                ctx.getString(R.string.no_steigs_error_title),
+                ctx.getString(R.string.no_steigs_error_text),
                 ctx.getString(R.string.ok));
     }
 
@@ -24,13 +31,14 @@ class AlertDialogs {
     }
 
     // Constructs the message box
-    private static void createFinishAppBox(final Context ctx, String title, String message, String button) {
+    private static void createResultCanceledBox(final Context ctx, String title, String message, String button) {
         new AlertDialog.Builder(ctx)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        ((Activity)ctx).setResult(Activity.RESULT_CANCELED);
                         ((Activity)ctx).finish();
                     }
                 })

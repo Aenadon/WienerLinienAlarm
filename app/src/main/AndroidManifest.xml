@@ -20,16 +20,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AlarmSetterActivity"
+        <activity
+            android:name=".AlarmSetterActivity"
             android:label="@string/activity_alarm_setter"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-
-        <activity android:name=".StationPicker"
+        <activity
+            android:name=".StationPicker"
             android:label="@string/choose_station" />
+        <activity android:name=".SteigPicker"></activity>
     </application>
 
 </manifest>
