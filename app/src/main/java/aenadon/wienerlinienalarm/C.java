@@ -14,6 +14,11 @@ class C {
     static final int CSV_PART_STATION = 1;
     static final int CSV_PART_STEIG = 2;
 
+    static final int REQUEST_STATION = 0;
+    static final int REQUEST_RINGTONE = 1;
+
+    static final long VIBRATION_SHORT = 0;
+
     static final String STATION_NAME = "stationName";
     static final String STATION_ID = "stationid";
 

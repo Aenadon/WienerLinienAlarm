@@ -130,6 +130,71 @@
         </LinearLayout>
 
         <!--Separator--> <View android:layout_width="match_parent" android:layout_height="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/alarm_choose_notification_mode"/> <!--TODO is this a good description?-->
+
+        <LinearLayout
+            android:baselineAligned="false"
+            android:id="@+id/choose_notification_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <!--TODO strings-->
+            <LinearLayout
+                android:id="@+id/choose_ringtone_container"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <Button
+                    android:id="@+id/choose_ringtone_button"
+                    style="?android:buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/alarm_choose_ringtone"
+                    android:onClick="onClickHandler" />
+                <TextView
+                    android:id="@+id/choose_ringtone_text"
+                    android:gravity="center"
+                    android:text="@string/alarm_no_ringtone_chosen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/choose_vibration_container"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <Button
+                    android:id="@+id/choose_vibration_button"
+                    style="?android:buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/alarm_choose_vibration"
+                    android:onClick="onClickHandler" />
+                <TextView
+                    android:id="@+id/choose_vibration_text"
+                    android:gravity="center"
+                    android:text="@string/alarm_no_vibration_chosen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+        <!--Separator--> <View android:layout_width="match_parent" android:layout_height="10dp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

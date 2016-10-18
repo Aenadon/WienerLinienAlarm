@@ -5,8 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -41,6 +45,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
     private Date selectedAlarmTime;    // exact timestamp as date
 
+    private String chosenRingtone;
+
     private boolean[] chosenDays = new boolean[7]; // true,true,false,false,false,false,true ==> Monday, Tuesday, Sunday
 
     private String[] pickedStationData = new String[4];
@@ -49,6 +55,11 @@ public class AlarmSetterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_setter);
+
+        Vibrator v = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+        if (!v.hasVibrator()) {
+            findViewById(R.id.choose_vibration_container).setVisibility(View.GONE); // if no vibrator, hide the vibration selector
+        }
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -75,6 +86,12 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 break;
             case R.id.choose_station_button:
                 pickStation();
+                break;
+            case R.id.choose_ringtone_button:
+                pickRingtone();
+                break;
+            case R.id.choose_vibration_button:
+                pickVibration();
                 break;
         }
     }
@@ -185,9 +202,10 @@ public class AlarmSetterActivity extends AppCompatActivity {
                             if (chosenDays[i]) selectedDays++;
                         }
 
-                        String selection = (noDaysChosen()) ?
-                                getString(R.string.alarm_no_days_set) :
-                                getResources().getQuantityString(R.plurals.days_chosen, selectedDays, selectedDays);
+                        // if no days chosen
+                        String selection = (!(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4] || chosenDays[5] || chosenDays[6])) ?
+                                getString(R.string.alarm_no_days_set) :       // then say "no days selected"
+                                getResources().getQuantityString(R.plurals.days_chosen, selectedDays, selectedDays); // else show the count of days chosen
 
                         TextView t = (TextView) findViewById(R.id.choose_days_text);
                         t.setText(selection);
@@ -201,20 +219,46 @@ public class AlarmSetterActivity extends AppCompatActivity {
         };
     }
 
-    private boolean noDaysChosen() {
-        return !(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4] || chosenDays[5] || chosenDays[6]);
+    private void pickStation() {
+        startActivityForResult(new Intent(this, StationPicker.class), C.REQUEST_STATION);
     }
 
-    private void pickStation() {
-        startActivityForResult(new Intent(this, StationPicker.class), 0);
+    private void pickRingtone() {
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
+        this.startActivityForResult(intent, C.REQUEST_RINGTONE);
     }
+
+    private void pickVibration() {
+
+    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == Activity.RESULT_OK) {
-            pickedStationData = data.getStringArrayExtra("stationInfo");
-            ((TextView) findViewById(R.id.choose_station_text)).setText(pickedStationData[0] + "\n" + pickedStationData[1]);
+            switch (requestCode) {
+                case C.REQUEST_STATION:
+                    pickedStationData = data.getStringArrayExtra("stationInfo");
+                    ((TextView) findViewById(R.id.choose_station_text)).setText(pickedStationData[0] + "\n" + pickedStationData[1]);
+                    break;
+                case C.REQUEST_RINGTONE:
+                    Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                    chosenRingtone = (uri != null) ? uri.toString() : null;
+
+                    Ringtone ringtone = RingtoneManager.getRingtone(this, uri);
+                    String title = (chosenRingtone == null) ?
+                            getString(R.string.alarm_no_ringtone_chosen) :
+                            ringtone.getTitle(this);
+
+                    ((TextView)findViewById(R.id.choose_ringtone_text)).setText(title);
+                    break;
+            }
         }
     }
 

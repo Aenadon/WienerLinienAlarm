@@ -17,6 +17,11 @@
     <string name="alarm_no_date_set">No date set</string>
     <string name="alarm_no_days_set">No days selected</string>
     <string name="alarm_no_time_set">No time set</string>
+    <string name="alarm_choose_notification_mode">Choose notification mode</string>
+    <string name="alarm_choose_ringtone">Ringtone</string>
+    <string name="alarm_choose_vibration">Vibration</string>
+    <string name="alarm_no_ringtone_chosen">(No sound)</string>
+    <string name="alarm_no_vibration_chosen">(No vibration)</string>
     <string name="alarm_choose_station_direction">Choose station and line</string>
     <string name="alarm_choose_station_button">Select</string>
     <string name="alarm_no_station_selected">No station selected</string>
@@ -24,20 +29,13 @@
     <string name="alarm_recurring_dialog_expl">Alarm should occur every:</string>
 
     <!--All Weekdays-->
-    <string name="monday">Monday</string>
-    <string name="monday_short">Mon</string>
-    <string name="tuesday">Tuedsay</string>
-    <string name="tuesday_short">Tue</string>
-    <string name="wednesday">Wednesday</string>
-    <string name="wednesday_short">Wed</string>
-    <string name="thursday">Thursday</string>
-    <string name="thursday_short">Thu</string>
-    <string name="friday">Friday</string>
-    <string name="friday_short">Fri</string>
-    <string name="saturday">Saturday</string>
-    <string name="saturday_short">Sat</string>
-    <string name="sunday">Sunday</string>
-    <string name="sunday_short">Sun</string>
+    <string name="monday">Monday</string>           <string name="monday_short">Mon</string>
+    <string name="tuesday">Tuedsay</string>         <string name="tuesday_short">Tue</string>
+    <string name="wednesday">Wednesday</string>     <string name="wednesday_short">Wed</string>
+    <string name="thursday">Thursday</string>       <string name="thursday_short">Thu</string>
+    <string name="friday">Friday</string>           <string name="friday_short">Fri</string>
+    <string name="saturday">Saturday</string>       <string name="saturday_short">Sat</string>
+    <string name="sunday">Sunday</string>           <string name="sunday_short">Sun</string>
 
     <string name="weekdays">Weekdays</string>
     <string name="weekend">Weekend</string>
