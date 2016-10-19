@@ -9,6 +9,13 @@ class C {
 
     // This class is for constants used throughout the app.
 
+    enum VIBRA_MODE {
+        NONE,
+        SHORT,
+        MEDIUM,
+        LONG
+    }
+
     static final String CSV_FILENAME = "halteinfo.csv";
     static final int CSV_PART_VERSION = 0;
     static final int CSV_PART_STATION = 1;
@@ -17,7 +24,17 @@ class C {
     static final int REQUEST_STATION = 0;
     static final int REQUEST_RINGTONE = 1;
 
-    static final long VIBRATION_SHORT = 0;
+    static final int VIBRATION_NONE = 0;
+    static final int VIBRATION_SHORT = 1;
+    static final int VIBRATION_MEDIUM = 2;
+    static final int VIBRATION_LONG = 3;
+
+    static final long[] VIBRATION_DURATION = {
+            0,
+            100,
+            250,
+            500
+    };
 
     static final String STATION_NAME = "stationName";
     static final String STATION_ID = "stationid";
@@ -27,11 +44,7 @@ class C {
     static final String CSV_FILE_SEPARATOR = "--------------------"; // 20 * -
 
     // U-Bahn Endstationen
-    static final String U1 = "U1";
-    static final String U2 = "U2";
-    static final String U3 = "U3";
-    static final String U4 = "U4";
-    static final String U6 = "U6";
+
 
     static String getCSVfromFile(Context c) {
         try {
@@ -50,6 +63,12 @@ class C {
     }
 
     static String getUbahnEndstation(String line, String direction) {
+        final String U1 = "U1";
+        final String U2 = "U2";
+        final String U3 = "U3";
+        final String U4 = "U4";
+        final String U6 = "U6";
+
         String U1H = "Leopoldau";       String U1R = "Reumannplatz";
         String U2H = "Karlsplatz";      String U2R = "Seestadt";
         String U3H = "Simmering";       String U3R = "Ottakring";

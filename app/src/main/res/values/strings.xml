@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">WienerLinien Alarm</string>
+    <string name="action_settings">Settings</string>
 
+    <!--Alarm Setup 1-->
     <string name="activity_one_time_alarms">One time alarms</string>
     <string name="activity_recurring_alarms">Recurring alarms</string>
     <string name="title_activity_set_alarm">Set Alarms</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
 
+    <!--Alarm Setup 2-->
     <string name="activity_alarm_setter">Set Alarm</string>
     <string name="alarm_frequency">Alarm Frequency</string>
     <string name="alarm_frequency_once">One time</string>
@@ -17,17 +18,23 @@
     <string name="alarm_no_date_set">No date set</string>
     <string name="alarm_no_days_set">No days selected</string>
     <string name="alarm_no_time_set">No time set</string>
+
+    <!--Notification setup-->
     <string name="alarm_choose_notification_mode">Choose notification mode</string>
     <string name="alarm_choose_ringtone">Ringtone</string>
     <string name="alarm_choose_vibration">Vibration</string>
     <string name="alarm_no_ringtone_chosen">(No sound)</string>
     <string name="alarm_no_vibration_chosen">(No vibration)</string>
+    <string name="alarm_choose_vibration_length">Choose vibration length</string>
+    <string name="alarm_vibration_none">None</string>
+    <string name="alarm_vibration_short">Short</string>
+    <string name="alarm_vibration_medium">Medium</string>
+    <string name="alarm_vibration_long">Long</string>
     <string name="alarm_choose_station_direction">Choose station and line</string>
     <string name="alarm_choose_station_button">Select</string>
     <string name="alarm_no_station_selected">No station selected</string>
 
     <string name="alarm_recurring_dialog_expl">Alarm should occur every:</string>
-
     <!--All Weekdays-->
     <string name="monday">Monday</string>           <string name="monday_short">Mon</string>
     <string name="tuesday">Tuedsay</string>         <string name="tuesday_short">Tue</string>

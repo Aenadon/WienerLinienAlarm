@@ -39,13 +39,16 @@ public class AlarmSetterActivity extends AppCompatActivity {
     private static final int ALARM_RECURRING = 1;
     private int ALARM_MODE = ALARM_ONETIME;
 
+    Vibrator v;
+
     private boolean dateIsToday = false; // flag for checking if today is selected if time has passed
     private int[] chosenDate; // Chosen Date
     private int[] chosenTime; // arr[0] = hours; arr[1] = minutes;
 
     private Date selectedAlarmTime;    // exact timestamp as date
 
-    private String chosenRingtone;
+    private String chosenRingtone = null;               // standard: no sound
+    private int chosenVibratorMode = C.VIBRATION_NONE;  // standard: no vibration
 
     private boolean[] chosenDays = new boolean[7]; // true,true,false,false,false,false,true ==> Monday, Tuesday, Sunday
 
@@ -56,7 +59,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_setter);
 
-        Vibrator v = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+        v = (Vibrator)getSystemService(VIBRATOR_SERVICE);
         if (!v.hasVibrator()) {
             findViewById(R.id.choose_vibration_container).setVisibility(View.GONE); // if no vibrator, hide the vibration selector
         }
@@ -232,7 +235,27 @@ public class AlarmSetterActivity extends AppCompatActivity {
     }
 
     private void pickVibration() {
+        final String[] vibrationModes = new String[]{
+                getString(R.string.alarm_vibration_none),
+                getString(R.string.alarm_vibration_short),
+                getString(R.string.alarm_vibration_medium),
+                getString(R.string.alarm_vibration_long),
+        };
 
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.alarm_recurring_dialog_expl))
+                .setItems(vibrationModes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        chosenVibratorMode = which;
+                        if (v.hasVibrator()) {
+                            v.vibrate(C.VIBRATION_DURATION[which]);
+                        }
+                        vibrationModes[0] = getString(R.string.alarm_no_vibration_chosen); // if "none" is selected, display "(git No vibration)"
+                        ((TextView)findViewById(R.id.choose_vibration_text)).setText(vibrationModes[which]);
+                    }
+                })
+                .show();
     }
 
 
