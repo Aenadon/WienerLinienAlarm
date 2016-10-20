@@ -1,7 +1,11 @@
 package aenadon.wienerlinienalarm;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,12 +18,10 @@ import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+import android.widget.TimePicker;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,7 +29,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import okhttp3.ResponseBody;
@@ -41,9 +42,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
     Vibrator v;
 
-    private boolean dateIsToday = false; // flag for checking if today is selected if time has passed
-    private int[] chosenDate; // Chosen Date
-    private int[] chosenTime; // arr[0] = hours; arr[1] = minutes;
+    private static int[] chosenDate; // Chosen Date
+    private static int[] chosenTime; // arr[0] = hours; arr[1] = minutes;
 
     private Date selectedAlarmTime;    // exact timestamp as date
 
@@ -59,47 +59,55 @@ public class AlarmSetterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_setter);
 
+        // if device has no vibrator, hide the vibration choice
         v = (Vibrator)getSystemService(VIBRATOR_SERVICE);
         if (!v.hasVibrator()) {
-            findViewById(R.id.choose_vibration_container).setVisibility(View.GONE); // if no vibrator, hide the vibration selector
+            findViewById(R.id.choose_vibration_container).setVisibility(View.GONE);
         }
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        new GetApiFiles(this).execute();
+        new GetApiFiles(this).execute(); // get CSV files/check for updates on them
     }
 
+    // handling all the click events from the view
     public void onClickHandler(View view) {
         switch (view.getId()) {
             case R.id.radio_frequency_one_time:
-                adjustToFrequency(ALARM_ONETIME);
+                pickAlarmFrequency(ALARM_ONETIME);
                 break;
             case R.id.radio_frequency_recurring:
-                adjustToFrequency(ALARM_RECURRING);
+                pickAlarmFrequency(ALARM_RECURRING);
                 break;
             case R.id.choose_date_button:
+            case R.id.choose_date_text:
                 pickDate();
                 break;
             case R.id.choose_time_button:
+            case R.id.choose_time_text:
                 pickTime();
                 break;
             case R.id.choose_days_button:
+            case R.id.choose_days_text:
                 pickDays();
                 break;
             case R.id.choose_station_button:
+            case R.id.choose_station_text:
                 pickStation();
                 break;
             case R.id.choose_ringtone_button:
+            case R.id.choose_ringtone_text:
                 pickRingtone();
                 break;
             case R.id.choose_vibration_button:
+            case R.id.choose_vibration_text:
                 pickVibration();
                 break;
         }
     }
 
-    private void adjustToFrequency(int setTo) {
+    private void pickAlarmFrequency(int setTo) {
         if (ALARM_MODE == setTo) return; // if nothing changed, do nothing
 
         LinearLayout chooseDateContainer = (LinearLayout) findViewById(R.id.choose_date_container);
@@ -122,51 +130,14 @@ public class AlarmSetterActivity extends AppCompatActivity {
     }
 
     private void pickDate() {
-        Calendar now = Calendar.getInstance();
-
-        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar cal = GregorianCalendar.getInstance();
-                cal.set(year, monthOfYear, dayOfMonth);
-                Date chosenDateAtMidnight = cal.getTime();
-                String formattedDate = DateFormat.getDateInstance().format(chosenDateAtMidnight);
-                Calendar nowAfterChoosing = Calendar.getInstance(); // we recalculate the current time because it has changed since the picker opened
-                dateIsToday = (chosenDateAtMidnight.before(nowAfterChoosing.getTime())); // chosenDateAtMidnight is always 00:00:00:0000
-
-                chosenDate = new int[]{year, monthOfYear, dayOfMonth};
-
-                TextView t = (TextView) findViewById(R.id.choose_date_text);
-                t.setText(formattedDate);
-            }
-        }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.dismissOnPause(true);
-        datePickerDialog.setMinDate(now);
-        datePickerDialog.show(getFragmentManager(), "DatePickerDialog");
+        new DatePickerFragment().show(getFragmentManager(), "DatePickerDialog");
     }
 
     private void pickTime() {
-        Calendar now = GregorianCalendar.getInstance();
-
-        TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
-                chosenTime = new int[]{hourOfDay, minute};
-                TextView t = (TextView) findViewById(R.id.choose_time_text);
-                t.setText(hourOfDay + ":" + String.format(Locale.ENGLISH, "%02d", minute));
-                // TODO check for past times!!!
-            }
-        },
-                now.get(Calendar.HOUR_OF_DAY), // sets the clock to now
-                now.get(Calendar.MINUTE),      // sets the clock to now
-                true); // 24 hour format. No hassle with AM/PM
-
-        timePickerDialog.dismissOnPause(true);
-        timePickerDialog.show(getFragmentManager(), "TimePickerDialog");
+        new TimePickerFragment().show(getFragmentManager(), "TimePickerDialog");
     }
 
     private void pickDays() {
-
         final String[] weekDayStrings = new String[]{
                 getString(R.string.monday),
                 getString(R.string.tuesday),
@@ -229,8 +200,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
     private void pickRingtone() {
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri)null);
         this.startActivityForResult(intent, C.REQUEST_RINGTONE);
     }
 
@@ -251,7 +221,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
                         if (v.hasVibrator()) {
                             v.vibrate(C.VIBRATION_DURATION[which]);
                         }
-                        vibrationModes[0] = getString(R.string.alarm_no_vibration_chosen); // if "none" is selected, display "(git No vibration)"
+                        vibrationModes[0] = getString(R.string.alarm_no_vibration_chosen); // if "none" is selected, display "(No vibration)"
                         ((TextView)findViewById(R.id.choose_vibration_text)).setText(vibrationModes[which]);
                     }
                 })
@@ -353,6 +323,58 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 AlertDialogs.serverNotAvailable(mContext);
                 findViewById(R.id.choose_station_button).setEnabled(false); // disable station picker
             }
+        }
+    }
+
+    public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current time as the default values for the picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            // Create a new instance of TimePickerDialog and return it
+            return new TimePickerDialog(getActivity(), this, hour, minute, true);
+        }
+
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            chosenTime = new int[]{hourOfDay, minute};
+            TextView t = (TextView) getActivity().findViewById(R.id.choose_time_text);
+            t.setText(hourOfDay + ":" + String.format(Locale.ENGLISH, "%02d", minute));
+            // TODO check for past times!!!
+        }
+    }
+
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            DatePickerDialog d = new DatePickerDialog(getActivity(), this, year, month, day);
+            d.getDatePicker().setMinDate(c.getTimeInMillis());
+            return d;
+        }
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            Calendar cal = Calendar.getInstance();
+            cal.set(year, month, day);
+            Date chosenDateAtMidnight = cal.getTime();
+            String formattedDate = DateFormat.getDateInstance().format(chosenDateAtMidnight);
+
+            chosenDate = new int[]{year, month, day};
+
+            TextView t = (TextView) getActivity().findViewById(R.id.choose_date_text);
+            t.setText(formattedDate);
         }
     }
 }

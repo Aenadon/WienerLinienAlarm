@@ -20,7 +20,7 @@
     <string name="alarm_no_time_set">No time set</string>
 
     <!--Notification setup-->
-    <string name="alarm_choose_notification_mode">Choose notification mode</string>
+    <string name="alarm_choose_alarm_mode">Choose alarm mode</string>
     <string name="alarm_choose_ringtone">Ringtone</string>
     <string name="alarm_choose_vibration">Vibration</string>
     <string name="alarm_no_ringtone_chosen">(No sound)</string>
