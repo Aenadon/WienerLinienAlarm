@@ -145,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:textColor="@color/colorPrimary"
-                android:text="@string/alarm_choose_alarm_mode"/> <!--TODO is this a good description?-->
+                android:text="@string/alarm_choose_alarm_mode"/>
 
             <LinearLayout
                 android:baselineAligned="false"
@@ -237,12 +237,13 @@
     </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/fab_alarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_add" />
+        app:srcCompat="@drawable/ic_done"
+        android:onClick="onClickHandler" />
 
 
 </android.support.design.widget.CoordinatorLayout>

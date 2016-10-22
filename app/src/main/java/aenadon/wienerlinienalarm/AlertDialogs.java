@@ -21,6 +21,13 @@ class AlertDialogs {
                 ctx.getString(R.string.ok));
     }
 
+    static void missingInfo(Context ctx, String errors) {
+        createOneButtonBox(ctx,
+                ctx.getString(R.string.missing_info_title),
+                errors,
+                ctx.getString(R.string.ok));
+    }
+
 
     private static void createOneButtonBox(final Context ctx, String title, String message, String button) {
         new AlertDialog.Builder(ctx)

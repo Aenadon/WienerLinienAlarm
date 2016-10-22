@@ -1,5 +1,6 @@
 package aenadon.wienerlinienalarm;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
+        // Create the adapter that will return a fragment for each of the two
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -39,22 +41,26 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_main);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplication(), AlarmSetterActivity.class));
+                startActivityForResult(new Intent(getApplication(), AlarmSetterActivity.class), 0);
             }
         });
     }
 
     @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            // what TODO now? notifyDataSetChanged?
+            mViewPager.setAdapter(mSectionsPagerAdapter); // maybe inefficient but unnoticeably slower and works!
+            tabLayout.getTabAt(data.getIntExtra("mode",0)).select();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -65,9 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -77,30 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-/*    public static class PlaceholderFragment extends Fragment {
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        *//**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         *//*
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }*/
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -152,5 +131,7 @@ public class MainActivity extends AppCompatActivity {
             list.setAdapter(new AlarmListAdapter(getActivity(), getArguments().getInt(PAGE_NUMBER)));
             return rootView;
         }
+
+
     }
 }

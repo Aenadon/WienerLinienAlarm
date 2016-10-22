@@ -9,17 +9,13 @@ class C {
 
     // This class is for constants used throughout the app.
 
-    enum VIBRA_MODE {
-        NONE,
-        SHORT,
-        MEDIUM,
-        LONG
-    }
-
     static final String CSV_FILENAME = "halteinfo.csv";
     static final int CSV_PART_VERSION = 0;
     static final int CSV_PART_STATION = 1;
     static final int CSV_PART_STEIG = 2;
+
+    static final int ALARM_ONETIME = 0;
+    static final int ALARM_RECURRING = 1;
 
     static final int REQUEST_STATION = 0;
     static final int REQUEST_RINGTONE = 1;
@@ -39,12 +35,7 @@ class C {
     static final String STATION_NAME = "stationName";
     static final String STATION_ID = "stationid";
 
-    static final String SHAREDPREFS_FILE = "steige";
-    static final String SEPARATOR = ";";
     static final String CSV_FILE_SEPARATOR = "--------------------"; // 20 * -
-
-    // U-Bahn Endstationen
-
 
     static String getCSVfromFile(Context c) {
         try {
@@ -68,6 +59,7 @@ class C {
         final String U3 = "U3";
         final String U4 = "U4";
         final String U6 = "U6";
+        String H = "H";
 
         String U1H = "Leopoldau";       String U1R = "Reumannplatz";
         String U2H = "Karlsplatz";      String U2R = "Seestadt";
@@ -76,15 +68,15 @@ class C {
         String U6H = "Floridsdorf";     String U6R = "Siebenhirten";
         switch (line) {
             case U1: // if H return H else return R
-                return direction.equals("H") ? U1H : U1R;
+                return direction.equals(H) ? U1H : U1R;
             case U2:
-                return direction.equals("H") ? U2H : U2R;
+                return direction.equals(H) ? U2H : U2R;
             case U3:
-                return direction.equals("H") ? U3H : U3R;
+                return direction.equals(H) ? U3H : U3R;
             case U4:
-                return direction.equals("H") ? U4H : U4R;
+                return direction.equals(H) ? U4H : U4R;
             case U6:
-                return direction.equals("H") ? U6H : U6R;
+                return direction.equals(H) ? U6H : U6R;
             default:
                 return null;
         }

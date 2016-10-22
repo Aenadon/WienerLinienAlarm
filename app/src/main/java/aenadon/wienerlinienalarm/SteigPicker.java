@@ -88,16 +88,10 @@ public class SteigPicker extends AppCompatActivity {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                String steigId = steigDisplay.get(position).getId(); // SteigID as KEY because STEIGID is unique, STATIONNAME is not unique
-                SharedPreferences sp = getSharedPreferences(C.SHAREDPREFS_FILE, Context.MODE_PRIVATE);
-                if (!sp.contains(steigId)) {
-                    SharedPreferences.Editor spe = sp.edit();
-                    spe.putString(steigId, stationName);
-                    spe.apply();
-                }
+                String steigId = steigDisplay.get(position).getId();
                 Halteobjekt h = steigDisplay.get(position);
                 String stationDir = h.getName();
-                Intent extraData = new Intent().putExtra("stationInfo", new String[]{stationName, stationDir, stationId, h.getArrayIndex()});
+                Intent extraData = new Intent().putExtra("stationInfo", new String[]{stationName, stationDir, steigId, h.getArrayIndex()});
                 setResult(Activity.RESULT_OK, extraData);
                 finish();
             }

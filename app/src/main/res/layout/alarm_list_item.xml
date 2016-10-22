@@ -13,20 +13,20 @@
     <TableRow tools:ignore="UselessParent"
         android:gravity="center">
         <TextView
-            android:id="@+id/alarm_list_station"
+            android:id="@+id/alarm_list_date"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mon-Tue, Thu-Fri, Sat-Sun"/>
+            android:text=""/>
         <TextView
-            android:id="@+id/alarm_list_direction"
+            android:id="@+id/alarm_list_time"
             android:gravity="center"
             android:paddingRight="5dp"
             android:paddingLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12:00"/>
+            android:text=""/>
     </TableRow>
 
 </TableLayout>

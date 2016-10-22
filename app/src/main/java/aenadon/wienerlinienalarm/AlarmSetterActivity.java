@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -31,28 +32,26 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import aenadon.wienerlinienalarm.models.Alarm;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 public class AlarmSetterActivity extends AppCompatActivity {
 
-    private static final int ALARM_ONETIME = 0;
-    private static final int ALARM_RECURRING = 1;
-    private int ALARM_MODE = ALARM_ONETIME;
+    private int ALARM_MODE = C.ALARM_ONETIME;
 
     Vibrator v;
 
-    private static int[] chosenDate; // Chosen Date
-    private static int[] chosenTime; // arr[0] = hours; arr[1] = minutes;
-
-    private Date selectedAlarmTime;    // exact timestamp as date
+    private static int[] chosenDate = null; // Chosen Date
+    private static int[] chosenTime = null; // arr[0] = hours; arr[1] = minutes;
+    private boolean[] chosenDays = new boolean[7]; // true,true,false,false,false,false,true ==> Monday, Tuesday, Sunday
 
     private String chosenRingtone = null;               // standard: no sound
     private int chosenVibratorMode = C.VIBRATION_NONE;  // standard: no vibration
 
-    private boolean[] chosenDays = new boolean[7]; // true,true,false,false,false,false,true ==> Monday, Tuesday, Sunday
-
-    private String[] pickedStationData = new String[4];
+    private String[] pickedStationData = null; // {stationName, stationDir, stationId, h.getArrayIndex()}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +67,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Realm.init(this);
+
         new GetApiFiles(this).execute(); // get CSV files/check for updates on them
     }
 
@@ -75,10 +76,10 @@ public class AlarmSetterActivity extends AppCompatActivity {
     public void onClickHandler(View view) {
         switch (view.getId()) {
             case R.id.radio_frequency_one_time:
-                pickAlarmFrequency(ALARM_ONETIME);
+                pickAlarmFrequency(C.ALARM_ONETIME);
                 break;
             case R.id.radio_frequency_recurring:
-                pickAlarmFrequency(ALARM_RECURRING);
+                pickAlarmFrequency(C.ALARM_RECURRING);
                 break;
             case R.id.choose_date_button:
             case R.id.choose_date_text:
@@ -104,6 +105,9 @@ public class AlarmSetterActivity extends AppCompatActivity {
             case R.id.choose_vibration_text:
                 pickVibration();
                 break;
+            case R.id.fab_alarm:
+                done();
+                break;
         }
     }
 
@@ -115,12 +119,12 @@ public class AlarmSetterActivity extends AppCompatActivity {
         // LinearLayout chooseTimeContainer; --> always on screen!
 
         switch (setTo) {
-            case ALARM_ONETIME:   // hide the days+time chooser and show the date chooser
+            case C.ALARM_ONETIME:   // hide the days+time chooser and show the date chooser
                 chooseDaysContainer.setVisibility(View.GONE);
                 // -- //
                 chooseDateContainer.setVisibility(View.VISIBLE);
                 break;
-            case ALARM_RECURRING: // hide the date chooser and show the days+time chooser
+            case C.ALARM_RECURRING: // hide the date chooser and show the days+time chooser
                 chooseDateContainer.setVisibility(View.GONE);
                 // -- //
                 chooseDaysContainer.setVisibility(View.VISIBLE);
@@ -171,15 +175,22 @@ public class AlarmSetterActivity extends AppCompatActivity {
                     case DialogInterface.BUTTON_POSITIVE:
                         chosenDays = tempChoices.clone(); // assign our tempChoices to our "persistent" choices
 
-                        int selectedDays = 0;
-                        for (int i = 0; i < 7; i++) {
-                            if (chosenDays[i]) selectedDays++;
+                        String selection;
+                        if (!(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4] || chosenDays[5] || chosenDays[6])) {
+                            selection = getString(R.string.alarm_no_days_set);  // then say "no days selected"
+                        } else if (!(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4]) && (chosenDays[5] && chosenDays[6])) {
+                            selection = getString(R.string.weekends);
+                        } else if ((chosenDays[0] && chosenDays[1] && chosenDays[2] && chosenDays[3] && chosenDays[4]) && !(chosenDays[5] || chosenDays[6])) {
+                            selection = getString(R.string.weekdays);
+                        } else if (chosenDays[0] && chosenDays[1] && chosenDays[2] && chosenDays[3] && chosenDays[4] && chosenDays[5] && chosenDays[6]) {
+                            selection = getString(R.string.everyday);
+                        } else {
+                            int selectedDays = 0;
+                            for (int i = 0; i < 7; i++) {
+                                if (chosenDays[i]) selectedDays++;
+                            }
+                            selection = getResources().getQuantityString(R.plurals.days_chosen, selectedDays, selectedDays); // else show the count of days chosen
                         }
-
-                        // if no days chosen
-                        String selection = (!(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4] || chosenDays[5] || chosenDays[6])) ?
-                                getString(R.string.alarm_no_days_set) :       // then say "no days selected"
-                                getResources().getQuantityString(R.plurals.days_chosen, selectedDays, selectedDays); // else show the count of days chosen
 
                         TextView t = (TextView) findViewById(R.id.choose_days_text);
                         t.setText(selection);
@@ -200,7 +211,6 @@ public class AlarmSetterActivity extends AppCompatActivity {
     private void pickRingtone() {
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri)null);
         this.startActivityForResult(intent, C.REQUEST_RINGTONE);
     }
 
@@ -228,6 +238,93 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 .show();
     }
 
+    private void done() {
+        // Errorcheck
+        boolean isError = false;
+        String errors = "";
+
+        // Mode-specific checks
+        if (ALARM_MODE == C.ALARM_ONETIME) {
+            if (chosenDate == null) {
+                isError = true;
+                errors += getString(R.string.missing_info_date);
+            }
+            if (chosenDate != null && chosenTime != null) {
+                Calendar now = Calendar.getInstance();
+                Calendar date = Calendar.getInstance();
+                date.set(chosenDate[0], chosenDate[1], chosenDate[2], chosenTime[0], chosenTime[1], 0); // 0 seconds
+                if (date.compareTo(now) < 0) {
+                    errors += getString(R.string.missing_info_past);
+                }
+            }
+        } else if (ALARM_MODE == C.ALARM_RECURRING) {
+            boolean noDays = true;
+            for (boolean daySelected : chosenDays) {
+                if (daySelected) { // if any day was set to true, no error
+                    noDays = false;
+                    break;
+                }
+            }
+            if (noDays) {
+                isError = true;
+                errors += getString(R.string.missing_info_days);
+            }
+        }
+        // General checks
+        if (chosenTime == null) {
+            isError = true;
+            errors += getString(R.string.missing_info_time);
+        }
+        if (pickedStationData == null) {
+            isError = true;
+            errors += getString(R.string.missing_info_station);
+        }
+        // If error:
+        if (isError) {
+            AlertDialogs.missingInfo(this, errors);
+            return;
+            // if error, we're done here
+        }
+
+        Alarm newAlarm = new Alarm();
+        newAlarm.setAlarmMode(ALARM_MODE);
+        switch (ALARM_MODE) {
+            case C.ALARM_ONETIME:
+                newAlarm.setOneTimeAlarmYear(chosenDate[0]);
+                newAlarm.setOneTimeAlarmMonth(chosenDate[1]);
+                newAlarm.setOneTimeAlarmDay(chosenDate[2]);
+                break;
+            case C.ALARM_RECURRING:
+                newAlarm.setRecurringChosenDays(chosenDays);
+                break;
+        }
+        newAlarm.setAlarmHour(chosenTime[0]);
+        newAlarm.setAlarmMinute(chosenTime[1]);
+
+        newAlarm.setChosenRingtone(chosenRingtone);
+        newAlarm.setChosenVibrationDuration(C.VIBRATION_DURATION[chosenVibratorMode]);
+
+        // {stationName, stationDir, stationId, h.getArrayIndex()}
+        newAlarm.setStationName(pickedStationData[0]);
+        newAlarm.setStationDirection(pickedStationData[1]);
+        newAlarm.setStationId(pickedStationData[2]);
+        newAlarm.setStationArrayIndex(Integer.parseInt(pickedStationData[3]));
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealm(newAlarm);
+        realm.commitTransaction();
+
+        // TODO REMOVE THIS
+        RealmResults<Alarm> x = realm.where(Alarm.class).findAll();
+        for (Alarm a : x) {
+            Log.d("test", a.getStationName());
+        }
+
+
+        setResult(Activity.RESULT_OK, new Intent().putExtra("mode", ALARM_MODE));
+        finish(); // we're done here.
+    }
 
 
     @Override
@@ -242,6 +339,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
                     break;
                 case C.REQUEST_RINGTONE:
                     Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+
                     chosenRingtone = (uri != null) ? uri.toString() : null;
 
                     Ringtone ringtone = RingtoneManager.getRingtone(this, uri);
@@ -343,8 +441,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             chosenTime = new int[]{hourOfDay, minute};
             TextView t = (TextView) getActivity().findViewById(R.id.choose_time_text);
-            t.setText(hourOfDay + ":" + String.format(Locale.ENGLISH, "%02d", minute));
-            // TODO check for past times!!!
+            t.setText(String.format(Locale.ENGLISH, "%02d:%02d", hourOfDay, minute));
         }
     }
 
