@@ -321,7 +321,6 @@ public class AlarmSetterActivity extends AppCompatActivity {
             Log.d("test", a.getStationName());
         }
 
-
         setResult(Activity.RESULT_OK, new Intent().putExtra("mode", ALARM_MODE));
         finish(); // we're done here.
     }

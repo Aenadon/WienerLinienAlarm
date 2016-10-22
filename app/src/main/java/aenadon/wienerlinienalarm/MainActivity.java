@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             // what TODO now? notifyDataSetChanged?
             mViewPager.setAdapter(mSectionsPagerAdapter); // maybe inefficient but unnoticeably slower and works!
-            tabLayout.getTabAt(data.getIntExtra("mode",0)).select();
+            tabLayout.getTabAt(data.getIntExtra("mode",0)).select(); // displays the tab which was opened before alarm creation
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

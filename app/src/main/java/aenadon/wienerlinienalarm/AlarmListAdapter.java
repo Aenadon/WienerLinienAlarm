@@ -15,6 +15,7 @@ import java.util.Locale;
 import aenadon.wienerlinienalarm.models.Alarm;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 class AlarmListAdapter extends BaseAdapter {
 
@@ -25,13 +26,52 @@ class AlarmListAdapter extends BaseAdapter {
 
     private RealmResults<Alarm> alarms;
 
+    private String[] stringSortOnetime = new String[]{
+            "oneTimeAlarmYear",
+            "oneTimeAlarmMonth",
+            "oneTimeAlarmDay",
+            "alarmHour",
+            "alarmMinute"
+    };
+    private Sort[] orderSortOnetime = new Sort[]{
+            Sort.ASCENDING,
+            Sort.ASCENDING,
+            Sort.ASCENDING,
+            Sort.ASCENDING,
+            Sort.ASCENDING
+    };
+
+    private String[] stringSortRecurring = new String[]{
+            "alarmHour",
+            "alarmMinute",
+            "recurringChosenDays"
+    };
+    private Sort[] orderSortRecurring = new Sort[]{
+            Sort.ASCENDING,
+            Sort.ASCENDING,
+            Sort.ASCENDING
+    };
+
+
     AlarmListAdapter(Context c, int alarmModePage) {
         mContext = c;
         this.alarmModePage = alarmModePage;
 
         Realm.init(c);
         Realm realm = Realm.getDefaultInstance();
-        alarms = realm.where(Alarm.class).equalTo("alarmMode", alarmModePage).findAll();
+
+        String[] sortAfter;
+        Sort[] sortOrder;
+
+        if (alarmModePage == C.ALARM_ONETIME) {
+            sortAfter = stringSortOnetime;
+            sortOrder = orderSortOnetime;
+        } else {
+            sortAfter = stringSortRecurring;
+            sortOrder = orderSortRecurring;
+        }
+
+        alarms = realm.where(Alarm.class).equalTo("alarmMode", alarmModePage).findAllSorted(sortAfter, sortOrder);
     }
 
     @Override public Object getItem(int position) {
