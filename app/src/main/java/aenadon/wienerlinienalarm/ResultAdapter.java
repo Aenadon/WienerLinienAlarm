@@ -28,8 +28,7 @@ class ResultAdapter extends ArrayAdapter<Halteobjekt> {
         LayoutInflater infl = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) { // view is uninitialized yet
-            //convertView = infl.inflate(R.layout.list_item_single, null);
-            convertView = infl.inflate(android.R.layout.simple_list_item_1, null);
+            convertView = infl.inflate(android.R.layout.simple_list_item_1, parent, false);
             resultView = new ResultViewHolder();
             resultView.textView = (TextView) convertView.findViewById(android.R.id.text1);
             convertView.setTag(resultView);

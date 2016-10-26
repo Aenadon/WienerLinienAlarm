@@ -27,7 +27,7 @@ public class Alarm extends RealmObject {
 
     // Alarm mode
     private String chosenRingtone; // can be null
-    private long chosenVibrationDuration; // 0, 100, 250, 500 (see C.class)
+    private int chosenVibrationMode; // constant values, see C
 
     // STATION DATA
     @Required
@@ -127,12 +127,12 @@ public class Alarm extends RealmObject {
         this.chosenRingtone = chosenRingtone;
     }
 
-    public long getChosenVibrationDuration() {
-        return chosenVibrationDuration;
+    public int getChosenVibrationMode() {
+        return chosenVibrationMode;
     }
 
-    public void setChosenVibrationDuration(long chosenVibrationDuration) {
-        this.chosenVibrationDuration = chosenVibrationDuration;
+    public void setChosenVibrationMode(int chosenVibrationMode) {
+        this.chosenVibrationMode = chosenVibrationMode;
     }
 
     public String getStationName() {

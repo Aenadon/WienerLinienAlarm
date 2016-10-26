@@ -24,8 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/alarm_frequency"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimary"/>
+                android:textAppearance="@style/SectionTitleText"/>
 
             <RadioGroup
                 android:layout_height="wrap_content"
@@ -54,8 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/alarm_choose_date"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimary"/>
+                android:textAppearance="@style/SectionTitleText"/>
 
             <LinearLayout
                 android:baselineAligned="false"
@@ -143,9 +141,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimary"
-                android:text="@string/alarm_choose_alarm_mode"/>
+                android:text="@string/alarm_choose_alarm_mode"
+                android:textAppearance="@style/SectionTitleText" />
 
             <LinearLayout
                 android:baselineAligned="false"
@@ -197,11 +194,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="onClickHandler" />
                 </LinearLayout>
-
-
             </LinearLayout>
-
-
 
             <!--Separator--> <View android:layout_width="match_parent" android:layout_height="10dp" />
 
@@ -209,8 +202,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/alarm_choose_station_direction"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimary"/>
+                android:textAppearance="@style/SectionTitleText"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

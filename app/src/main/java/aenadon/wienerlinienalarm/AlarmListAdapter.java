@@ -52,6 +52,11 @@ class AlarmListAdapter extends BaseAdapter {
             Sort.ASCENDING
     };
 
+    // Getter for "alarms"
+    RealmResults<Alarm> getAlarms() {
+        return alarms;
+    }
+
 
     AlarmListAdapter(Context c, int alarmModePage) {
         mContext = c;
@@ -92,7 +97,7 @@ class AlarmListAdapter extends BaseAdapter {
         LayoutInflater infl = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
-            convertView = infl.inflate(R.layout.alarm_list_item, null);
+            convertView = infl.inflate(R.layout.alarm_list_item, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.date = (TextView) convertView.findViewById(R.id.alarm_list_date);
             viewHolder.time = (TextView) convertView.findViewById(R.id.alarm_list_time);

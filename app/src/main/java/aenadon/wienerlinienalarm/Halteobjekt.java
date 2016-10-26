@@ -1,5 +1,7 @@
 package aenadon.wienerlinienalarm;
 
+import android.support.annotation.NonNull;
+
 class Halteobjekt implements Comparable<Halteobjekt> {
     // Helper class for populating list view (ArrayList of Halteobjekts)
     private String name;
@@ -25,7 +27,7 @@ class Halteobjekt implements Comparable<Halteobjekt> {
     }
 
     @Override
-    public int compareTo(Halteobjekt h) {
+    public int compareTo(@NonNull Halteobjekt h) {
         return this.name.compareTo(h.getName());
     }
 }

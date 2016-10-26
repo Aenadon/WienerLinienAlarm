@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -34,7 +33,6 @@ import java.util.Locale;
 
 import aenadon.wienerlinienalarm.models.Alarm;
 import io.realm.Realm;
-import io.realm.RealmResults;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
@@ -223,7 +221,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
         };
 
         new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.alarm_recurring_dialog_expl))
+                .setTitle(getString(R.string.alarm_choose_vibration_length))
                 .setItems(vibrationModes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -302,7 +300,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
         newAlarm.setAlarmMinute(chosenTime[1]);
 
         newAlarm.setChosenRingtone(chosenRingtone);
-        newAlarm.setChosenVibrationDuration(C.VIBRATION_DURATION[chosenVibratorMode]);
+        newAlarm.setChosenVibrationMode(chosenVibratorMode);
 
         // {stationName, stationDir, stationId, h.getArrayIndex()}
         newAlarm.setStationName(pickedStationData[0]);
@@ -310,16 +308,12 @@ public class AlarmSetterActivity extends AppCompatActivity {
         newAlarm.setStationId(pickedStationData[2]);
         newAlarm.setStationArrayIndex(Integer.parseInt(pickedStationData[3]));
 
+        // TODO schedule alarm
+
         Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
+        realm.beginTransaction(); // we're doing it synchronously because it does not take much time
         realm.copyToRealm(newAlarm);
         realm.commitTransaction();
-
-        // TODO REMOVE THIS
-        RealmResults<Alarm> x = realm.where(Alarm.class).findAll();
-        for (Alarm a : x) {
-            Log.d("test", a.getStationName());
-        }
 
         setResult(Activity.RESULT_OK, new Intent().putExtra("mode", ALARM_MODE));
         finish(); // we're done here.
@@ -392,7 +386,10 @@ public class AlarmSetterActivity extends AppCompatActivity {
                     throw new IOException("At least one server response not successful " +
                             "(" + haltestellenResponse.code() + "/" + steigResponse.code() + ")"); // [...] (403/403)
                 } else {
-                    if (csv.exists()) csv.delete();
+                    if (csv.exists()) {
+                        //noinspection ResultOfMethodCallIgnored
+                        csv.delete();
+                    }
                     String combined =
                             versionResponseString      // last update date
                                     + C.CSV_FILE_SEPARATOR +             // separator
@@ -464,8 +461,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
         public void onDateSet(DatePicker view, int year, int month, int day) {
             Calendar cal = Calendar.getInstance();
             cal.set(year, month, day);
-            Date chosenDateAtMidnight = cal.getTime();
-            String formattedDate = DateFormat.getDateInstance().format(chosenDateAtMidnight);
+            Date date = cal.getTime();
+            String formattedDate = DateFormat.getDateInstance().format(date);
 
             chosenDate = new int[]{year, month, day};
 

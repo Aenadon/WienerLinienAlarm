@@ -59,6 +59,16 @@
     <string name="choose_station">Choose station</string>
     <string name="choose_steig">Choose line/platform</string>
 
+    <string name="ok">OK</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="edit_alarm">Edit alarm</string>
+
+    <string name="delete_alarm_title">Delete alarm?</string>
+    <string name="delete_alarm_message">Are you sure you want to delete this alarm?</string>
+
+    <!--Errors!--><!--Errors!--><!--Errors!--><!--Errors!--><!--Errors!-->
     <string name="connection_error_title">Connection error :(</string>
     <string name="connection_error_text">The connection to the Wiener Linien servers cannot be established.</string>
     <string name="connection_error_text_add">The station picker will not work.</string>
@@ -66,10 +76,6 @@
     <string name="no_steigs_error_title">No lines available :(</string>
     <string name="no_steigs_error_text">The API does not return any lines for this stations. Please choose another station.</string>
 
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-
-    <!--Errors!-->
     <string name="missing_info_title">Could not create alarm</string>
     <string name="missing_info_date">-No date was chosen.\n</string>
     <string name="missing_info_time">-No time was chosen.\n</string>

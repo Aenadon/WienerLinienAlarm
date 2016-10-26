@@ -43,6 +43,7 @@ class C {
             if (csvFile.exists()) {
                 byte[] csvBytes = new byte[(int) csvFile.length()]; // will the file size ever exceed 2GB? let's hope not
                 FileInputStream fis = new FileInputStream(csvFile);
+                //noinspection ResultOfMethodCallIgnored
                 fis.read(csvBytes);
                 return new String(csvBytes);
             }

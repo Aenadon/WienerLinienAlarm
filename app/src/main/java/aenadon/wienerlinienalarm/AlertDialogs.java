@@ -49,6 +49,7 @@ class AlertDialogs {
                         ((Activity)ctx).finish();
                     }
                 })
+                .setCancelable(false)
                 .show();
     }
 
