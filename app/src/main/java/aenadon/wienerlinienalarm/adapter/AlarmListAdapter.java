@@ -1,4 +1,4 @@
-package aenadon.wienerlinienalarm;
+package aenadon.wienerlinienalarm.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,12 +12,14 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.models.Alarm;
+import aenadon.wienerlinienalarm.utils.C;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-class AlarmListAdapter extends BaseAdapter {
+public class AlarmListAdapter extends BaseAdapter {
 
     private String LOG_TAG = AlarmListAdapter.class.getSimpleName();
 
@@ -26,39 +28,12 @@ class AlarmListAdapter extends BaseAdapter {
 
     private RealmResults<Alarm> alarms;
 
-    private String[] stringSortOnetime = new String[]{
-            "oneTimeAlarmYear",
-            "oneTimeAlarmMonth",
-            "oneTimeAlarmDay",
-            "alarmHour",
-            "alarmMinute"
-    };
-    private Sort[] orderSortOnetime = new Sort[]{
-            Sort.ASCENDING,
-            Sort.ASCENDING,
-            Sort.ASCENDING,
-            Sort.ASCENDING,
-            Sort.ASCENDING
-    };
-
-    private String[] stringSortRecurring = new String[]{
-            "alarmHour",
-            "alarmMinute",
-            "recurringChosenDays"
-    };
-    private Sort[] orderSortRecurring = new Sort[]{
-            Sort.ASCENDING,
-            Sort.ASCENDING,
-            Sort.ASCENDING
-    };
-
-    // Getter for "alarms"
-    RealmResults<Alarm> getAlarms() {
+    // Getter for alarm list
+    public RealmResults<Alarm> getAlarms() {
         return alarms;
     }
 
-
-    AlarmListAdapter(Context c, int alarmModePage) {
+    public AlarmListAdapter(Context c, int alarmModePage) {
         mContext = c;
         this.alarmModePage = alarmModePage;
 
@@ -69,11 +44,31 @@ class AlarmListAdapter extends BaseAdapter {
         Sort[] sortOrder;
 
         if (alarmModePage == C.ALARM_ONETIME) {
-            sortAfter = stringSortOnetime;
-            sortOrder = orderSortOnetime;
+            sortAfter = new String[]{
+                            "oneTimeAlarmYear",
+                            "oneTimeAlarmMonth",
+                            "oneTimeAlarmDay",
+                            "alarmHour",
+                            "alarmMinute"
+                    };
+            sortOrder = new Sort[]{
+                            Sort.ASCENDING,
+                            Sort.ASCENDING,
+                            Sort.ASCENDING,
+                            Sort.ASCENDING,
+                            Sort.ASCENDING
+                    };
         } else {
-            sortAfter = stringSortRecurring;
-            sortOrder = orderSortRecurring;
+            sortAfter = new String[]{
+                            "alarmHour",
+                            "alarmMinute",
+                            "recurringChosenDays"
+                    };
+            sortOrder = new Sort[]{
+                            Sort.ASCENDING,
+                            Sort.ASCENDING,
+                            Sort.ASCENDING
+                    };
         }
 
         alarms = realm.where(Alarm.class).equalTo("alarmMode", alarmModePage).findAllSorted(sortAfter, sortOrder);

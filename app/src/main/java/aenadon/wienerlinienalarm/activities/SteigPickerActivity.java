@@ -1,4 +1,4 @@
-package aenadon.wienerlinienalarm;
+package aenadon.wienerlinienalarm.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -20,14 +20,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import aenadon.wienerlinienalarm.BuildConfig;
+import aenadon.wienerlinienalarm.adapter.Halteobjekt;
+import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.adapter.ResultAdapter;
+import aenadon.wienerlinienalarm.utils.AlertDialogs;
+import aenadon.wienerlinienalarm.utils.C;
+import aenadon.wienerlinienalarm.utils.RetrofitInfo;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-public class SteigPicker extends AppCompatActivity {
+public class SteigPickerActivity extends AppCompatActivity {
 
     private String apikey = BuildConfig.API_TOKEN;
 
-    private String LOG_TAG = SteigPicker.class.getSimpleName();
+    private String LOG_TAG = SteigPickerActivity.class.getSimpleName();
 
     ArrayList<String> steige = new ArrayList<>();
     static ArrayList<Halteobjekt> steigDisplay = new ArrayList<>();
@@ -42,7 +49,7 @@ public class SteigPicker extends AppCompatActivity {
         setContentView(R.layout.activity_steig_picker);
 
         // The waiting dialog to be shown whenever the user should wait
-        warten = new ProgressDialog(this);
+        warten = new ProgressDialog(SteigPickerActivity.this);
         warten.setMessage(getString(R.string.please_wait));
         warten.setIndeterminate(true);
         warten.setCancelable(false);
@@ -59,7 +66,7 @@ public class SteigPicker extends AppCompatActivity {
         list = (ListView) findViewById(R.id.steig_resultlist); // find the list view
         list.setOnItemClickListener(listListener()); // listen for presses
 
-        String wholeCSV = C.getCSVfromFile(this);
+        String wholeCSV = C.getCSVfromFile(SteigPickerActivity.this);
         if (wholeCSV != null) {
             populateListView(wholeCSV.split(C.CSV_FILE_SEPARATOR)[C.CSV_PART_STEIG]);
         }
@@ -141,11 +148,11 @@ public class SteigPicker extends AppCompatActivity {
         protected void onPostExecute(ArrayList<Halteobjekt> halteobjekts) {
             warten.dismiss();
             if (halteobjekts == null) {
-                AlertDialogs.serverNotAvailable(SteigPicker.this);
+                AlertDialogs.serverNotAvailable(SteigPickerActivity.this);
                 return;
             }
             if (halteobjekts.isEmpty()) {
-                AlertDialogs.noSteigsAvailable(SteigPicker.this);
+                AlertDialogs.noSteigsAvailable(SteigPickerActivity.this);
                 return;
             }
             sa = new ResultAdapter(getApplicationContext(), halteobjekts); // give our displaylist to the adapter

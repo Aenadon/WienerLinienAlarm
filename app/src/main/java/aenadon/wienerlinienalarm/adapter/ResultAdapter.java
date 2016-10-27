@@ -1,4 +1,4 @@
-package aenadon.wienerlinienalarm;
+package aenadon.wienerlinienalarm.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-class ResultAdapter extends ArrayAdapter<Halteobjekt> {
+public class ResultAdapter extends ArrayAdapter<Halteobjekt> {
 
     private final Context context;
     private final ArrayList<Halteobjekt> values;
 
-    ResultAdapter(Context context, ArrayList<Halteobjekt> list) {
+    public ResultAdapter(Context context, ArrayList<Halteobjekt> list) {
         super(context, -1, list);
         this.context = context;
         this.values = list;

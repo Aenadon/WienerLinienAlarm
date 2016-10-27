@@ -1,4 +1,4 @@
-package aenadon.wienerlinienalarm;
+package aenadon.wienerlinienalarm.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -34,6 +34,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import aenadon.wienerlinienalarm.adapter.AlarmListAdapter;
+import aenadon.wienerlinienalarm.utils.C;
+import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.models.Alarm;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getApplication(), AlarmSetterActivity.class), 0);
+                startActivityForResult(new Intent(MainActivity.this, AlarmSetterActivity.class), 0);
             }
         });
     }
@@ -149,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         private AlarmListAdapter adapter;
 
         public void updateAdapter() {
-            adapter.notifyDataSetChanged(); // TODO not working?
+            adapter.notifyDataSetChanged();
         }
 
         public static AlarmMenuFragment getInstance(int pageNumber) {
@@ -185,53 +188,27 @@ public class MainActivity extends AppCompatActivity {
                     final View dialogLayout;
 
                     if (pageNumber == 0) {
+                        // Set view
                         dialogLayout = inflater.inflate(R.layout.dialog_edit_alarm_onetime, null);
-
                         // Set date
-                        Calendar cal = Calendar.getInstance();
-                        cal.set(alarmElement.getOneTimeAlarmYear(), alarmElement.getOneTimeAlarmMonth(), alarmElement.getOneTimeAlarmDay());
-                        ((TextView)dialogLayout.findViewById(R.id.date)).setText(
-                                DateFormat.getDateInstance().format(cal.getTimeInMillis())
-                        );
+                        ((TextView)dialogLayout.findViewById(R.id.date)).setText(getOneTimeDate(alarmElement));
                         // Set time
-                        ((TextView)dialogLayout.findViewById(R.id.time)).setText(
-                                String.format(Locale.ENGLISH, "%02d:%02d", alarmElement.getAlarmHour(), alarmElement.getAlarmMinute())
-                        );
+                        ((TextView)dialogLayout.findViewById(R.id.time)).setText(getTime(alarmElement));
                         // Set Ringtone
-                        String ringtoneUriString = alarmElement.getChosenRingtone();
-                        String ringtoneToDisplay = getString(R.string.alarm_no_ringtone_chosen);
-                        if (ringtoneUriString != null) {
-                            Uri ringtoneUri = Uri.parse(alarmElement.getChosenRingtone());
-                            Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), ringtoneUri);
-                            ringtoneToDisplay = ringtone.getTitle(getActivity());
-                        }
-                        ((TextView)dialogLayout.findViewById(R.id.ringtone)).setText(ringtoneToDisplay);
+                        ((TextView)dialogLayout.findViewById(R.id.ringtone)).setText(getRingtone(alarmElement));
                         // Set Vibration
-                        String vibraModeToDisplay = "";
-                        switch (alarmElement.getChosenVibrationMode()) {
-                            case C.VIBRATION_NONE:
-                                vibraModeToDisplay = getString(R.string.alarm_no_vibration_chosen);
-                                break;
-                            case C.VIBRATION_SHORT:
-                                vibraModeToDisplay = getString(R.string.alarm_vibration_short);
-                                break;
-                            case C.VIBRATION_MEDIUM:
-                                vibraModeToDisplay = getString(R.string.alarm_vibration_medium);
-                                break;
-                            case C.VIBRATION_LONG:
-                                vibraModeToDisplay = getString(R.string.alarm_vibration_long);
-                                break;
-                        }
-                        ((TextView)dialogLayout.findViewById(R.id.vibration)).setText(vibraModeToDisplay);
+                        ((TextView)dialogLayout.findViewById(R.id.vibration)).setText(getVibration(alarmElement));
                         // Set station
-                        ((TextView)dialogLayout.findViewById(R.id.station)).setText(alarmElement.getStationName() + "\n" + alarmElement.getStationDirection());
+                        ((TextView)dialogLayout.findViewById(R.id.station)).setText(getStation(alarmElement));
                     } else {
+                        // Set view
                         dialogLayout = inflater.inflate(R.layout.dialog_edit_alarm_recurring, null);
+
                     }
 
                     new AlertDialog.Builder(getActivity())
-                            .setIcon(R.drawable.ic_edit)
-                            .setTitle(getString(R.string.edit_alarm))
+                            .setIcon(R.drawable.ic_settings)
+                            .setTitle(getString(R.string.alarm_settings))
                             .setView(dialogLayout)
                             .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 @Override
@@ -267,6 +244,45 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             };
+        }
+        public String getOneTimeDate(Alarm alarm) {
+            Calendar cal = Calendar.getInstance();
+            cal.set(alarm.getOneTimeAlarmYear(), alarm.getOneTimeAlarmMonth(), alarm.getOneTimeAlarmDay());
+            return DateFormat.getDateInstance().format(cal.getTimeInMillis());
+        }
+        public String getTime(Alarm alarm) {
+            return String.format(Locale.ENGLISH, "%02d:%02d", alarm.getAlarmHour(), alarm.getAlarmMinute());
+        }
+        public String getRingtone(Alarm alarm) {
+            String ringtoneUriString = alarm.getChosenRingtone();
+            String ringtoneToDisplay = getString(R.string.alarm_no_ringtone_chosen);
+            if (ringtoneUriString != null) {
+                Uri ringtoneUri = Uri.parse(alarm.getChosenRingtone());
+                Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), ringtoneUri);
+                ringtoneToDisplay = ringtone.getTitle(getActivity());
+            }
+            return ringtoneToDisplay;
+        }
+        public String getVibration(Alarm alarm) {
+            String vibraModeToDisplay = "?ERROR?";
+            switch (alarm.getChosenVibrationMode()) {
+                case C.VIBRATION_NONE:
+                    vibraModeToDisplay = getString(R.string.alarm_no_vibration_chosen);
+                    break;
+                case C.VIBRATION_SHORT:
+                    vibraModeToDisplay = getString(R.string.alarm_vibration_short);
+                    break;
+                case C.VIBRATION_MEDIUM:
+                    vibraModeToDisplay = getString(R.string.alarm_vibration_medium);
+                    break;
+                case C.VIBRATION_LONG:
+                    vibraModeToDisplay = getString(R.string.alarm_vibration_long);
+                    break;
+            }
+            return vibraModeToDisplay;
+        }
+        public String getStation(Alarm alarm) {
+            return alarm.getStationName() + "\n" + alarm.getStationDirection();
         }
 
     }

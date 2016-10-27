@@ -1,43 +1,43 @@
-package aenadon.wienerlinienalarm;
+package aenadon.wienerlinienalarm.utils;
 
 import android.content.Context;
 
 import java.io.File;
 import java.io.FileInputStream;
 
-class C {
+public class C {
 
     // This class is for constants used throughout the app.
 
-    static final String CSV_FILENAME = "halteinfo.csv";
-    static final int CSV_PART_VERSION = 0;
-    static final int CSV_PART_STATION = 1;
-    static final int CSV_PART_STEIG = 2;
+    public static final String CSV_FILENAME = "halteinfo.csv";
+    public static final int CSV_PART_VERSION = 0;
+    public static final int CSV_PART_STATION = 1;
+    public static final int CSV_PART_STEIG = 2;
 
-    static final int ALARM_ONETIME = 0;
-    static final int ALARM_RECURRING = 1;
+    public static final int ALARM_ONETIME = 0;
+    public static final int ALARM_RECURRING = 1;
 
-    static final int REQUEST_STATION = 0;
-    static final int REQUEST_RINGTONE = 1;
+    public static final int REQUEST_STATION = 0;
+    public static final int REQUEST_RINGTONE = 1;
 
-    static final int VIBRATION_NONE = 0;
-    static final int VIBRATION_SHORT = 1;
-    static final int VIBRATION_MEDIUM = 2;
-    static final int VIBRATION_LONG = 3;
+    public static final int VIBRATION_NONE = 0;
+    public static final int VIBRATION_SHORT = 1;
+    public static final int VIBRATION_MEDIUM = 2;
+    public static final int VIBRATION_LONG = 3;
 
-    static final long[] VIBRATION_DURATION = {
+    public static final long[] VIBRATION_DURATION = {
             0,
             100,
             250,
             500
     };
 
-    static final String STATION_NAME = "stationName";
-    static final String STATION_ID = "stationid";
+    public static final String STATION_NAME = "stationName";
+    public static final String STATION_ID = "stationid";
 
-    static final String CSV_FILE_SEPARATOR = "--------------------"; // 20 * -
+    public static final String CSV_FILE_SEPARATOR = "--------------------"; // 20 * -
 
-    static String getCSVfromFile(Context c) {
+    public static String getCSVfromFile(Context c) {
         try {
             File csvFile = new File(c.getFilesDir(), C.CSV_FILENAME);
             if (csvFile.exists()) {
@@ -54,7 +54,7 @@ class C {
         return null;
     }
 
-    static String getUbahnEndstation(String line, String direction) {
+    public static String getUbahnEndstation(String line, String direction) {
         final String U1 = "U1";
         final String U2 = "U2";
         final String U3 = "U3";

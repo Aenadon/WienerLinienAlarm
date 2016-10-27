@@ -1,4 +1,4 @@
-package aenadon.wienerlinienalarm;
+package aenadon.wienerlinienalarm.utils;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -8,13 +8,13 @@ import retrofit2.http.Query;
 
 // This is a class containing the API calls
 
-class RetrofitInfo {
+public class RetrofitInfo {
 
     private static Retrofit csvInfo = new Retrofit.Builder()
             .baseUrl("http://data.wien.gv.at/csv/")
             .build();
 
-    static Retrofit getCSVInfo() {
+    public static Retrofit getCSVInfo() {
         return csvInfo;
     }
 
@@ -22,11 +22,11 @@ class RetrofitInfo {
             .baseUrl("https://www.wienerlinien.at/ogd_realtime/")
             .build();
 
-    static Retrofit getRealtimeInfo() {
+    public static Retrofit getRealtimeInfo() {
         return realtimeInfo;
     }
 
-    interface CSVCalls {
+    public interface CSVCalls {
 
         @GET("wienerlinien-ogd-haltestellen.csv")
         Call<ResponseBody> getHaltestellenCSV();
@@ -39,7 +39,7 @@ class RetrofitInfo {
 
     }
 
-    interface RealtimeCalls {
+    public interface RealtimeCalls {
 
         @GET("monitor")
         Call<ResponseBody> getRealtime(@Query("sender") String apiKey, @Query("rbl") String rbl);

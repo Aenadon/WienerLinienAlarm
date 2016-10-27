@@ -1,4 +1,4 @@
-package aenadon.wienerlinienalarm;
+package aenadon.wienerlinienalarm.activities;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -9,7 +9,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -26,12 +25,14 @@ import android.widget.TimePicker;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
+import aenadon.wienerlinienalarm.utils.AlertDialogs;
+import aenadon.wienerlinienalarm.utils.C;
+import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.utils.RetrofitInfo;
 import aenadon.wienerlinienalarm.models.Alarm;
+import aenadon.wienerlinienalarm.utils.StringDisplay;
 import io.realm.Realm;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -65,9 +66,9 @@ public class AlarmSetterActivity extends AppCompatActivity {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Realm.init(this);
+        Realm.init(AlarmSetterActivity.this);
 
-        new GetApiFiles(this).execute(); // get CSV files/check for updates on them
+        new GetApiFiles(AlarmSetterActivity.this).execute(); // get CSV files/check for updates on them
     }
 
     // handling all the click events from the view
@@ -152,7 +153,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
         final boolean[] tempChoices = chosenDays.clone();
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(AlarmSetterActivity.this)
                 .setTitle(getString(R.string.alarm_recurring_dialog_expl))
                 .setMultiChoiceItems(weekDayStrings, tempChoices, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
@@ -172,26 +173,9 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         chosenDays = tempChoices.clone(); // assign our tempChoices to our "persistent" choices
+                        ((TextView) findViewById(R.id.choose_days_text))
+                                .setText(StringDisplay.getRecurringDays(AlarmSetterActivity.this, chosenDays));
 
-                        String selection;
-                        if (!(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4] || chosenDays[5] || chosenDays[6])) {
-                            selection = getString(R.string.alarm_no_days_set);  // then say "no days selected"
-                        } else if (!(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4]) && (chosenDays[5] && chosenDays[6])) {
-                            selection = getString(R.string.weekends);
-                        } else if ((chosenDays[0] && chosenDays[1] && chosenDays[2] && chosenDays[3] && chosenDays[4]) && !(chosenDays[5] || chosenDays[6])) {
-                            selection = getString(R.string.weekdays);
-                        } else if (chosenDays[0] && chosenDays[1] && chosenDays[2] && chosenDays[3] && chosenDays[4] && chosenDays[5] && chosenDays[6]) {
-                            selection = getString(R.string.everyday);
-                        } else {
-                            int selectedDays = 0;
-                            for (int i = 0; i < 7; i++) {
-                                if (chosenDays[i]) selectedDays++;
-                            }
-                            selection = getResources().getQuantityString(R.plurals.days_chosen, selectedDays, selectedDays); // else show the count of days chosen
-                        }
-
-                        TextView t = (TextView) findViewById(R.id.choose_days_text);
-                        t.setText(selection);
                         dialog.dismiss();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -203,7 +187,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
     }
 
     private void pickStation() {
-        startActivityForResult(new Intent(this, StationPicker.class), C.REQUEST_STATION);
+        startActivityForResult(new Intent(AlarmSetterActivity.this, StationPickerActivity.class), C.REQUEST_STATION);
     }
 
     private void pickRingtone() {
@@ -220,7 +204,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 getString(R.string.alarm_vibration_long),
         };
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(AlarmSetterActivity.this)
                 .setTitle(getString(R.string.alarm_choose_vibration_length))
                 .setItems(vibrationModes, new DialogInterface.OnClickListener() {
                     @Override
@@ -279,7 +263,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
         }
         // If error:
         if (isError) {
-            AlertDialogs.missingInfo(this, errors);
+            AlertDialogs.missingInfo(AlarmSetterActivity.this, errors);
             return;
             // if error, we're done here
         }
@@ -328,19 +312,14 @@ public class AlarmSetterActivity extends AppCompatActivity {
             switch (requestCode) {
                 case C.REQUEST_STATION:
                     pickedStationData = data.getStringArrayExtra("stationInfo");
-                    ((TextView) findViewById(R.id.choose_station_text)).setText(pickedStationData[0] + "\n" + pickedStationData[1]);
+                    ((TextView) findViewById(R.id.choose_station_text)).setText(StringDisplay.getStation(pickedStationData));
                     break;
                 case C.REQUEST_RINGTONE:
                     Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-
                     chosenRingtone = (uri != null) ? uri.toString() : null;
 
-                    Ringtone ringtone = RingtoneManager.getRingtone(this, uri);
-                    String title = (chosenRingtone == null) ?
-                            getString(R.string.alarm_no_ringtone_chosen) :
-                            ringtone.getTitle(this);
-
-                    ((TextView)findViewById(R.id.choose_ringtone_text)).setText(title);
+                    ((TextView)findViewById(R.id.choose_ringtone_text))
+                            .setText(StringDisplay.getRingtone(AlarmSetterActivity.this, chosenRingtone));
                     break;
             }
         }
@@ -436,8 +415,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             chosenTime = new int[]{hourOfDay, minute};
-            TextView t = (TextView) getActivity().findViewById(R.id.choose_time_text);
-            t.setText(String.format(Locale.ENGLISH, "%02d:%02d", hourOfDay, minute));
+            ((TextView) getActivity().findViewById(R.id.choose_time_text))
+                    .setText(StringDisplay.getTime(chosenTime));
         }
     }
 
@@ -459,15 +438,10 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
         @Override
         public void onDateSet(DatePicker view, int year, int month, int day) {
-            Calendar cal = Calendar.getInstance();
-            cal.set(year, month, day);
-            Date date = cal.getTime();
-            String formattedDate = DateFormat.getDateInstance().format(date);
-
             chosenDate = new int[]{year, month, day};
 
-            TextView t = (TextView) getActivity().findViewById(R.id.choose_date_text);
-            t.setText(formattedDate);
+            ((TextView) getActivity().findViewById(R.id.choose_date_text))
+                    .setText(StringDisplay.getOnetimeDate(chosenDate));
         }
     }
 }

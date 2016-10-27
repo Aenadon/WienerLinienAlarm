@@ -1,4 +1,4 @@
-package aenadon.wienerlinienalarm;
+package aenadon.wienerlinienalarm.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -17,9 +17,12 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class StationPicker extends AppCompatActivity {
+import aenadon.wienerlinienalarm.adapter.Halteobjekt;
+import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.adapter.ResultAdapter;
+import aenadon.wienerlinienalarm.utils.C;
 
-    private final String LOG_TAG = StationPicker.class.getSimpleName();
+public class StationPickerActivity extends AppCompatActivity {
 
     ArrayList<Halteobjekt> stationsDisplay = new ArrayList<>();
     ArrayList<Halteobjekt> stationsOriginal = new ArrayList<>();
@@ -33,7 +36,7 @@ public class StationPicker extends AppCompatActivity {
         setContentView(R.layout.activity_station_picker);
 
         // The waiting dialog to be shown whenever the user should wait
-        warten = new ProgressDialog(this);
+        warten = new ProgressDialog(StationPickerActivity.this);
         warten.setMessage(getString(R.string.please_wait));
         warten.setIndeterminate(true);
         warten.setCancelable(false);
@@ -44,7 +47,7 @@ public class StationPicker extends AppCompatActivity {
         EditText queryBox = (EditText) findViewById(R.id.station_search_edittext); // initialize the search box
         queryBox.addTextChangedListener(editTextChangeListener()); // listen for text changes
 
-        String wholeCSV = C.getCSVfromFile(this);
+        String wholeCSV = C.getCSVfromFile(StationPickerActivity.this);
         if (wholeCSV != null) {
             populateListView(wholeCSV.split(C.CSV_FILE_SEPARATOR)[C.CSV_PART_STATION]);
         }
@@ -66,7 +69,7 @@ public class StationPicker extends AppCompatActivity {
         Collections.sort(stationsOriginal);
         stationsDisplay.addAll(stationsOriginal); // copy the complete list to another variable so the original list remains unaltered
         Collections.sort(stationsDisplay);
-        sa = new ResultAdapter(this, stationsDisplay); // give our displaylist to the adapter
+        sa = new ResultAdapter(StationPickerActivity.this, stationsDisplay); // give our displaylist to the adapter
         list.setAdapter(sa); // set the adapter on the list (==> updates the list automatically)
         warten.dismiss();
     }
@@ -104,9 +107,9 @@ public class StationPicker extends AppCompatActivity {
 
                 String stationName; String stationId;
                 stationName = stationsDisplay.get(position).getName();
-                stationId = stationsDisplay.get(position).getId(); // pass name and id to the SteigPicker so he can offer the steigs
+                stationId = stationsDisplay.get(position).getId(); // pass name and id to the SteigPickerActivity so he can offer the steigs
 
-                Intent i = new Intent(getApplicationContext(), SteigPicker.class);
+                Intent i = new Intent(getApplicationContext(), SteigPickerActivity.class);
                 i.putExtra(C.STATION_NAME, stationName).putExtra(C.STATION_ID, stationId);
                 startActivityForResult(i, 0);
             }

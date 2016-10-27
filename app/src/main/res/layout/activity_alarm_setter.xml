@@ -18,7 +18,7 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
-            tools:context="aenadon.wienerlinienalarm.AlarmSetterActivity">
+            tools:context="aenadon.wienerlinienalarm.activities.AlarmSetterActivity">
 
             <TextView
                 android:layout_width="match_parent"

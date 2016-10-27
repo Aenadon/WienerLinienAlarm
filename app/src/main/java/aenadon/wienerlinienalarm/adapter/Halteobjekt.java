@@ -1,14 +1,14 @@
-package aenadon.wienerlinienalarm;
+package aenadon.wienerlinienalarm.adapter;
 
 import android.support.annotation.NonNull;
 
-class Halteobjekt implements Comparable<Halteobjekt> {
+public class Halteobjekt implements Comparable<Halteobjekt> {
     // Helper class for populating list view (ArrayList of Halteobjekts)
     private String name;
     private String id;
     private String arrayIndex;
 
-    Halteobjekt(String name, String id, String arrayIndex) {
+    public Halteobjekt(String name, String id, String arrayIndex) {
         this.name = name;
         this.id = id;
         this.arrayIndex = arrayIndex;
