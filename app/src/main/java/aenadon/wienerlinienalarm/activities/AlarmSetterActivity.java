@@ -1,11 +1,7 @@
 package aenadon.wienerlinienalarm.activities;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,10 +13,8 @@ import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,14 +37,15 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
     Vibrator v;
 
-    private static int[] chosenDate = null; // Chosen Date
-    private static int[] chosenTime = null; // arr[0] = hours; arr[1] = minutes;
     private boolean[] chosenDays = new boolean[7]; // true,true,false,false,false,false,true ==> Monday, Tuesday, Sunday
 
     private String chosenRingtone = null;               // standard: no sound
     private int chosenVibratorMode = C.VIBRATION_NONE;  // standard: no vibration
 
     private String[] pickedStationData = null; // {stationName, stationDir, stationId, h.getArrayIndex()}
+
+    private Pickers.DatePickerFragment datePicker;
+    private Pickers.TimePickerFragment timePicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,11 +128,13 @@ public class AlarmSetterActivity extends AppCompatActivity {
     }
 
     private void pickDate() {
-        new DatePickerFragment().show(getFragmentManager(), "DatePickerDialog");
+        datePicker = new Pickers.DatePickerFragment();
+        datePicker.show(getFragmentManager(), "DatePickerDialog");
     }
 
     private void pickTime() {
-        new TimePickerFragment().show(getFragmentManager(), "TimePickerDialog");
+        timePicker = new Pickers.TimePickerFragment();
+        timePicker.show(getFragmentManager(), "TimePickerDialog");
     }
 
     private void pickDays() {
@@ -224,18 +221,19 @@ public class AlarmSetterActivity extends AppCompatActivity {
         // Errorcheck
         boolean isError = false;
         String errors = "";
-
+        int[] date = datePicker.getChosenDate();
+        int[] time = timePicker.getChosenTime();
         // Mode-specific checks
         if (ALARM_MODE == C.ALARM_ONETIME) {
-            if (chosenDate == null) {
+            if (date == null) {
                 isError = true;
                 errors += getString(R.string.missing_info_date);
             }
-            if (chosenDate != null && chosenTime != null) {
+            if (date != null && time != null) {
                 Calendar now = Calendar.getInstance();
-                Calendar date = Calendar.getInstance();
-                date.set(chosenDate[0], chosenDate[1], chosenDate[2], chosenTime[0], chosenTime[1], 0); // 0 seconds
-                if (date.compareTo(now) < 0) {
+                Calendar calDate = Calendar.getInstance();
+                calDate.set(date[0], date[1], date[2], time[0], time[1], 0); // 0 seconds
+                if (calDate.compareTo(now) < 0) {
                     errors += getString(R.string.missing_info_past);
                 }
             }
@@ -253,7 +251,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
             }
         }
         // General checks
-        if (chosenTime == null) {
+        if (time == null) {
             isError = true;
             errors += getString(R.string.missing_info_time);
         }
@@ -272,16 +270,16 @@ public class AlarmSetterActivity extends AppCompatActivity {
         newAlarm.setAlarmMode(ALARM_MODE);
         switch (ALARM_MODE) {
             case C.ALARM_ONETIME:
-                newAlarm.setOneTimeAlarmYear(chosenDate[0]);
-                newAlarm.setOneTimeAlarmMonth(chosenDate[1]);
-                newAlarm.setOneTimeAlarmDay(chosenDate[2]);
+                newAlarm.setOneTimeAlarmYear(date[0]);
+                newAlarm.setOneTimeAlarmMonth(date[1]);
+                newAlarm.setOneTimeAlarmDay(date[2]);
                 break;
             case C.ALARM_RECURRING:
                 newAlarm.setRecurringChosenDays(chosenDays);
                 break;
         }
-        newAlarm.setAlarmHour(chosenTime[0]);
-        newAlarm.setAlarmMinute(chosenTime[1]);
+        newAlarm.setAlarmHour(time[0]);
+        newAlarm.setAlarmMinute(time[1]);
 
         newAlarm.setChosenRingtone(chosenRingtone);
         newAlarm.setChosenVibrationMode(chosenVibratorMode);
@@ -399,49 +397,4 @@ public class AlarmSetterActivity extends AppCompatActivity {
         }
     }
 
-    public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-
-            // Create a new instance of TimePickerDialog and return it
-            return new TimePickerDialog(getActivity(), this, hour, minute, true);
-        }
-
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            chosenTime = new int[]{hourOfDay, minute};
-            ((TextView) getActivity().findViewById(R.id.choose_time_text))
-                    .setText(StringDisplay.getTime(chosenTime[0], chosenTime[1]));
-        }
-    }
-
-    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            // Create a new instance of DatePickerDialog and return it
-            DatePickerDialog d = new DatePickerDialog(getActivity(), this, year, month, day);
-            d.getDatePicker().setMinDate(c.getTimeInMillis());
-            return d;
-        }
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            chosenDate = new int[]{year, month, day};
-
-            ((TextView) getActivity().findViewById(R.id.choose_date_text))
-                    .setText(StringDisplay.getOnetimeDate(chosenDate[0], chosenDate[1], chosenDate[2]));
-        }
-    }
 }

@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private TabLayout tabLayout;
 
+    private Pickers.DatePickerFragment datePicker;
+    private Pickers.TimePickerFragment timePicker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

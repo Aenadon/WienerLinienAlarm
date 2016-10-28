@@ -53,6 +53,7 @@
         <item quantity="other">%d days chosen</item>
     </plurals>
 
+    <!--Station/Steig list-->
     <string name="updating_stations">Updating station list&#8230;</string>
     <string name="please_wait">Please wait&#8230;</string>
     <string name="search_for_station">Search for station</string>
@@ -63,6 +64,7 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
 
+    <!--Alarm settings-->
     <string name="alarm_settings">Alarm settings</string>
 
     <string name="delete_alarm_title">Delete alarm?</string>
