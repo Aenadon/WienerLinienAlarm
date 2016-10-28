@@ -5,6 +5,8 @@ import android.content.Context;
 import java.io.File;
 import java.io.FileInputStream;
 
+import aenadon.wienerlinienalarm.R;
+
 public class C {
 
     // This class is for constants used throughout the app.
@@ -30,6 +32,13 @@ public class C {
             100,
             250,
             500
+    };
+
+    public static final int[] VIBRATION_STRINGS = {
+            R.string.alarm_no_vibration_chosen,
+            R.string.alarm_vibration_short,
+            R.string.alarm_vibration_medium,
+            R.string.alarm_vibration_long
     };
 
     public static final String STATION_NAME = "stationName";

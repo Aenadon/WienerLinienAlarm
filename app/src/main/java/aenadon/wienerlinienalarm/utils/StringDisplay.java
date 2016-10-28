@@ -16,9 +16,9 @@ public class StringDisplay {
     // Used for parsing the display strings on Alarm set/edit
 
     // Gets the onetime date in the phone's default locale
-    public static String getOnetimeDate(int[] chosenDate) {
+    public static String getOnetimeDate(int year, int month, int day) {
         Calendar cal = Calendar.getInstance();
-        cal.set(chosenDate[0], chosenDate[1], chosenDate[2]);
+        cal.set(year, month, day);
         return DateFormat.getDateInstance().format(cal.getTime());
     }
 
@@ -42,22 +42,25 @@ public class StringDisplay {
         return selection;
     }
 
-    public static String getTime(int[] chosenTime) {
-        return String.format(Locale.ENGLISH, "%02d:%02d", chosenTime[0], chosenTime[1]);
+    public static String getTime(int hour, int minute) {
+        return String.format(Locale.ENGLISH, "%02d:%02d", hour, minute);
     }
 
     public static String getRingtone(Context c, String chosenRingtone) {
+        if (chosenRingtone == null) {
+            return c.getString(R.string.alarm_no_ringtone_chosen);
+        }
         Uri uri = Uri.parse(chosenRingtone);
         Ringtone ringtone = RingtoneManager.getRingtone(c, uri);
-        return (chosenRingtone == null) ?
-                c.getString(R.string.alarm_no_ringtone_chosen) :
-                ringtone.getTitle(c);
+        return ringtone.getTitle(c);
 
     }
 
-    // TODO VIBRATION
+    public static String getVibration(Context c, int vibrationMode) {
+        return c.getString(C.VIBRATION_STRINGS[vibrationMode]);
+    }
 
-    public static String getStation(String[] pickedStationData) {
-        return pickedStationData[0] + "\n" + pickedStationData[1];
+    public static String getStation(String station, String direction) {
+        return station + "\n" + direction;
     }
 }

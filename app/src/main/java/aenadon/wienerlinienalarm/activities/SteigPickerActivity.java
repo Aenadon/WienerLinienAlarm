@@ -23,7 +23,7 @@ import java.util.Collections;
 import aenadon.wienerlinienalarm.BuildConfig;
 import aenadon.wienerlinienalarm.adapter.Halteobjekt;
 import aenadon.wienerlinienalarm.R;
-import aenadon.wienerlinienalarm.adapter.ResultAdapter;
+import aenadon.wienerlinienalarm.adapter.StationListAdapter;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.C;
 import aenadon.wienerlinienalarm.utils.RetrofitInfo;
@@ -40,7 +40,7 @@ public class SteigPickerActivity extends AppCompatActivity {
     static ArrayList<Halteobjekt> steigDisplay = new ArrayList<>();
     ListView list;
     String stationName, stationId;
-    ResultAdapter sa;
+    StationListAdapter sa;
     ProgressDialog warten;
 
     @Override
@@ -155,7 +155,7 @@ public class SteigPickerActivity extends AppCompatActivity {
                 AlertDialogs.noSteigsAvailable(SteigPickerActivity.this);
                 return;
             }
-            sa = new ResultAdapter(getApplicationContext(), halteobjekts); // give our displaylist to the adapter
+            sa = new StationListAdapter(getApplicationContext(), halteobjekts); // give our displaylist to the adapter
             list.setAdapter(sa); // set the adapter on the list (==> updates the list automatically)
         }
     }

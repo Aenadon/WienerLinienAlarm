@@ -8,13 +8,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.models.Alarm;
 import aenadon.wienerlinienalarm.utils.C;
+import aenadon.wienerlinienalarm.utils.StringDisplay;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -23,7 +20,7 @@ public class AlarmListAdapter extends BaseAdapter {
 
     private String LOG_TAG = AlarmListAdapter.class.getSimpleName();
 
-    private Context mContext;
+    private Context ctx;
     private int alarmModePage;
 
     private RealmResults<Alarm> alarms;
@@ -34,7 +31,7 @@ public class AlarmListAdapter extends BaseAdapter {
     }
 
     public AlarmListAdapter(Context c, int alarmModePage) {
-        mContext = c;
+        ctx = c;
         this.alarmModePage = alarmModePage;
 
         Realm.init(c);
@@ -89,7 +86,7 @@ public class AlarmListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
-        LayoutInflater infl = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater infl = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
             convertView = infl.inflate(R.layout.alarm_list_item, parent, false);
@@ -101,43 +98,17 @@ public class AlarmListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder)convertView.getTag();
         }
 
-        String date, time;
+        Alarm alarmElement = alarms.get(position);
 
-        Alarm alarmItem = alarms.get(position);
+        String date;
+        String time = StringDisplay.getTime(alarmElement.getAlarmHour(), alarmElement.getAlarmMinute());
+
         switch (alarmModePage) {
             case C.ALARM_ONETIME:
-                Calendar selectedDate = Calendar.getInstance();
-                selectedDate.set(alarmItem.getOneTimeAlarmYear(),
-                        alarmItem.getOneTimeAlarmMonth(),
-                        alarmItem.getOneTimeAlarmDay(),
-                        alarmItem.getAlarmHour(),
-                        alarmItem.getAlarmMinute(),
-                        0);
-
-                date = DateFormat.getDateInstance().format(selectedDate.getTime());
-                time = DateFormat.getTimeInstance(DateFormat.SHORT).format(selectedDate.getTime());
+                date = StringDisplay.getOnetimeDate(alarmElement.getOneTimeAlarmYear(), alarmElement.getOneTimeAlarmMonth(), alarmElement.getOneTimeAlarmDay());
                 break;
             case C.ALARM_RECURRING:
-                boolean[] chosenDays = alarmItem.getRecurringChosenDays();
-
-                String selection;
-                if (!(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4] || chosenDays[5] || chosenDays[6])) {
-                    selection = mContext.getString(R.string.alarm_no_days_set);  // then say "no days selected"
-                } else if (!(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4]) && (chosenDays[5] && chosenDays[6])) {
-                    selection = mContext.getString(R.string.weekends);
-                } else if ((chosenDays[0] && chosenDays[1] && chosenDays[2] && chosenDays[3] && chosenDays[4]) && !(chosenDays[5] || chosenDays[6])) {
-                    selection = mContext.getString(R.string.weekdays);
-                } else if (chosenDays[0] && chosenDays[1] && chosenDays[2] && chosenDays[3] && chosenDays[4] && chosenDays[5] && chosenDays[6]) {
-                    selection = mContext.getString(R.string.everyday);
-                } else {
-                    int selectedDays = 0;
-                    for (int i = 0; i < 7; i++) {
-                        if (chosenDays[i]) selectedDays++;
-                    }
-                    selection = mContext.getResources().getQuantityString(R.plurals.days_chosen, selectedDays, selectedDays); // else show the count of days chosen
-                }
-                date = selection;
-                time = String.format(Locale.ENGLISH, "%02d:%02d", alarmItem.getAlarmHour(), alarmItem.getAlarmMinute());
+                date = StringDisplay.getRecurringDays(ctx, alarmElement.getRecurringChosenDays());
                 break;
             default:
                 Log.e(LOG_TAG, "Page index out of range");

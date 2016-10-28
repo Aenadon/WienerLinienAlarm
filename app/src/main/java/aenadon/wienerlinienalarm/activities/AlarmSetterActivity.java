@@ -198,10 +198,10 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
     private void pickVibration() {
         final String[] vibrationModes = new String[]{
-                getString(R.string.alarm_vibration_none),
-                getString(R.string.alarm_vibration_short),
-                getString(R.string.alarm_vibration_medium),
-                getString(R.string.alarm_vibration_long),
+                getString(C.VIBRATION_STRINGS[C.VIBRATION_NONE]),
+                getString(C.VIBRATION_STRINGS[C.VIBRATION_SHORT]),
+                getString(C.VIBRATION_STRINGS[C.VIBRATION_MEDIUM]),
+                getString(C.VIBRATION_STRINGS[C.VIBRATION_LONG])
         };
 
         new AlertDialog.Builder(AlarmSetterActivity.this)
@@ -213,8 +213,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
                         if (v.hasVibrator()) {
                             v.vibrate(C.VIBRATION_DURATION[which]);
                         }
-                        vibrationModes[0] = getString(R.string.alarm_no_vibration_chosen); // if "none" is selected, display "(No vibration)"
-                        ((TextView)findViewById(R.id.choose_vibration_text)).setText(vibrationModes[which]);
+                        ((TextView)findViewById(R.id.choose_vibration_text))
+                                .setText(StringDisplay.getVibration(AlarmSetterActivity.this, which));
                     }
                 })
                 .show();
@@ -303,7 +303,6 @@ public class AlarmSetterActivity extends AppCompatActivity {
         finish(); // we're done here.
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -312,7 +311,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
             switch (requestCode) {
                 case C.REQUEST_STATION:
                     pickedStationData = data.getStringArrayExtra("stationInfo");
-                    ((TextView) findViewById(R.id.choose_station_text)).setText(StringDisplay.getStation(pickedStationData));
+                    ((TextView) findViewById(R.id.choose_station_text))
+                            .setText(StringDisplay.getStation(pickedStationData[0], pickedStationData[1]));
                     break;
                 case C.REQUEST_RINGTONE:
                     Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
@@ -328,15 +328,15 @@ public class AlarmSetterActivity extends AppCompatActivity {
     class GetApiFiles extends AsyncTask<Void, Void, Boolean> {
 
         ProgressDialog warten;
-        Context mContext;
+        Context ctx;
 
         GetApiFiles(Context c) {
-            mContext = c;
+            ctx = c;
         }
 
         @Override
         protected void onPreExecute() {
-            warten = new ProgressDialog(mContext);
+            warten = new ProgressDialog(ctx);
             warten.setCancelable(false);
             warten.setIndeterminate(true);
             warten.setMessage(getString(R.string.updating_stations));
@@ -350,8 +350,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 String versionResponseString = versionResponse.body().string();
 
                 if (!versionResponse.isSuccessful()) return false;
-                File csv = new File(mContext.getFilesDir(), C.CSV_FILENAME);
-                String csvString = C.getCSVfromFile(mContext);
+                File csv = new File(ctx.getFilesDir(), C.CSV_FILENAME);
+                String csvString = C.getCSVfromFile(ctx);
                 if (csv.exists() && csvString != null) {
                     String x = csvString.split(C.CSV_FILE_SEPARATOR)[C.CSV_PART_VERSION];
                     if (x.equals(versionResponseString))
@@ -393,7 +393,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
             warten.dismiss();
 
             if (!success) {
-                AlertDialogs.serverNotAvailable(mContext);
+                AlertDialogs.serverNotAvailable(ctx);
                 findViewById(R.id.choose_station_button).setEnabled(false); // disable station picker
             }
         }
@@ -416,7 +416,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             chosenTime = new int[]{hourOfDay, minute};
             ((TextView) getActivity().findViewById(R.id.choose_time_text))
-                    .setText(StringDisplay.getTime(chosenTime));
+                    .setText(StringDisplay.getTime(chosenTime[0], chosenTime[1]));
         }
     }
 
@@ -441,7 +441,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
             chosenDate = new int[]{year, month, day};
 
             ((TextView) getActivity().findViewById(R.id.choose_date_text))
-                    .setText(StringDisplay.getOnetimeDate(chosenDate));
+                    .setText(StringDisplay.getOnetimeDate(chosenDate[0], chosenDate[1], chosenDate[2]));
         }
     }
 }

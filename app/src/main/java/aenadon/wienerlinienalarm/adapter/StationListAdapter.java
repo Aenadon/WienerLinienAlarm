@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ResultAdapter extends ArrayAdapter<Halteobjekt> {
+public class StationListAdapter extends ArrayAdapter<Halteobjekt> {
 
     private final Context context;
     private final ArrayList<Halteobjekt> values;
 
-    public ResultAdapter(Context context, ArrayList<Halteobjekt> list) {
+    public StationListAdapter(Context context, ArrayList<Halteobjekt> list) {
         super(context, -1, list);
         this.context = context;
         this.values = list;

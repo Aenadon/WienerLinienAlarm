@@ -19,7 +19,7 @@ import java.util.Collections;
 
 import aenadon.wienerlinienalarm.adapter.Halteobjekt;
 import aenadon.wienerlinienalarm.R;
-import aenadon.wienerlinienalarm.adapter.ResultAdapter;
+import aenadon.wienerlinienalarm.adapter.StationListAdapter;
 import aenadon.wienerlinienalarm.utils.C;
 
 public class StationPickerActivity extends AppCompatActivity {
@@ -27,7 +27,7 @@ public class StationPickerActivity extends AppCompatActivity {
     ArrayList<Halteobjekt> stationsDisplay = new ArrayList<>();
     ArrayList<Halteobjekt> stationsOriginal = new ArrayList<>();
     ListView list;
-    ResultAdapter sa;
+    StationListAdapter sa;
     ProgressDialog warten;
 
     @Override
@@ -69,7 +69,7 @@ public class StationPickerActivity extends AppCompatActivity {
         Collections.sort(stationsOriginal);
         stationsDisplay.addAll(stationsOriginal); // copy the complete list to another variable so the original list remains unaltered
         Collections.sort(stationsDisplay);
-        sa = new ResultAdapter(StationPickerActivity.this, stationsDisplay); // give our displaylist to the adapter
+        sa = new StationListAdapter(StationPickerActivity.this, stationsDisplay); // give our displaylist to the adapter
         list.setAdapter(sa); // set the adapter on the list (==> updates the list automatically)
         warten.dismiss();
     }
