@@ -68,6 +68,13 @@
     <string name="delete_alarm_title">Delete alarm?</string>
     <string name="delete_alarm_message">Are you sure you want to delete this alarm?</string>
 
+    <string name="date">Date</string>
+    <string name="days">Days</string>
+    <string name="time">Time</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="vibration">Vibration</string>
+    <string name="station">Station</string>
+
     <!--Errors!--><!--Errors!--><!--Errors!--><!--Errors!--><!--Errors!-->
     <string name="connection_error_title">Connection error :(</string>
     <string name="connection_error_text">The connection to the Wiener Linien servers cannot be established.</string>

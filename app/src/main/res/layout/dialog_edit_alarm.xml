@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/activity_horizontal_margin"
-    tools:context=".activities.MainActivity">
+    tools:context=".activities.MainActivity"
+    tools:ignore="ContentDescription">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +17,7 @@
             android:id="@+id/date_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Date"
+            android:text="@string/date"
             android:textAppearance="@style/SectionTitleText" />
 
         <LinearLayout
@@ -48,7 +49,7 @@
             android:id="@+id/days_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Days"
+            android:text="@string/days"
             android:textAppearance="@style/SectionTitleText" />
 
         <LinearLayout
@@ -79,7 +80,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Time"
+            android:text="@string/time"
             android:textAppearance="@style/SectionTitleText" />
 
         <LinearLayout
@@ -108,7 +109,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ringtone"
+            android:text="@string/ringtone"
             android:textAppearance="@style/SectionTitleText" />
 
         <LinearLayout
@@ -137,7 +138,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vibration"
+            android:text="@string/vibration"
             android:textAppearance="@style/SectionTitleText" />
 
         <LinearLayout
@@ -166,7 +167,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Station"
+            android:text="@string/station"
             android:textAppearance="@style/SectionTitleText" />
 
         <LinearLayout
