@@ -20,7 +20,8 @@ import java.util.Collections;
 import aenadon.wienerlinienalarm.adapter.Halteobjekt;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.adapter.StationListAdapter;
-import aenadon.wienerlinienalarm.utils.C;
+import aenadon.wienerlinienalarm.utils.Const;
+import aenadon.wienerlinienalarm.utils.CSVWorkUtils;
 
 public class StationPickerActivity extends AppCompatActivity {
 
@@ -47,9 +48,9 @@ public class StationPickerActivity extends AppCompatActivity {
         EditText queryBox = (EditText) findViewById(R.id.station_search_edittext); // initialize the search box
         queryBox.addTextChangedListener(editTextChangeListener()); // listen for text changes
 
-        String wholeCSV = C.getCSVfromFile(StationPickerActivity.this);
+        String wholeCSV = CSVWorkUtils.getCSVfromFile(StationPickerActivity.this);
         if (wholeCSV != null) {
-            populateListView(wholeCSV.split(C.CSV_FILE_SEPARATOR)[C.CSV_PART_STATION]);
+            populateListView(wholeCSV.split(Const.CSV_FILE_SEPARATOR)[Const.CSV_PART_STATION]);
         }
     }
 
@@ -110,7 +111,7 @@ public class StationPickerActivity extends AppCompatActivity {
                 stationId = stationsDisplay.get(position).getId(); // pass name and id to the SteigPickerActivity so he can offer the steigs
 
                 Intent i = new Intent(getApplicationContext(), SteigPickerActivity.class);
-                i.putExtra(C.STATION_NAME, stationName).putExtra(C.STATION_ID, stationId);
+                i.putExtra(Const.STATION_NAME, stationName).putExtra(Const.STATION_ID, stationId);
                 startActivityForResult(i, 0);
             }
         };

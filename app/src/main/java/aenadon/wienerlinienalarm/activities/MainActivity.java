@@ -1,9 +1,6 @@
 package aenadon.wienerlinienalarm.activities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,19 +18,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.adapter.AlarmListAdapter;
-import aenadon.wienerlinienalarm.models.Alarm;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
+import aenadon.wienerlinienalarm.utils.Const;
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,9 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private TabLayout tabLayout;
-
-    private Pickers.DatePickerFragment datePicker;
-    private Pickers.TimePickerFragment timePicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,35 +91,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onClickHandler(View view) {
-        switch (view.getId()) {
-            case R.id.date:
-            case R.id.date_edit:
-
-                break;
-            case R.id.days:
-            case R.id.days_edit:
-
-                break;
-            case R.id.time:
-            case R.id.time_edit:
-
-                break;
-            case R.id.ringtone:
-            case R.id.ringtone_edit:
-
-                break;
-            case R.id.vibration:
-            case R.id.vibration_edit:
-
-                break;
-            case R.id.station:
-            case R.id.station_edit:
-
-                break;
-        }
-    }
-
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private ArrayList<AlarmMenuFragment> fragments = new ArrayList<>();
@@ -174,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static class AlarmMenuFragment extends Fragment {
 
-        private RealmResults<Alarm> alarms;
+        private int alarmMode;
         private AlarmListAdapter adapter;
 
         public void updateAdapter() {
@@ -184,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         public static AlarmMenuFragment getInstance(int pageNumber) {
             AlarmMenuFragment fragment = new AlarmMenuFragment();
             Bundle args = new Bundle();
-            args.putInt("PAGE_NUMBER", pageNumber);
+            args.putInt("ALARM_MODE", pageNumber);
             fragment.setArguments(args);
             return fragment;
         }
@@ -194,84 +154,30 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             ListView list = (ListView) rootView.findViewById(R.id.alarm_list);
-            int pageNumber = getArguments().getInt("PAGE_NUMBER");
-            adapter = new AlarmListAdapter(getActivity(), pageNumber);
-            alarms = adapter.getAlarms();
+            alarmMode = getArguments().getInt("ALARM_MODE");
+            adapter = new AlarmListAdapter(getActivity(), alarmMode);
             list.setAdapter(adapter);
-            list.setOnItemClickListener(clicker(pageNumber));
+            list.setOnItemClickListener(launchDialogEditor());
             return rootView;
         }
-
-        private AdapterView.OnItemClickListener clicker(final int pageNumber) {
-            return new AdapterView.OnItemClickListener(){
-                @SuppressLint("InflateParams")
+        private AdapterView.OnItemClickListener launchDialogEditor() {
+            return new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                    // Display a dialog with info on the selected alarm
-                    LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
-
-                    Alarm alarmElement = alarms.get(position);
-                    final View dialogLayout = inflater.inflate(R.layout.dialog_edit_alarm, null);;
-
-                    if (pageNumber == 0) {
-                        // Set date
-                        ((TextView)dialogLayout.findViewById(R.id.date)).setText(StringDisplay.getOnetimeDate(alarmElement.getOneTimeAlarmYear(), alarmElement.getOneTimeAlarmMonth(), alarmElement.getOneTimeAlarmDay()));
-                    } else {
-                        // Hide date picker, show days picker
-                        dialogLayout.findViewById(R.id.date_title).setVisibility(View.GONE);
-                        dialogLayout.findViewById(R.id.date_box).setVisibility(View.GONE);
-                        dialogLayout.findViewById(R.id.days_title).setVisibility(View.VISIBLE);
-                        dialogLayout.findViewById(R.id.days_box).setVisibility(View.VISIBLE);
-                        // Set days
-                        ((TextView)dialogLayout.findViewById(R.id.days)).setText(StringDisplay.getRecurringDays(getActivity(), alarmElement.getRecurringChosenDays()));
-                    }
-                    // Set time
-                    ((TextView)dialogLayout.findViewById(R.id.time)).setText(StringDisplay.getTime(alarmElement.getAlarmHour(), alarmElement.getAlarmMinute()));
-                    // Set Ringtone
-                    ((TextView)dialogLayout.findViewById(R.id.ringtone)).setText(StringDisplay.getRingtone(getActivity(), alarmElement.getChosenRingtone()));
-                    // Set Vibration
-                    ((TextView)dialogLayout.findViewById(R.id.vibration)).setText(StringDisplay.getVibration(getActivity(), alarmElement.getChosenVibrationMode()));
-                    // Set station
-                    ((TextView)dialogLayout.findViewById(R.id.station)).setText(StringDisplay.getStation(alarmElement.getStationName(), alarmElement.getStationDirection()));
-
-                    new AlertDialog.Builder(getActivity())
-                            .setIcon(R.drawable.ic_settings)
-                            .setTitle(getString(R.string.alarm_settings))
-                            .setView(dialogLayout)
-                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    String a =((EditText)dialogLayout.findViewById(R.id.station_search_edittext)).getText().toString();
-                                    Toast.makeText(getActivity(), a, Toast.LENGTH_LONG).show();
-                                    // TODO save edit
-                                }
-                            })
-                            .setNeutralButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    new AlertDialog.Builder(getActivity())
-                                            .setTitle(getString(R.string.delete_alarm_title))
-                                            .setMessage(getString(R.string.delete_alarm_message))
-                                            .setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    Realm realm = Realm.getDefaultInstance();
-                                                    realm.beginTransaction();
-                                                    alarms.deleteFromRealm(position);
-                                                    realm.commitTransaction();
-                                                    adapter.notifyDataSetChanged();
-                                                    // TODO Remove scheduled alarm!!
-                                                }
-                                            })
-                                            .setNegativeButton(getString(R.string.cancel), null)
-                                            .show();
-                                }
-                            })
-                            .setNegativeButton(getString(R.string.cancel), null)
-                            .show();
-
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent i = new Intent(getActivity(), DialogEditActivity.class);
+                    i.putExtra("alarmMode", alarmMode);
+                    i.putExtra("dbPosition", position);
+                    startActivityForResult(i, Const.REQUEST_EDIT_ALARM);
                 }
             };
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (resultCode == Activity.RESULT_OK && requestCode == Const.REQUEST_EDIT_ALARM) {
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 }

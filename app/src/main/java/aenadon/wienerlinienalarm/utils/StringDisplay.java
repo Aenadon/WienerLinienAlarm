@@ -57,7 +57,7 @@ public class StringDisplay {
     }
 
     public static String getVibration(Context c, int vibrationMode) {
-        return c.getString(C.VIBRATION_STRINGS[vibrationMode]);
+        return c.getString(Const.VIBRATION_STRINGS[vibrationMode]);
     }
 
     public static String getStation(String station, String direction) {

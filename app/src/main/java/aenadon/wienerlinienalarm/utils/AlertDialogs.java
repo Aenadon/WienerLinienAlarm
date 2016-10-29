@@ -9,6 +9,8 @@ import aenadon.wienerlinienalarm.R;
 
 public class AlertDialogs {
 
+    // This class stores some often-used dialog boxes
+
     public static void serverNotAvailable(Context ctx) {
         createResultCanceledBox(ctx,
                 ctx.getString(R.string.connection_error_title),

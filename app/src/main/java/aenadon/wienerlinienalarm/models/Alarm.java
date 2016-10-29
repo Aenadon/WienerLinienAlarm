@@ -1,12 +1,15 @@
 package aenadon.wienerlinienalarm.models;
 
+
 import java.util.UUID;
 
-import io.realm.RealmObject;
+import io.realm.RealmModel;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
 import io.realm.annotations.Required;
 
-public class Alarm extends RealmObject {
+@RealmClass
+public class Alarm implements RealmModel {
 
     @PrimaryKey
     private String id; // Unique ID (constructor)
@@ -27,7 +30,7 @@ public class Alarm extends RealmObject {
 
     // Alarm mode
     private String chosenRingtone; // can be null
-    private int chosenVibrationMode; // constant values, see C
+    private int chosenVibrationMode; // constant values, see Const
 
     // STATION DATA
     @Required

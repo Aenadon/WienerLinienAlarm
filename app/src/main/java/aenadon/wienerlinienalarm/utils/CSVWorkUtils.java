@@ -1,54 +1,18 @@
 package aenadon.wienerlinienalarm.utils;
 
+
 import android.content.Context;
 
 import java.io.File;
 import java.io.FileInputStream;
 
-import aenadon.wienerlinienalarm.R;
+public class CSVWorkUtils {
 
-public class C {
-
-    // This class is for constants used throughout the app.
-
-    public static final String CSV_FILENAME = "halteinfo.csv";
-    public static final int CSV_PART_VERSION = 0;
-    public static final int CSV_PART_STATION = 1;
-    public static final int CSV_PART_STEIG = 2;
-
-    public static final int ALARM_ONETIME = 0;
-    public static final int ALARM_RECURRING = 1;
-
-    public static final int REQUEST_STATION = 0;
-    public static final int REQUEST_RINGTONE = 1;
-
-    public static final int VIBRATION_NONE = 0;
-    public static final int VIBRATION_SHORT = 1;
-    public static final int VIBRATION_MEDIUM = 2;
-    public static final int VIBRATION_LONG = 3;
-
-    public static final long[] VIBRATION_DURATION = {
-            0,
-            100,
-            250,
-            500
-    };
-
-    public static final int[] VIBRATION_STRINGS = {
-            R.string.alarm_no_vibration_chosen,
-            R.string.alarm_vibration_short,
-            R.string.alarm_vibration_medium,
-            R.string.alarm_vibration_long
-    };
-
-    public static final String STATION_NAME = "stationName";
-    public static final String STATION_ID = "stationid";
-
-    public static final String CSV_FILE_SEPARATOR = "--------------------"; // 20 * -
+    // This class contains some methods for working with the CSV files
 
     public static String getCSVfromFile(Context c) {
         try {
-            File csvFile = new File(c.getFilesDir(), C.CSV_FILENAME);
+            File csvFile = new File(c.getFilesDir(), Const.CSV_FILENAME);
             if (csvFile.exists()) {
                 byte[] csvBytes = new byte[(int) csvFile.length()]; // will the file size ever exceed 2GB? let's hope not
                 FileInputStream fis = new FileInputStream(csvFile);
@@ -91,7 +55,5 @@ public class C {
                 return null;
         }
     }
-
-
 
 }

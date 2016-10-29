@@ -10,11 +10,10 @@ import android.widget.TextView;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.models.Alarm;
-import aenadon.wienerlinienalarm.utils.C;
+import aenadon.wienerlinienalarm.utils.Const;
+import aenadon.wienerlinienalarm.utils.RealmUtils;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
-import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 public class AlarmListAdapter extends BaseAdapter {
 
@@ -34,41 +33,7 @@ public class AlarmListAdapter extends BaseAdapter {
         ctx = c;
         this.alarmModePage = alarmModePage;
 
-        Realm.init(c);
-        Realm realm = Realm.getDefaultInstance();
-
-        String[] sortAfter;
-        Sort[] sortOrder;
-
-        if (alarmModePage == C.ALARM_ONETIME) {
-            sortAfter = new String[]{
-                            "oneTimeAlarmYear",
-                            "oneTimeAlarmMonth",
-                            "oneTimeAlarmDay",
-                            "alarmHour",
-                            "alarmMinute"
-                    };
-            sortOrder = new Sort[]{
-                            Sort.ASCENDING,
-                            Sort.ASCENDING,
-                            Sort.ASCENDING,
-                            Sort.ASCENDING,
-                            Sort.ASCENDING
-                    };
-        } else {
-            sortAfter = new String[]{
-                            "alarmHour",
-                            "alarmMinute",
-                            "recurringChosenDays"
-                    };
-            sortOrder = new Sort[]{
-                            Sort.ASCENDING,
-                            Sort.ASCENDING,
-                            Sort.ASCENDING
-                    };
-        }
-
-        alarms = realm.where(Alarm.class).equalTo("alarmMode", alarmModePage).findAllSorted(sortAfter, sortOrder);
+        alarms = RealmUtils.getAlarms(c, alarmModePage);
     }
 
     @Override public Object getItem(int position) {
@@ -104,10 +69,10 @@ public class AlarmListAdapter extends BaseAdapter {
         String time = StringDisplay.getTime(alarmElement.getAlarmHour(), alarmElement.getAlarmMinute());
 
         switch (alarmModePage) {
-            case C.ALARM_ONETIME:
+            case Const.ALARM_ONETIME:
                 date = StringDisplay.getOnetimeDate(alarmElement.getOneTimeAlarmYear(), alarmElement.getOneTimeAlarmMonth(), alarmElement.getOneTimeAlarmDay());
                 break;
-            case C.ALARM_RECURRING:
+            case Const.ALARM_RECURRING:
                 date = StringDisplay.getRecurringDays(ctx, alarmElement.getRecurringChosenDays());
                 break;
             default:

@@ -25,7 +25,8 @@ import aenadon.wienerlinienalarm.adapter.Halteobjekt;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.adapter.StationListAdapter;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
-import aenadon.wienerlinienalarm.utils.C;
+import aenadon.wienerlinienalarm.utils.Const;
+import aenadon.wienerlinienalarm.utils.CSVWorkUtils;
 import aenadon.wienerlinienalarm.utils.RetrofitInfo;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -57,8 +58,8 @@ public class SteigPickerActivity extends AppCompatActivity {
         warten.show();
 
         Bundle b = getIntent().getExtras();
-        stationName = b.getString(C.STATION_NAME);
-        stationId = b.getString(C.STATION_ID);
+        stationName = b.getString(Const.STATION_NAME);
+        stationId = b.getString(Const.STATION_ID);
 
         TextView stationDisplay = (TextView) findViewById(R.id.steig_stationdisplay);
         stationDisplay.setText(stationName); // display the selected station to the user
@@ -66,9 +67,9 @@ public class SteigPickerActivity extends AppCompatActivity {
         list = (ListView) findViewById(R.id.steig_resultlist); // find the list view
         list.setOnItemClickListener(listListener()); // listen for presses
 
-        String wholeCSV = C.getCSVfromFile(SteigPickerActivity.this);
+        String wholeCSV = CSVWorkUtils.getCSVfromFile(SteigPickerActivity.this);
         if (wholeCSV != null) {
-            populateListView(wholeCSV.split(C.CSV_FILE_SEPARATOR)[C.CSV_PART_STEIG]);
+            populateListView(wholeCSV.split(Const.CSV_FILE_SEPARATOR)[Const.CSV_PART_STEIG]);
         }
 
     }
@@ -128,7 +129,7 @@ public class SteigPickerActivity extends AppCompatActivity {
 
                             String lineName = lineDef.getString("name");
                             String lineDirection = (lineName.substring(0, 1).equals("U")) ?  // if it's a UBAHN get our hardcoded direction instead of HÜTTELDORF          * HÜTTELDORF         4
-                                    C.getUbahnEndstation(lineName, lineDef.getString("direction")) : lineDef.getString("towards");
+                                    CSVWorkUtils.getUbahnEndstation(lineName, lineDef.getString("direction")) : lineDef.getString("towards");
 
                             String lineAndDirName = lineName + " " + lineDirection;
                             steigDisplay.add(new Halteobjekt(lineAndDirName, steigId, Integer.toString(arrayIndex)));
