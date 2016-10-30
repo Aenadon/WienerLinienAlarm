@@ -17,15 +17,18 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import org.w3c.dom.Text;
-
+import java.util.Arrays;
 import java.util.Calendar;
 
 import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.models.Alarm;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
 
 public class Pickers {
+
+    // Contains all pickers for the alarm settings.
+    // They are in package "activites"
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
@@ -62,6 +65,12 @@ public class Pickers {
         public int[] getPickedDate() {
             return chosenDate;
         }
+
+        public boolean dateChanged(Alarm alarm) {
+            // if date is NULL OR date is SAME, then nothing changed, return false
+            // else something changed, return true
+            return !(chosenDate == null || (chosenDate[0] == alarm.getOneTimeAlarmYear() && chosenDate[1] == alarm.getOneTimeAlarmMonth() && chosenDate[2] == alarm.getOneTimeAlarmDay()));
+        }
     }
 
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -95,12 +104,18 @@ public class Pickers {
             //((TextView) getActivity().findViewById(R.id.choose_time_text))
             viewToUse.setText(StringDisplay.getTime(chosenTime[0], chosenTime[1]));
         }
+
+        public boolean timeChanged(Alarm alarm) {
+            // if time is NULL OR time is SAME, then nothing changed, return false
+            // else something changed, return true
+            return !(chosenTime == null || (chosenTime[0] == alarm.getAlarmHour()) && chosenTime[1] == alarm.getAlarmMinute());
+        }
     }
 
     public static class DaysPicker {
 
         private String[] weekDayStrings;
-        private boolean[] choice = new boolean[7];
+        private boolean[] choice;
         private boolean[] tempChoice = new boolean[7];
 
         public void show(final Context ctx, boolean[] previousChoice, final int viewResId) {
@@ -142,6 +157,12 @@ public class Pickers {
         public boolean[] getPickedDays() {
             return choice;
         }
+
+        public boolean daysChanged(Alarm alarm) {
+            // if days are NULL or days are SAME, then nothing changed, return false
+            // else something changed, return true
+            return !(choice == null || Arrays.equals(choice, alarm.getRecurringChosenDays()));
+        }
     }
 
     public static class RingtonePicker {
@@ -163,14 +184,19 @@ public class Pickers {
         public void setPickedRingtone(Context ctx, Intent data) {
             Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             pickedRingtone = (uri != null) ? uri.toString() : null;
-
             viewToUse.setText(StringDisplay.getRingtone(ctx, pickedRingtone));
+        }
+
+        public boolean ringtoneChanged(Alarm alarm) {
+            // if ringtone is NULL OR ringtone is SAME, then nothing changed, return false
+            // else something changed, return true
+            return !(pickedRingtone == null || pickedRingtone.equals(alarm.getChosenRingtone()));
         }
     }
 
     public static class VibrationPicker {
 
-        private int pickedVibrationMode = Const.VIBRATION_NONE;
+        private int pickedVibrationMode = -1;
         private TextView viewToUse;
 
         public void show(final Context ctx, int viewResId) {
@@ -202,6 +228,12 @@ public class Pickers {
 
         public int getPickedVibrationMode() {
             return pickedVibrationMode;
+        }
+
+        public boolean vibrationChanged(Alarm alarm) {
+            // if vibration is -1 OR vibration is SAME, then nothing changed, return false
+            // else something changed, return true
+            return !(pickedVibrationMode == -1 || pickedVibrationMode == alarm.getChosenVibrationMode());
         }
 
     }
@@ -250,6 +282,12 @@ public class Pickers {
 
         public boolean stationWasSet() {
             return pickedStationId != null; // if one of them is not null, none are null (all are set at once)
+        }
+
+        public boolean stationChanged(Alarm alarm) {
+            // if stationId is NULL OR stationId is SAME, then nothing changed, return false
+            // else something changed, return true
+            return !(pickedStationId == null || pickedStationId.equals(alarm.getStationId()));
         }
     }
 

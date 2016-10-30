@@ -115,24 +115,55 @@ public class DialogEditActivity extends AppCompatActivity {
                 confirmDelete();
                 break;
             case R.id.dialog_button_ok:
-                // TODO this is just a test
-                int[] dp = datePicker.getPickedDate();
-                String dpx = (dp != null) ? dp[0]+"" : "NULL";
-                int[] tp = timePicker.getPickedTime();
-                String tpx = (tp != null) ? tp[1]+"" : "NULL";
-                boolean[] dyp = daysPicker.getPickedDays();
-                String dypx = (dyp != null) ? dyp[0]+"" : "NULL";
-
-                Toast.makeText(DialogEditActivity.this,
-                        dpx + "\n" +
-                        tpx + "\n" +
-                        dypx + "\n" +
-                        ringtonePicker.getPickedRingtone() + "\n" +
-                        vibrationPicker.getPickedVibrationMode() + "\n" +
-                        stationPicker.getPickedStationName() + "\n",
-                        Toast.LENGTH_LONG).show();
+                done();
                 break;
         }
+    }
+
+    private void done() {
+        // if nothing at all changed, do nothing at all
+        boolean modeSpecificCheck;
+        switch(alarmElement.getAlarmMode()) {
+            case Const.ALARM_ONETIME:
+                modeSpecificCheck = datePicker.dateChanged(alarmElement);
+                break;
+            case Const.ALARM_RECURRING:
+                modeSpecificCheck = daysPicker.daysChanged(alarmElement);
+                break;
+            default:
+                return;
+        }
+
+        Toast.makeText(this, modeSpecificCheck+"\n" +
+                                timePicker.timeChanged(alarmElement)+"\n" +
+                                ringtonePicker.ringtoneChanged(alarmElement)+"\n" +
+                                vibrationPicker.vibrationChanged(alarmElement)+"\n" +
+                                stationPicker.stationChanged(alarmElement), Toast.LENGTH_LONG).show();
+
+        if (!(modeSpecificCheck ||
+                timePicker.timeChanged(alarmElement) ||
+                ringtonePicker.ringtoneChanged(alarmElement) ||
+                vibrationPicker.vibrationChanged(alarmElement) ||
+                stationPicker.stationChanged(alarmElement))) {
+            Toast.makeText(this, "NOTHING CHANGED, GO AWAY!", Toast.LENGTH_LONG).show();
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        }
+
+
+
+
+/*        int[] date = datePicker.getPickedDate();
+        boolean[] days = daysPicker.getPickedDays();
+        int[] time = timePicker.getPickedTime();
+        String ringtone = ringtonePicker.getPickedRingtone();
+        int vibration = vibrationPicker.getPickedVibrationMode();
+        boolean stationWasSet = stationPicker.stationWasSet();
+
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction(); // we're doing it synchronously because it does not take much time
+        realm.commitTransaction();*/
     }
 
     @Override
