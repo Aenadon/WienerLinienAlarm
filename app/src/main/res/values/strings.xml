@@ -3,8 +3,8 @@
     <string name="action_settings">Settings</string>
 
     <!--Alarm Setup 1-->
-    <string name="activity_one_time_alarms">One time alarms</string>
-    <string name="activity_recurring_alarms">Recurring alarms</string>
+    <string name="activity_one_time_alarms">One time</string>
+    <string name="activity_recurring_alarms">Recurring</string>
     <string name="title_activity_set_alarm">Set Alarms</string>
 
     <!--Alarm Setup 2-->

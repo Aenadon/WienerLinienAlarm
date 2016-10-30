@@ -212,14 +212,14 @@
                     android:gravity="center"
                     android:text="@string/alarm_no_station_selected"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:onClick="onClickHandler" />
                 <Button
                     android:id="@+id/choose_station_button"
                     android:layout_weight="1"
                     style="?android:buttonBarButtonStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:text="@string/alarm_choose_station_button"
                     android:onClick="onClickHandler" />
             </LinearLayout>

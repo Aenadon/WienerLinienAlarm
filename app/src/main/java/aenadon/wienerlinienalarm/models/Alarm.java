@@ -3,13 +3,11 @@ package aenadon.wienerlinienalarm.models;
 
 import java.util.UUID;
 
-import io.realm.RealmModel;
+import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.RealmClass;
 import io.realm.annotations.Required;
 
-@RealmClass
-public class Alarm implements RealmModel {
+public class Alarm extends RealmObject {
 
     @PrimaryKey
     private String id; // Unique ID (constructor)

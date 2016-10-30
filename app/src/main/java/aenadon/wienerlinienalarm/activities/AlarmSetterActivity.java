@@ -3,14 +3,12 @@ package aenadon.wienerlinienalarm.activities;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -36,17 +34,12 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
     private int ALARM_MODE = Const.ALARM_ONETIME;
 
-    Vibrator v;
-
-    private boolean[] chosenDays = new boolean[7]; // true,true,false,false,false,false,true ==> Monday, Tuesday, Sunday
-
-    private String chosenRingtone = null;               // standard: no sound
-    private int chosenVibratorMode = Const.VIBRATION_NONE;  // standard: no vibration
-
-    private String[] pickedStationData = null; // {stationName, stationDir, stationId, h.getArrayIndex()}
-
     private Pickers.DatePickerFragment datePicker = new Pickers.DatePickerFragment();
     private Pickers.TimePickerFragment timePicker = new Pickers.TimePickerFragment();
+    private Pickers.DaysPicker daysPicker = new Pickers.DaysPicker();
+    private Pickers.RingtonePicker ringtonePicker = new Pickers.RingtonePicker();
+    private Pickers.VibrationPicker vibrationPicker = new Pickers.VibrationPicker();
+    private Pickers.StationPicker stationPicker = new Pickers.StationPicker();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +47,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm_setter);
 
         // if device has no vibrator, hide the vibration choice
-        v = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+        Vibrator v = (Vibrator)getSystemService(VIBRATOR_SERVICE);
         if (!v.hasVibrator()) {
             findViewById(R.id.choose_vibration_container).setVisibility(View.GONE);
         }
@@ -78,27 +71,33 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 break;
             case R.id.choose_date_button:
             case R.id.choose_date_text:
-                pickDate();
+                Bundle a = new Bundle();
+                a.putInt("viewToUse", R.id.choose_date_text);
+                datePicker.setArguments(a);
+                datePicker.show(getFragmentManager(), "DatePickerDialog");
                 break;
             case R.id.choose_time_button:
             case R.id.choose_time_text:
-                pickTime();
+                Bundle b = new Bundle();
+                b.putInt("viewToUse", R.id.choose_time_text);
+                timePicker.setArguments(b);
+                timePicker.show(getFragmentManager(), "TimePickerDialog");
                 break;
             case R.id.choose_days_button:
             case R.id.choose_days_text:
-                pickDays();
+                daysPicker.show(AlarmSetterActivity.this, null, R.id.choose_days_text);
                 break;
             case R.id.choose_station_button:
             case R.id.choose_station_text:
-                pickStation();
+                stationPicker.show(AlarmSetterActivity.this, R.id.choose_station_text);
                 break;
             case R.id.choose_ringtone_button:
             case R.id.choose_ringtone_text:
-                pickRingtone();
+                ringtonePicker.show(AlarmSetterActivity.this, R.id.choose_ringtone_text);
                 break;
             case R.id.choose_vibration_button:
             case R.id.choose_vibration_text:
-                pickVibration();
+                vibrationPicker.show(AlarmSetterActivity.this, R.id.choose_vibration_text);
                 break;
             case R.id.fab_alarm:
                 done();
@@ -128,110 +127,27 @@ public class AlarmSetterActivity extends AppCompatActivity {
         ALARM_MODE = setTo; // in the end, set the mode as current mode
     }
 
-    private void pickDate() {
-        datePicker.show(getFragmentManager(), "DatePickerDialog");
-    }
-
-    private void pickTime() {
-        timePicker.show(getFragmentManager(), "TimePickerDialog");
-    }
-
-    private void pickDays() {
-        final String[] weekDayStrings = new String[]{
-                getString(R.string.monday),
-                getString(R.string.tuesday),
-                getString(R.string.wednesday),
-                getString(R.string.thursday),
-                getString(R.string.friday),
-                getString(R.string.saturday),
-                getString(R.string.sunday),
-        };
-
-        final boolean[] tempChoices = chosenDays.clone();
-
-        new AlertDialog.Builder(AlarmSetterActivity.this)
-                .setTitle(getString(R.string.alarm_recurring_dialog_expl))
-                .setMultiChoiceItems(weekDayStrings, tempChoices, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        tempChoices[which] = isChecked;
-                    }
-                })
-                .setPositiveButton(R.string.ok, dayDialogListener(tempChoices))
-                .setNegativeButton(R.string.cancel, dayDialogListener(tempChoices))
-                .show();
-    }
-
-    private DialogInterface.OnClickListener dayDialogListener(final boolean[] tempChoices) {
-        return new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        chosenDays = tempChoices.clone(); // assign our tempChoices to our "persistent" choices
-                        ((TextView) findViewById(R.id.choose_days_text))
-                                .setText(StringDisplay.getRecurringDays(AlarmSetterActivity.this, chosenDays));
-
-                        dialog.dismiss();
-                        break;
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        dialog.dismiss();
-                        break;
-                }
-            }
-        };
-    }
-
-    private void pickStation() {
-        startActivityForResult(new Intent(AlarmSetterActivity.this, StationPickerActivity.class), Const.REQUEST_STATION);
-    }
-
-    private void pickRingtone() {
-        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-        this.startActivityForResult(intent, Const.REQUEST_RINGTONE);
-    }
-
-    private void pickVibration() {
-        final String[] vibrationModes = new String[]{
-                getString(Const.VIBRATION_STRINGS[Const.VIBRATION_NONE]),
-                getString(Const.VIBRATION_STRINGS[Const.VIBRATION_SHORT]),
-                getString(Const.VIBRATION_STRINGS[Const.VIBRATION_MEDIUM]),
-                getString(Const.VIBRATION_STRINGS[Const.VIBRATION_LONG])
-        };
-
-        new AlertDialog.Builder(AlarmSetterActivity.this)
-                .setTitle(getString(R.string.alarm_choose_vibration_length))
-                .setItems(vibrationModes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        chosenVibratorMode = which;
-                        if (v.hasVibrator()) {
-                            v.vibrate(Const.VIBRATION_DURATION[which]);
-                        }
-                        ((TextView)findViewById(R.id.choose_vibration_text))
-                                .setText(StringDisplay.getVibration(AlarmSetterActivity.this, which));
-                    }
-                })
-                .show();
-    }
-
     private void done() {
         // Errorcheck
         boolean isError = false;
         String errors = "";
-        int[] date = datePicker.getChosenDate();
-        int[] time = timePicker.getChosenTime();
+
+        int[] chosenDate = datePicker.getPickedDate();
+        int[] chosenTime = timePicker.getPickedTime();
+        boolean[] chosenDays = daysPicker.getPickedDays();
+        String chosenRingtone = ringtonePicker.getPickedRingtone();
+        int chosenVibratorMode = vibrationPicker.getPickedVibrationMode();
+
         // Mode-specific checks
         if (ALARM_MODE == Const.ALARM_ONETIME) {
-            if (date == null) {
+            if (chosenDate == null) {
                 isError = true;
                 errors += getString(R.string.missing_info_date);
             }
-            if (date != null && time != null) {
+            if (chosenDate != null && chosenTime != null) {
                 Calendar now = Calendar.getInstance();
                 Calendar calDate = Calendar.getInstance();
-                calDate.set(date[0], date[1], date[2], time[0], time[1], 0); // 0 seconds
+                calDate.set(chosenDate[0], chosenDate[1], chosenDate[2], chosenTime[0], chosenTime[1], 0); // 0 seconds
                 if (calDate.compareTo(now) < 0) {
                     errors += getString(R.string.missing_info_past);
                 }
@@ -250,11 +166,11 @@ public class AlarmSetterActivity extends AppCompatActivity {
             }
         }
         // General checks
-        if (time == null) {
+        if (chosenTime == null) {
             isError = true;
             errors += getString(R.string.missing_info_time);
         }
-        if (pickedStationData == null) {
+        if (!stationPicker.stationWasSet()) {
             isError = true;
             errors += getString(R.string.missing_info_station);
         }
@@ -269,25 +185,25 @@ public class AlarmSetterActivity extends AppCompatActivity {
         newAlarm.setAlarmMode(ALARM_MODE);
         switch (ALARM_MODE) {
             case Const.ALARM_ONETIME:
-                newAlarm.setOneTimeAlarmYear(date[0]);
-                newAlarm.setOneTimeAlarmMonth(date[1]);
-                newAlarm.setOneTimeAlarmDay(date[2]);
+                newAlarm.setOneTimeAlarmYear(chosenDate[0]);
+                newAlarm.setOneTimeAlarmMonth(chosenDate[1]);
+                newAlarm.setOneTimeAlarmDay(chosenDate[2]);
                 break;
             case Const.ALARM_RECURRING:
                 newAlarm.setRecurringChosenDays(chosenDays);
                 break;
         }
-        newAlarm.setAlarmHour(time[0]);
-        newAlarm.setAlarmMinute(time[1]);
+        newAlarm.setAlarmHour(chosenTime[0]);
+        newAlarm.setAlarmMinute(chosenTime[1]);
 
         newAlarm.setChosenRingtone(chosenRingtone);
         newAlarm.setChosenVibrationMode(chosenVibratorMode);
 
         // {stationName, stationDir, stationId, h.getArrayIndex()}
-        newAlarm.setStationName(pickedStationData[0]);
-        newAlarm.setStationDirection(pickedStationData[1]);
-        newAlarm.setStationId(pickedStationData[2]);
-        newAlarm.setStationArrayIndex(Integer.parseInt(pickedStationData[3]));
+        newAlarm.setStationName(stationPicker.getPickedStationName());
+        newAlarm.setStationDirection(stationPicker.getPickedStationDir());
+        newAlarm.setStationId(stationPicker.getPickedStationId());
+        newAlarm.setStationArrayIndex(stationPicker.getPickedStationArrayIndex());
 
         // TODO schedule alarm
 
@@ -307,16 +223,10 @@ public class AlarmSetterActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case Const.REQUEST_STATION:
-                    pickedStationData = data.getStringArrayExtra("stationInfo");
-                    ((TextView) findViewById(R.id.choose_station_text))
-                            .setText(StringDisplay.getStation(pickedStationData[0], pickedStationData[1]));
+                    stationPicker.setPickedStation(data);
                     break;
                 case Const.REQUEST_RINGTONE:
-                    Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-                    chosenRingtone = (uri != null) ? uri.toString() : null;
-
-                    ((TextView)findViewById(R.id.choose_ringtone_text))
-                            .setText(StringDisplay.getRingtone(AlarmSetterActivity.this, chosenRingtone));
+                    ringtonePicker.setPickedRingtone(AlarmSetterActivity.this, data);
                     break;
             }
         }
@@ -395,5 +305,4 @@ public class AlarmSetterActivity extends AppCompatActivity {
             }
         }
     }
-
 }
