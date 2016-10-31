@@ -22,6 +22,10 @@ public class StringDisplay {
         return DateFormat.getDateInstance().format(cal.getTime());
     }
 
+    public static String getOnetimeDate(int[] date) {
+        return getOnetimeDate(date[0], date[1], date[2]);
+    }
+
     public static String getRecurringDays(Context c, boolean[] chosenDays) {
         String selection;
         if (!(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4] || chosenDays[5] || chosenDays[6])) {
@@ -44,6 +48,10 @@ public class StringDisplay {
 
     public static String getTime(int hour, int minute) {
         return String.format(Locale.ENGLISH, "%02d:%02d", hour, minute);
+    }
+
+    public static String getTime(int[] time) {
+        return getTime(time[0], time[1]);
     }
 
     public static String getRingtone(Context c, String chosenRingtone) {

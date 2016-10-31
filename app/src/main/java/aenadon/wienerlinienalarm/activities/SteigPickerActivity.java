@@ -58,8 +58,8 @@ public class SteigPickerActivity extends AppCompatActivity {
         warten.show();
 
         Bundle b = getIntent().getExtras();
-        stationName = b.getString(Const.STATION_NAME);
-        stationId = b.getString(Const.STATION_ID);
+        stationName = b.getString(Const.EXTRA_STATION_NAME);
+        stationId = b.getString(Const.EXTRA_STATION_ID);
 
         TextView stationDisplay = (TextView) findViewById(R.id.steig_stationdisplay);
         stationDisplay.setText(stationName); // display the selected station to the user
@@ -97,7 +97,7 @@ public class SteigPickerActivity extends AppCompatActivity {
                 String steigId = steigDisplay.get(position).getId();
                 Halteobjekt h = steigDisplay.get(position);
                 String stationDir = h.getName();
-                Intent extraData = new Intent().putExtra("stationInfo", new String[]{stationName, stationDir, steigId, h.getArrayIndex()});
+                Intent extraData = new Intent().putExtra(Const.EXTRA_STATION_INFO, new String[]{stationName, stationDir, steigId, h.getArrayIndex()});
                 setResult(Activity.RESULT_OK, extraData);
                 finish();
             }

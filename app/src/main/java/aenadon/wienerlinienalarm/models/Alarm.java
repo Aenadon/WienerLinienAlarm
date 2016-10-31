@@ -83,6 +83,11 @@ public class Alarm extends RealmObject {
         this.oneTimeAlarmDay = oneTimeAlarmDay;
     }
 
+    // EXTRA
+    public int[] getOneTimeDateAsArray() {
+        return new int[]{oneTimeAlarmYear, oneTimeAlarmMonth, oneTimeAlarmDay};
+    }
+
     public boolean[] getRecurringChosenDays() {
         boolean[] days = new boolean[7];
 
@@ -118,6 +123,11 @@ public class Alarm extends RealmObject {
 
     public void setAlarmMinute(int alarmMinute) {
         this.alarmMinute = alarmMinute;
+    }
+
+    // EXTRA
+    public int[] getTimeAsArray() {
+        return new int[]{alarmHour, alarmMinute};
     }
 
     public String getChosenRingtone() {

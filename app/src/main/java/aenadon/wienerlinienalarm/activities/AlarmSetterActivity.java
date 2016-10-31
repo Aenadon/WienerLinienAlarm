@@ -4,19 +4,17 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
@@ -25,14 +23,13 @@ import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.utils.CSVWorkUtils;
 import aenadon.wienerlinienalarm.utils.RetrofitInfo;
 import aenadon.wienerlinienalarm.models.Alarm;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
 import io.realm.Realm;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 public class AlarmSetterActivity extends AppCompatActivity {
 
-    private int ALARM_MODE = Const.ALARM_ONETIME;
+    private int alarmMode = Const.ALARM_ONETIME;
 
     private Pickers.DatePickerFragment datePicker = new Pickers.DatePickerFragment();
     private Pickers.TimePickerFragment timePicker = new Pickers.TimePickerFragment();
@@ -72,14 +69,14 @@ public class AlarmSetterActivity extends AppCompatActivity {
             case R.id.choose_date_button:
             case R.id.choose_date_text:
                 Bundle a = new Bundle();
-                a.putInt("viewToUse", R.id.choose_date_text);
+                a.putInt(Const.EXTRA_VIEW_TO_USE, R.id.choose_date_text);
                 datePicker.setArguments(a);
                 datePicker.show(getFragmentManager(), "DatePickerDialog");
                 break;
             case R.id.choose_time_button:
             case R.id.choose_time_text:
                 Bundle b = new Bundle();
-                b.putInt("viewToUse", R.id.choose_time_text);
+                b.putInt(Const.EXTRA_VIEW_TO_USE, R.id.choose_time_text);
                 timePicker.setArguments(b);
                 timePicker.show(getFragmentManager(), "TimePickerDialog");
                 break;
@@ -93,7 +90,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 break;
             case R.id.choose_ringtone_button:
             case R.id.choose_ringtone_text:
-                ringtonePicker.show(AlarmSetterActivity.this, R.id.choose_ringtone_text);
+                ringtonePicker.show(AlarmSetterActivity.this, null, R.id.choose_ringtone_text);
                 break;
             case R.id.choose_vibration_button:
             case R.id.choose_vibration_text:
@@ -106,7 +103,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
     }
 
     private void pickAlarmFrequency(int setTo) {
-        if (ALARM_MODE == setTo) return; // if nothing changed, do nothing
+        if (alarmMode == setTo) return; // if nothing changed, do nothing
 
         LinearLayout chooseDateContainer = (LinearLayout) findViewById(R.id.choose_date_container);
         LinearLayout chooseDaysContainer = (LinearLayout) findViewById(R.id.choose_days_container);
@@ -124,7 +121,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 chooseDaysContainer.setVisibility(View.VISIBLE);
                 break;
         }
-        ALARM_MODE = setTo; // in the end, set the mode as current mode
+        alarmMode = setTo; // in the end, set the mode as current mode
     }
 
     private void done() {
@@ -132,14 +129,14 @@ public class AlarmSetterActivity extends AppCompatActivity {
         boolean isError = false;
         String errors = "";
 
-        int[] chosenDate = datePicker.getPickedDate();
+        int[] chosenDate = datePicker.getChosenDate();
         int[] chosenTime = timePicker.getPickedTime();
         boolean[] chosenDays = daysPicker.getPickedDays();
         String chosenRingtone = ringtonePicker.getPickedRingtone();
         int chosenVibratorMode = vibrationPicker.getPickedVibrationMode();
 
         // Mode-specific checks
-        if (ALARM_MODE == Const.ALARM_ONETIME) {
+        if (alarmMode == Const.ALARM_ONETIME) {
             if (chosenDate == null) {
                 isError = true;
                 errors += getString(R.string.missing_info_date);
@@ -152,15 +149,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
                     errors += getString(R.string.missing_info_past);
                 }
             }
-        } else if (ALARM_MODE == Const.ALARM_RECURRING) {
-            boolean noDays = true;
-            for (boolean daySelected : chosenDays) {
-                if (daySelected) { // if any day was set to true, no error
-                    noDays = false;
-                    break;
-                }
-            }
-            if (noDays) {
+        } else if (alarmMode == Const.ALARM_RECURRING) {
+            if (chosenDays == null || Arrays.equals(chosenDays, new boolean[7])) { // compare with empty array
                 isError = true;
                 errors += getString(R.string.missing_info_days);
             }
@@ -182,8 +172,8 @@ public class AlarmSetterActivity extends AppCompatActivity {
         }
 
         Alarm newAlarm = new Alarm();
-        newAlarm.setAlarmMode(ALARM_MODE);
-        switch (ALARM_MODE) {
+        newAlarm.setAlarmMode(alarmMode);
+        switch (alarmMode) {
             case Const.ALARM_ONETIME:
                 newAlarm.setOneTimeAlarmYear(chosenDate[0]);
                 newAlarm.setOneTimeAlarmMonth(chosenDate[1]);
@@ -212,7 +202,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
         realm.copyToRealm(newAlarm);
         realm.commitTransaction();
 
-        setResult(Activity.RESULT_OK, new Intent().putExtra("mode", ALARM_MODE));
+        setResult(Activity.RESULT_OK, new Intent().putExtra(Const.EXTRA_ALARM_MODE, alarmMode));
         finish(); // we're done here.
     }
 

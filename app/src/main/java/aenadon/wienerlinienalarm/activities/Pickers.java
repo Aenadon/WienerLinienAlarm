@@ -33,24 +33,36 @@ public class Pickers {
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
         private int[] chosenDate = null;
-
         private TextView viewToUse;
+        private boolean firstRun = true;
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
 
-            viewToUse = (TextView) getActivity().findViewById(getArguments().getInt("viewToUse"));
+            viewToUse = (TextView) getActivity().findViewById(getArguments().getInt(Const.EXTRA_VIEW_TO_USE));
+            int[] prevDate = getArguments().getIntArray(Const.EXTRA_PREV_TIME);
+
+            Calendar c = Calendar.getInstance();
+            int year, month, day;
+            if (!firstRun) { // if he has already set a time, show him that one
+                year = chosenDate[0];
+                month = chosenDate[1];
+                day = chosenDate[2];
+            } else if (prevDate != null) {
+                // if he hasn't set a time but there is one in the database, set that one
+                year = prevDate[0];
+                month = prevDate[1];
+                day = prevDate[2];
+            } else {
+                // else use the current time as the default values for the picker
+                year = c.get(Calendar.YEAR);
+                month = c.get(Calendar.MONTH);
+                day = c.get(Calendar.DAY_OF_MONTH);
+            }
 
             // Create a new instance of DatePickerDialog and return it
             DatePickerDialog d = new DatePickerDialog(getActivity(), this, year, month, day);
             d.getDatePicker().setMinDate(c.getTimeInMillis());
-            if (chosenDate != null) d.getDatePicker().updateDate(chosenDate[0], chosenDate[1], chosenDate[2]);
-            d.setTitle(null); // hides
             return d;
         }
 
@@ -59,56 +71,68 @@ public class Pickers {
             chosenDate = new int[]{year, month, day};
 
             //((TextView) getActivity().findViewById(R.id.choose_date_text))
-            viewToUse.setText(StringDisplay.getOnetimeDate(chosenDate[0], chosenDate[1], chosenDate[2]));
+            viewToUse.setText(StringDisplay.getOnetimeDate(chosenDate));
+            firstRun = false;
         }
 
-        public int[] getPickedDate() {
+        public int[] getChosenDate() {
             return chosenDate;
         }
 
         public boolean dateChanged(Alarm alarm) {
             // if date is NULL OR date is SAME, then nothing changed, return false
             // else something changed, return true
-            return !(chosenDate == null || (chosenDate[0] == alarm.getOneTimeAlarmYear() && chosenDate[1] == alarm.getOneTimeAlarmMonth() && chosenDate[2] == alarm.getOneTimeAlarmDay()));
+            return !(chosenDate == null || Arrays.equals(chosenDate, alarm.getOneTimeDateAsArray()));
         }
     }
 
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
         private int[] chosenTime = null;
-
-        public int[] getPickedTime() {
-            return chosenTime;
-        }
-
         private TextView viewToUse;
+        private boolean firstRun = true;
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
 
-            viewToUse = (TextView) getActivity().findViewById(getArguments().getInt("viewToUse"));
+            viewToUse = (TextView) getActivity().findViewById(getArguments().getInt(Const.EXTRA_VIEW_TO_USE));
+            int[] prevTime = getArguments().getIntArray(Const.EXTRA_PREV_TIME);
+
+            int hour, minute;
+            if (!firstRun) { // if he has already set a time, show him that one
+                hour = chosenTime[0];
+                minute = chosenTime[1];
+            } else if (prevTime != null) {
+                // if he hasn't set a time but there is one in the database, set that one
+                hour = prevTime[0];
+                minute = prevTime[1];
+            } else {
+                // else use the current time as the default values for the picker
+                Calendar c = Calendar.getInstance();
+                hour = c.get(Calendar.HOUR_OF_DAY);
+                minute = c.get(Calendar.MINUTE);
+            }
 
             // Create a new instance of TimePickerDialog and return it
-            TimePickerDialog tpd = new TimePickerDialog(getActivity(), this, hour, minute, true);
-            if (chosenTime != null) tpd.updateTime(chosenTime[0], chosenTime[1]);
-            return tpd;
+            return new TimePickerDialog(getActivity(), this, hour, minute, true);
         }
 
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             chosenTime = new int[]{hourOfDay, minute};
             //((TextView) getActivity().findViewById(R.id.choose_time_text))
-            viewToUse.setText(StringDisplay.getTime(chosenTime[0], chosenTime[1]));
+            viewToUse.setText(StringDisplay.getTime(chosenTime));
+            firstRun = false;
+        }
+
+        public int[] getPickedTime() {
+            return chosenTime;
         }
 
         public boolean timeChanged(Alarm alarm) {
             // if time is NULL OR time is SAME, then nothing changed, return false
             // else something changed, return true
-            return !(chosenTime == null || (chosenTime[0] == alarm.getAlarmHour()) && chosenTime[1] == alarm.getAlarmMinute());
+            return !(chosenTime == null || Arrays.equals(chosenTime, alarm.getTimeAsArray()));
         }
     }
 
@@ -119,8 +143,12 @@ public class Pickers {
         private boolean[] tempChoice = new boolean[7];
 
         public void show(final Context ctx, boolean[] previousChoice, final int viewResId) {
-            if (previousChoice != null) {
-                choice = previousChoice.clone();
+            if (choice == null) {
+                if (previousChoice != null) {
+                    choice = previousChoice.clone();
+                } else {
+                    choice = new boolean[7];
+                }
             }
             tempChoice = choice.clone();
 
@@ -136,7 +164,7 @@ public class Pickers {
 
             new AlertDialog.Builder(ctx)
                     .setTitle(ctx.getString(R.string.alarm_recurring_dialog_expl))
-                    .setMultiChoiceItems(weekDayStrings, choice, new DialogInterface.OnMultiChoiceClickListener() {
+                    .setMultiChoiceItems(weekDayStrings, tempChoice, new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                             tempChoice[which] = isChecked;
@@ -159,7 +187,7 @@ public class Pickers {
         }
 
         public boolean daysChanged(Alarm alarm) {
-            // if days are NULL or days are SAME, then nothing changed, return false
+            // if days are NULL OR days are SAME, then nothing changed, return false
             // else something changed, return true
             return !(choice == null || Arrays.equals(choice, alarm.getRecurringChosenDays()));
         }
@@ -169,11 +197,20 @@ public class Pickers {
 
         private String pickedRingtone;
         private TextView viewToUse;
+        private boolean firstRun = true;
 
-        public void show(Context ctx, int viewResId) {
+        public void show(Context ctx, String previousRingtone, int viewResId) {
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+
+            if (!firstRun) { // if user already saved a ringtone during the session, set it
+                // he couldn't have done it before the first run
+                if (pickedRingtone != null) intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(pickedRingtone));
+            } else if (previousRingtone != null) { // if not, if user has had a ringtone set before, set that one
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(previousRingtone));
+            }
             ((Activity)ctx).startActivityForResult(intent, Const.REQUEST_RINGTONE);
+            firstRun = false;
             viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
         }
 
@@ -226,8 +263,9 @@ public class Pickers {
                     .show();
         }
 
-        public int getPickedVibrationMode() {
-            return pickedVibrationMode;
+        public int getPickedVibrationMode() { // -1 == NOT SET. If asked, say "no vibration set"
+            if (pickedVibrationMode == -1) return Const.VIBRATION_NONE;
+            else return pickedVibrationMode;
         }
 
         public boolean vibrationChanged(Alarm alarm) {
@@ -254,7 +292,7 @@ public class Pickers {
         }
 
         public void setPickedStation(Intent data) {
-            String[] extras = data.getStringArrayExtra("stationInfo");
+            String[] extras = data.getStringArrayExtra(Const.EXTRA_STATION_INFO);
 
             pickedStationName = extras[0];
             pickedStationDir = extras[1];

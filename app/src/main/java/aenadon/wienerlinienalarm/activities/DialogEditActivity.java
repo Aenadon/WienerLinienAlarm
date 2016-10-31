@@ -37,8 +37,8 @@ public class DialogEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_edit_alarm);
 
-        int pageNumber = getIntent().getIntExtra("alarmMode", -1);
-        dbPosition = getIntent().getIntExtra("dbPosition", -1);
+        int pageNumber = getIntent().getIntExtra(Const.EXTRA_ALARM_MODE, -1);
+        dbPosition = getIntent().getIntExtra(Const.EXTRA_DB_POSITION, -1);
 
         if (pageNumber == -1 || dbPosition == -1) {
             throw new Error("WTF?"); // no way!!!!
@@ -80,7 +80,8 @@ public class DialogEditActivity extends AppCompatActivity {
             case R.id.dialog_date_text:
             case R.id.dialog_date_edit:
                 Bundle a = new Bundle();
-                a.putInt("viewToUse", R.id.dialog_date_text);
+                a.putInt(Const.EXTRA_VIEW_TO_USE, R.id.dialog_date_text);
+                a.putIntArray(Const.EXTRA_PREV_DATE, alarmElement.getOneTimeDateAsArray());
                 datePicker.setArguments(a);
                 datePicker.show(getFragmentManager(), "DatePickerFragment");
                 break;
@@ -91,13 +92,14 @@ public class DialogEditActivity extends AppCompatActivity {
             case R.id.dialog_time_text:
             case R.id.dialog_time_edit:
                 Bundle b = new Bundle();
-                b.putInt("viewToUse", R.id.dialog_time_text);
+                b.putInt(Const.EXTRA_VIEW_TO_USE, R.id.dialog_time_text);
+                b.putIntArray(Const.EXTRA_PREV_TIME, alarmElement.getTimeAsArray());
                 timePicker.setArguments(b);
                 timePicker.show(getFragmentManager(), "TimePickerFragment");
                 break;
             case R.id.dialog_ringtone_text:
             case R.id.dialog_ringtone_edit:
-                ringtonePicker.show(DialogEditActivity.this, R.id.dialog_ringtone_text);
+                ringtonePicker.show(DialogEditActivity.this, alarmElement.getChosenRingtone(), R.id.dialog_ringtone_text);
                 break;
             case R.id.dialog_vibration_text:
             case R.id.dialog_vibration_edit:
@@ -153,7 +155,7 @@ public class DialogEditActivity extends AppCompatActivity {
 
 
 
-/*        int[] date = datePicker.getPickedDate();
+/*        int[] date = datePicker.getChosenDate();
         boolean[] days = daysPicker.getPickedDays();
         int[] time = timePicker.getPickedTime();
         String ringtone = ringtonePicker.getPickedRingtone();

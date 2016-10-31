@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         public static AlarmMenuFragment getInstance(int pageNumber) {
             AlarmMenuFragment fragment = new AlarmMenuFragment();
             Bundle args = new Bundle();
-            args.putInt("ALARM_MODE", pageNumber);
+            args.putInt(Const.EXTRA_ALARM_MODE, pageNumber);
             fragment.setArguments(args);
             return fragment;
         }
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             ListView list = (ListView) rootView.findViewById(R.id.alarm_list);
-            alarmMode = getArguments().getInt("ALARM_MODE");
+            alarmMode = getArguments().getInt(Const.EXTRA_ALARM_MODE);
             adapter = new AlarmListAdapter(getActivity(), alarmMode);
             list.setAdapter(adapter);
             list.setOnItemClickListener(launchDialogEditor());
@@ -165,8 +165,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent i = new Intent(getActivity(), DialogEditActivity.class);
-                    i.putExtra("alarmMode", alarmMode);
-                    i.putExtra("dbPosition", position);
+                    i.putExtra(Const.EXTRA_ALARM_MODE, alarmMode);
+                    i.putExtra(Const.EXTRA_DB_POSITION, position);
                     startActivityForResult(i, Const.REQUEST_EDIT_ALARM);
                 }
             };

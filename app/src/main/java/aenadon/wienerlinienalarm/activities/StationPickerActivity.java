@@ -111,7 +111,7 @@ public class StationPickerActivity extends AppCompatActivity {
                 stationId = stationsDisplay.get(position).getId(); // pass name and id to the SteigPickerActivity so he can offer the steigs
 
                 Intent i = new Intent(getApplicationContext(), SteigPickerActivity.class);
-                i.putExtra(Const.STATION_NAME, stationName).putExtra(Const.STATION_ID, stationId);
+                i.putExtra(Const.EXTRA_STATION_NAME, stationName).putExtra(Const.EXTRA_STATION_ID, stationId);
                 startActivityForResult(i, 0);
             }
         };
