@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -123,49 +124,28 @@ public class DialogEditActivity extends AppCompatActivity {
     }
 
     private void done() {
-        // if nothing at all changed, do nothing at all
-        boolean modeSpecificCheck;
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction(); // we're doing it synchronously because it does not take much time
+
         switch(alarmElement.getAlarmMode()) {
             case Const.ALARM_ONETIME:
-                modeSpecificCheck = datePicker.dateChanged(alarmElement);
+                if (datePicker.dateChanged(alarmElement)) alarmElement.setOneTimeDateAsArray(datePicker.getChosenDate());
                 break;
             case Const.ALARM_RECURRING:
-                modeSpecificCheck = daysPicker.daysChanged(alarmElement);
+                if (daysPicker.daysChanged(alarmElement)) alarmElement.setRecurringChosenDays(daysPicker.getPickedDays());
                 break;
             default:
                 return;
         }
+        if (timePicker.timeChanged(alarmElement)) alarmElement.setTimeAsArray(timePicker.getPickedTime());
+        if (ringtonePicker.ringtoneChanged(alarmElement)) alarmElement.setChosenRingtone(ringtonePicker.getPickedRingtone());
+        if (vibrationPicker.vibrationChanged(alarmElement)) alarmElement.setChosenVibrationMode(vibrationPicker.getPickedVibrationMode());
+        if (stationPicker.stationChanged(alarmElement)) alarmElement.setStationInfoAsArray(stationPicker.getStationInfoAsArray());
 
-        Toast.makeText(this, modeSpecificCheck+"\n" +
-                                timePicker.timeChanged(alarmElement)+"\n" +
-                                ringtonePicker.ringtoneChanged(alarmElement)+"\n" +
-                                vibrationPicker.vibrationChanged(alarmElement)+"\n" +
-                                stationPicker.stationChanged(alarmElement), Toast.LENGTH_LONG).show();
+        realm.commitTransaction();
 
-        if (!(modeSpecificCheck ||
-                timePicker.timeChanged(alarmElement) ||
-                ringtonePicker.ringtoneChanged(alarmElement) ||
-                vibrationPicker.vibrationChanged(alarmElement) ||
-                stationPicker.stationChanged(alarmElement))) {
-            Toast.makeText(this, "NOTHING CHANGED, GO AWAY!", Toast.LENGTH_LONG).show();
-            setResult(Activity.RESULT_CANCELED);
-            finish();
-        }
-
-
-
-
-/*        int[] date = datePicker.getChosenDate();
-        boolean[] days = daysPicker.getPickedDays();
-        int[] time = timePicker.getPickedTime();
-        String ringtone = ringtonePicker.getPickedRingtone();
-        int vibration = vibrationPicker.getPickedVibrationMode();
-        boolean stationWasSet = stationPicker.stationWasSet();
-
-
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction(); // we're doing it synchronously because it does not take much time
-        realm.commitTransaction();*/
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override

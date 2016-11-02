@@ -40,7 +40,7 @@ public class Pickers {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
 
             viewToUse = (TextView) getActivity().findViewById(getArguments().getInt(Const.EXTRA_VIEW_TO_USE));
-            int[] prevDate = getArguments().getIntArray(Const.EXTRA_PREV_TIME);
+            int[] prevDate = getArguments().getIntArray(Const.EXTRA_PREV_DATE);
 
             Calendar c = Calendar.getInstance();
             int year, month, day;
@@ -225,9 +225,11 @@ public class Pickers {
         }
 
         public boolean ringtoneChanged(Alarm alarm) {
-            // if ringtone is NULL OR ringtone is SAME, then nothing changed, return false
+            // if ringtone is SAME, then nothing changed, return false
             // else something changed, return true
-            return !(pickedRingtone == null || pickedRingtone.equals(alarm.getChosenRingtone()));
+            return !(firstRun || // if user hasn't set anything yet
+                    (pickedRingtone == null && alarm.getChosenRingtone() == null) || // or set it to null again
+                    (pickedRingtone != null && pickedRingtone.equals(alarm.getChosenRingtone()))); // or set it to the same again
         }
     }
 
@@ -316,6 +318,10 @@ public class Pickers {
 
         public int getPickedStationArrayIndex() {
             return pickedStationArrayIndex;
+        }
+
+        public String[] getStationInfoAsArray() {
+            return new String[]{pickedStationName, pickedStationDir, pickedStationId, Integer.toString(pickedStationArrayIndex)};
         }
 
         public boolean stationWasSet() {

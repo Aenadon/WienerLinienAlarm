@@ -87,6 +87,12 @@ public class Alarm extends RealmObject {
     public int[] getOneTimeDateAsArray() {
         return new int[]{oneTimeAlarmYear, oneTimeAlarmMonth, oneTimeAlarmDay};
     }
+    // EXTRA
+    public void setOneTimeDateAsArray(int[] date) {
+        oneTimeAlarmYear = date[0];
+        oneTimeAlarmMonth = date[1];
+        oneTimeAlarmDay = date[2];
+    }
 
     public boolean[] getRecurringChosenDays() {
         boolean[] days = new boolean[7];
@@ -128,6 +134,11 @@ public class Alarm extends RealmObject {
     // EXTRA
     public int[] getTimeAsArray() {
         return new int[]{alarmHour, alarmMinute};
+    }
+    // EXTRA
+    public void setTimeAsArray(int[] time) {
+        alarmHour = time[0];
+        alarmMinute = time[1];
     }
 
     public String getChosenRingtone() {
@@ -176,6 +187,17 @@ public class Alarm extends RealmObject {
 
     public void setStationArrayIndex(int stationArrayIndex) {
         this.stationArrayIndex = stationArrayIndex;
+    }
+
+    public String[] getStationInfoAsArray(String[] info) {
+        return new String[]{stationName, stationDirection, stationId, Integer.toString(stationArrayIndex)};
+    }
+
+    public void setStationInfoAsArray(String[] info) {
+        stationName = info[0];
+        stationDirection = info[1];
+        stationId = info[2];
+        stationArrayIndex = Integer.parseInt(info[3]);
     }
 
 
