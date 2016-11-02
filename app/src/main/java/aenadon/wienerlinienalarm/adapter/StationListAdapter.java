@@ -31,6 +31,7 @@ public class StationListAdapter extends ArrayAdapter<Halteobjekt> {
             convertView = infl.inflate(android.R.layout.simple_list_item_1, parent, false);
             resultView = new ResultViewHolder();
             resultView.textView = (TextView) convertView.findViewById(android.R.id.text1);
+            resultView.textView.setTextColor(0xFFFFFFFF); // some devices make the second(!) text view black, so hardcoding it should stop that
             convertView.setTag(resultView);
         } else {
             resultView = (ResultViewHolder) convertView.getTag();

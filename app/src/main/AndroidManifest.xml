@@ -42,8 +42,7 @@
 
         <activity android:name=".activities.DialogEditActivity"
             android:label="@string/alarm_settings"
-            android:icon="@drawable/ic_settings"
-            android:theme="@style/Theme.AppCompat.Dialog"/>
+            android:theme="@style/Theme.AppCompat.Light.Dialog"/>
     </application>
 
 </manifest>
