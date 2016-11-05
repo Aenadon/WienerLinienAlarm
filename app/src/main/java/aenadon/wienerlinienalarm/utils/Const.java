@@ -1,10 +1,5 @@
 package aenadon.wienerlinienalarm.utils;
 
-import android.content.Context;
-
-import java.io.File;
-import java.io.FileInputStream;
-
 import aenadon.wienerlinienalarm.R;
 
 public interface Const {
@@ -26,6 +21,7 @@ public interface Const {
     int REQUEST_STATION = 0;
     int REQUEST_RINGTONE = 1;
     int REQUEST_EDIT_ALARM = 2;
+    int REQUEST_ALARM = 3;
 
     // Vibration modes
     int VIBRATION_NONE = 0;
@@ -59,5 +55,10 @@ public interface Const {
     String EXTRA_DB_POSITION = "DB_POSITION";
     String EXTRA_STATION_NAME = "stationName";
     String EXTRA_STATION_ID = "stationid";
+
+    String EXTRA_ALARM_ID = "";
+
+    // SharedPreferences names
+    String PREFS_SCHEDULED_ALARMS = "SCHEDULED_ALARMS_LIST";
 
 }

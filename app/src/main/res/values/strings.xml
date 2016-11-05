@@ -2,6 +2,9 @@
     <string name="app_name">WienerLinien Alarm</string>
     <string name="action_settings">Settings</string>
 
+    <!--Main screen menu-->
+    <string name="delete_alarms">Delete alarms&#8230;</string>
+
     <!--Alarm Setup 1-->
     <string name="activity_one_time_alarms">One time</string>
     <string name="activity_recurring_alarms">Recurring</string>

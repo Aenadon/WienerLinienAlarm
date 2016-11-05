@@ -1,8 +1,10 @@
 package aenadon.wienerlinienalarm.models;
 
 
+import java.util.Calendar;
 import java.util.UUID;
 
+import aenadon.wienerlinienalarm.utils.Const;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
@@ -139,6 +141,20 @@ public class Alarm extends RealmObject {
     public void setTimeAsArray(int[] time) {
         alarmHour = time[0];
         alarmMinute = time[1];
+    }
+
+    // EXTRA
+    public long getAlarmInstantMillis() {
+        switch(alarmMode) {
+            case Const.ALARM_ONETIME:
+                Calendar c = Calendar.getInstance();
+                c.set(oneTimeAlarmYear, oneTimeAlarmMonth, oneTimeAlarmDay, alarmHour, alarmMinute);
+                return c.getTimeInMillis();
+            case Const.ALARM_RECURRING:
+                // break;
+            default:
+                throw new Error("Not implemented yet!");
+        }
     }
 
     public String getChosenRingtone() {
