@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.R;
@@ -195,12 +196,12 @@ public class AlarmSetterActivity extends AppCompatActivity {
         newAlarm.setStationId(stationPicker.getPickedStationId());
         newAlarm.setStationArrayIndex(stationPicker.getPickedStationArrayIndex());
 
-        // TODO schedule alarm
-
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction(); // we're doing it synchronously because it does not take much time
         realm.copyToRealm(newAlarm);
         realm.commitTransaction();
+
+        AlarmUtils.scheduleAlarm(AlarmSetterActivity.this, newAlarm);
 
         setResult(Activity.RESULT_OK, new Intent().putExtra(Const.EXTRA_ALARM_MODE, alarmMode));
         finish(); // we're done here.

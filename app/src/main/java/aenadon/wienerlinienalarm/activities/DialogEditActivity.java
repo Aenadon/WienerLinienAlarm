@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.models.Alarm;
+import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.RealmUtils;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
@@ -142,6 +143,8 @@ public class DialogEditActivity extends AppCompatActivity {
 
         realm.commitTransaction();
 
+        // TODO reschedule alarm!
+
         setResult(Activity.RESULT_OK);
         finish();
     }
@@ -168,12 +171,12 @@ public class DialogEditActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        AlarmUtils.cancelAlarm(DialogEditActivity.this, alarmElement);
+
                         Realm realm = Realm.getDefaultInstance();
                         realm.beginTransaction();
                         alarms.deleteFromRealm(dbPosition);
                         realm.commitTransaction();
-
-                        // TODO Remove scheduled alarm!!
 
                         setResult(Activity.RESULT_OK);
                         finish();
