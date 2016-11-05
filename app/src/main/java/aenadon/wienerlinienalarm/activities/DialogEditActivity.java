@@ -126,6 +126,8 @@ public class DialogEditActivity extends AppCompatActivity {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction(); // we're doing it synchronously because it does not take much time
 
+        AlarmUtils.cancelAlarm(DialogEditActivity.this, alarmElement); // cancel the old alarm
+
         switch(alarmElement.getAlarmMode()) {
             case Const.ALARM_ONETIME:
                 if (datePicker.dateChanged(alarmElement)) alarmElement.setOneTimeDateAsArray(datePicker.getChosenDate());
@@ -141,9 +143,9 @@ public class DialogEditActivity extends AppCompatActivity {
         if (vibrationPicker.vibrationChanged(alarmElement)) alarmElement.setChosenVibrationMode(vibrationPicker.getPickedVibrationMode());
         if (stationPicker.stationChanged(alarmElement)) alarmElement.setStationInfoAsArray(stationPicker.getStationInfoAsArray());
 
-        realm.commitTransaction();
+        AlarmUtils.scheduleAlarm(DialogEditActivity.this, alarmElement); // and schedule the changed one
 
-        // TODO reschedule alarm!
+        realm.commitTransaction();
 
         setResult(Activity.RESULT_OK);
         finish();

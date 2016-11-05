@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -41,12 +40,16 @@ public class AlarmUtils {
     }
 
     public static void scheduleAlarm(Context ctx, Alarm alarm) {
+        scheduleAlarm(ctx, alarm, false);
+    }
+
+    private static void scheduleAlarm(Context ctx, Alarm alarm, boolean isRescheduled) {
         AlarmManager alarmManager = (AlarmManager)ctx.getSystemService(Context.ALARM_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(android.app.AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(), getPendingIntent(ctx, alarm.getId()));
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(isRescheduled), getPendingIntent(ctx, alarm.getId()));
         } else {
-            alarmManager.set(android.app.AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(), getPendingIntent(ctx, alarm.getId()));
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(isRescheduled), getPendingIntent(ctx, alarm.getId()));
         }
 
         addAlarmToPrefs(ctx, alarm.getId());
@@ -112,7 +115,7 @@ public class AlarmUtils {
                     String info = "";
                     if (!response.isSuccessful()) {
                         Log.e(LOG_TAG, "API response for " + alarmId + "unsuccessful");
-                        // TODO error message
+                        info = "Error: Request failed - Code " + response.code();
                     } else {
                         Log.d(LOG_TAG, "API response for " + alarmId + " successful");
                         try {
@@ -126,14 +129,14 @@ public class AlarmUtils {
                                 String direction = line.getString("name") + " " + line.getString("towards"); // U6 ALTERLAA
                                 JSONObject dep = line.getJSONObject("departures");
                                 if (dep.length() == 0 || dep.getJSONArray("departure").length() == 0) {
-                                    info += direction + "\n";
+                                    info += direction;
                                 } else {
                                     JSONArray departures = dep.getJSONArray("departure");
                                     for (int j = 0; j < departures.length(); j++) {
                                         JSONObject departureTime = departures.getJSONObject(j).getJSONObject("departureTime");
                                         String timeString = (departureTime.has("timeReal")) ? departureTime.getString("timeReal") : departureTime.getString("timePlanned");
                                         String time = timeString.substring(11, 16);
-                                        info += direction + " " + time + "\n";
+                                        info += "\n" + direction + " " + time;
                                     }
                                 }
                             }
@@ -170,7 +173,7 @@ public class AlarmUtils {
                             realm.commitTransaction();
                             break;
                         case Const.ALARM_RECURRING:
-                            // TODO reschedule next recurring day
+                            scheduleAlarm(context, alarm, true);
                             break;
                     }
 
@@ -180,7 +183,19 @@ public class AlarmUtils {
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.e(LOG_TAG, "Network request failed: " + t.getMessage());
-                    // TODO show failure message
+
+                    Uri sound = (ringtone != null) ? Uri.parse(ringtone) : null;
+
+                    NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                    Notification x = new Notification.Builder(context)
+                            .setSmallIcon(R.drawable.ic_notification)
+                            .setContentTitle(context.getString(R.string.app_name))
+                            .setContentText("Error: " + t.getMessage())
+                            .setSound(sound)
+                            .setVibrate(new long[]{0, Const.VIBRATION_DURATION[vibrationMode]})
+                            .build();
+
+                    mNotificationManager.notify(notificationId, x);
                 }
             });
         }

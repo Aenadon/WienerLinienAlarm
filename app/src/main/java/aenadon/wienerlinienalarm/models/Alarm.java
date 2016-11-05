@@ -145,15 +145,46 @@ public class Alarm extends RealmObject {
 
     // EXTRA
     public long getAlarmInstantMillis() {
+        return getAlarmInstantMillis(false);
+    }
+
+    public long getAlarmInstantMillis(boolean rescheduled) {
+        Calendar c = Calendar.getInstance();
         switch(alarmMode) {
             case Const.ALARM_ONETIME:
-                Calendar c = Calendar.getInstance();
                 c.set(oneTimeAlarmYear, oneTimeAlarmMonth, oneTimeAlarmDay, alarmHour, alarmMinute);
                 return c.getTimeInMillis();
             case Const.ALARM_RECURRING:
-                // break;
+                int currentWeekday = (c.get(Calendar.DAY_OF_WEEK) + 5) % 7; // adjusts the given day automatically to the used format
+
+                boolean[] days = getRecurringChosenDays();
+                int offset = -1;
+                for (int i = currentWeekday; i <= days.length + currentWeekday; i++) {
+                    if (days[i % 7]) {
+                        if (i % 7 == currentWeekday) {
+                            Calendar d = Calendar.getInstance();
+                            int currentHour = d.get(Calendar.HOUR_OF_DAY);
+                            int currentMinute = d.get(Calendar.MINUTE);
+
+                            if (alarmHour < currentHour && alarmMinute < currentMinute) {
+                                offset = 7;
+                            } else {
+                                offset = 0;
+                            }
+                            break;
+                        } else {
+                            offset = i - currentWeekday;
+                            break;
+                        }
+                    }
+                }
+                if (offset == -1) {
+                    throw new Error("Day comparison went wrong - offset still -1!");
+                }
+                c.add(Calendar.DAY_OF_MONTH, offset);
+                return c.getTimeInMillis();
             default:
-                throw new Error("Not implemented yet!");
+                return 0;
         }
     }
 
