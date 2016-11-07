@@ -40,16 +40,12 @@ public class AlarmUtils {
     }
 
     public static void scheduleAlarm(Context ctx, Alarm alarm) {
-        scheduleAlarm(ctx, alarm, false);
-    }
-
-    private static void scheduleAlarm(Context ctx, Alarm alarm, boolean isRescheduled) {
         AlarmManager alarmManager = (AlarmManager)ctx.getSystemService(Context.ALARM_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(isRescheduled), getPendingIntent(ctx, alarm.getId()));
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(), getPendingIntent(ctx, alarm.getId()));
         } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(isRescheduled), getPendingIntent(ctx, alarm.getId()));
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(), getPendingIntent(ctx, alarm.getId()));
         }
 
         addAlarmToPrefs(ctx, alarm.getId());
@@ -147,7 +143,7 @@ public class AlarmUtils {
                         }
                     }
                     Uri sound = (ringtone != null) ? Uri.parse(ringtone) : null;
-                    Notification.Builder mBuilder =
+                    Notification notification =
                             new Notification.Builder(context)
                                     .setSmallIcon(R.drawable.ic_notification)
                                     .setContentTitle(context.getString(R.string.app_name))
@@ -156,10 +152,12 @@ public class AlarmUtils {
                                             .setBigContentTitle(stationName)
                                             .bigText(info))
                                     .setSound(sound)
-                                    .setVibrate(new long[]{0, Const.VIBRATION_DURATION[vibrationMode]});
+                                    .setVibrate(new long[]{0, Const.VIBRATION_DURATION[vibrationMode]})
+                                    .setLights(0xffffffff, 800, 200)
+                            .build();
 
                     NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    mNotificationManager.notify(notificationId, mBuilder.build());
+                    mNotificationManager.notify(notificationId, notification);
 
                     // update notification counter. this helps if a user sets alarms
                     // only a little apart (so notifications don't override each other)
@@ -173,7 +171,7 @@ public class AlarmUtils {
                             realm.commitTransaction();
                             break;
                         case Const.ALARM_RECURRING:
-                            scheduleAlarm(context, alarm, true);
+                            scheduleAlarm(context, alarm);
                             break;
                     }
 

@@ -66,11 +66,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            // mViewPager.setAdapter(mSectionsPagerAdapter); // maybe inefficient but unnoticeably slower and works!
             mSectionsPagerAdapter.notifyDataSetChanged();
-            // tabLayout.getTabAt(data.getIntExtra("mode",0)).select(); // displays the tab which was opened before alarm creation
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSectionsPagerAdapter.notifyDataSetChanged();
     }
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {

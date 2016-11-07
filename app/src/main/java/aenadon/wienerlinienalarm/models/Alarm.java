@@ -145,10 +145,6 @@ public class Alarm extends RealmObject {
 
     // EXTRA
     public long getAlarmInstantMillis() {
-        return getAlarmInstantMillis(false);
-    }
-
-    public long getAlarmInstantMillis(boolean rescheduled) {
         Calendar c = Calendar.getInstance();
         switch(alarmMode) {
             case Const.ALARM_ONETIME:
@@ -166,7 +162,7 @@ public class Alarm extends RealmObject {
                             int currentHour = d.get(Calendar.HOUR_OF_DAY);
                             int currentMinute = d.get(Calendar.MINUTE);
 
-                            if (alarmHour < currentHour && alarmMinute < currentMinute) {
+                            if (alarmHour < currentHour || (alarmHour == currentHour && alarmMinute <= currentMinute)) {
                                 offset = 7;
                             } else {
                                 offset = 0;
@@ -182,12 +178,13 @@ public class Alarm extends RealmObject {
                     throw new Error("Day comparison went wrong - offset still -1!");
                 }
                 c.add(Calendar.DAY_OF_MONTH, offset);
+                c.set(Calendar.HOUR_OF_DAY, alarmHour);
+                c.set(Calendar.MINUTE, alarmMinute);
                 return c.getTimeInMillis();
             default:
                 return 0;
         }
     }
-
     public String getChosenRingtone() {
         return chosenRingtone;
     }

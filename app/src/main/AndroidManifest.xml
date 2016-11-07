@@ -41,20 +41,22 @@
             android:name=".activities.SteigPickerActivity"
             android:label="@string/choose_steig"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".activities.DialogEditActivity"
+        <activity
+            android:name=".activities.DialogEditActivity"
             android:label="@string/alarm_settings"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"/>
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
 
-        <receiver android:name=".utils.AlarmUtils$AlarmReceiver"
-            android:enabled="true"/>
+        <receiver
+            android:name=".utils.AlarmUtils$AlarmReceiver"
+            android:enabled="true" />
         <receiver
             android:name=".utils.AlarmUtils$BootReceiver"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>
