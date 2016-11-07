@@ -153,8 +153,12 @@ public class AlarmUtils {
                                             .bigText(info))
                                     .setSound(sound)
                                     .setVibrate(new long[]{0, Const.VIBRATION_DURATION[vibrationMode]})
-                                    .setLights(0xffffffff, 800, 200)
                             .build();
+
+                    notification.flags = Notification.FLAG_SHOW_LIGHTS;
+                    notification.ledARGB = 0xFFFFFFFF;
+                    notification.ledOnMS = 1000;
+                    notification.ledOffMS = 1000;
 
                     NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     mNotificationManager.notify(notificationId, notification);
