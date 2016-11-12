@@ -71,12 +71,6 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mSectionsPagerAdapter.notifyDataSetChanged();
-    }
-
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private ArrayList<AlarmMenuFragment> fragments = new ArrayList<>();

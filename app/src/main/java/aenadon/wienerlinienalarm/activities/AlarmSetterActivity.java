@@ -147,6 +147,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 Calendar calDate = Calendar.getInstance();
                 calDate.set(chosenDate[0], chosenDate[1], chosenDate[2], chosenTime[0], chosenTime[1], 0); // 0 seconds
                 if (calDate.compareTo(now) < 0) {
+                    isError = true;
                     errors += getString(R.string.missing_info_past);
                 }
             }

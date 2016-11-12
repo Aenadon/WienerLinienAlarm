@@ -130,9 +130,10 @@ public class AlarmUtils {
                                     JSONArray departures = dep.getJSONArray("departure");
                                     for (int j = 0; j < departures.length(); j++) {
                                         JSONObject departureTime = departures.getJSONObject(j).getJSONObject("departureTime");
-                                        String timeString = (departureTime.has("timeReal")) ? departureTime.getString("timeReal") : departureTime.getString("timePlanned");
-                                        String time = timeString.substring(11, 16);
-                                        info += "\n" + direction + " " + time;
+                                        String timeString = (departureTime.has("timeReal")) ? departureTime.getString("timeReal") : departureTime.getString("timePlanned")+"(P)";
+                                        String time = timeString.substring(11, 16); // exactly the "12:34" part
+                                        String newline = (j != 0) ? "\n" : ""; // newline should not show up before the first line
+                                        info += newline + direction + " " + time;
                                     }
                                 }
                             }
