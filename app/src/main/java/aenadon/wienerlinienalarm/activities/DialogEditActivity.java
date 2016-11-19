@@ -2,8 +2,11 @@ package aenadon.wienerlinienalarm.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +17,7 @@ import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.models.Alarm;
 import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.Const;
+import aenadon.wienerlinienalarm.utils.Pickers;
 import aenadon.wienerlinienalarm.utils.RealmUtils;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
 import io.realm.Realm;
@@ -31,6 +35,9 @@ public class DialogEditActivity extends AppCompatActivity {
     private Pickers.RingtonePicker ringtonePicker = new Pickers.RingtonePicker();
     private Pickers.VibrationPicker vibrationPicker = new Pickers.VibrationPicker();
     private Pickers.StationPicker stationPicker = new Pickers.StationPicker();
+
+    // if our alarm is gone already, kill the dialog
+    private BroadcastReceiver killReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +80,28 @@ public class DialogEditActivity extends AppCompatActivity {
         if (v.hasVibrator()) ((TextView)findViewById(R.id.dialog_vibration_text)).setText(StringDisplay.getVibration(DialogEditActivity.this, alarmElement.getChosenVibrationMode()));
         // Set station
         ((TextView)findViewById(R.id.dialog_station_text)).setText(StringDisplay.getStation(alarmElement.getStationName(), alarmElement.getStationDirection()));
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Const.INTENT_REFRESH_LIST);
+
+        killReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                DialogEditActivity.this.setResult(Activity.RESULT_CANCELED);
+                DialogEditActivity.this.finish();
+            }
+        };
+        registerReceiver(killReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        // kill the receiver on activity destruction
+        if (killReceiver != null) {
+            unregisterReceiver(killReceiver);
+            killReceiver = null;
+        }
+        super.onDestroy();
     }
 
     public void onClickHandler(View view) {

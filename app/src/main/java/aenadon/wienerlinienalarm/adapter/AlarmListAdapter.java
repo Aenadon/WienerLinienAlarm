@@ -24,11 +24,6 @@ public class AlarmListAdapter extends BaseAdapter {
 
     private RealmResults<Alarm> alarms;
 
-    // Getter for alarm list
-    public RealmResults<Alarm> getAlarms() {
-        return alarms;
-    }
-
     public AlarmListAdapter(Context c, int alarmModePage) {
         ctx = c;
         this.alarmModePage = alarmModePage;

@@ -85,12 +85,18 @@ public class AlarmUtils {
 
         @Override
         public void onReceive(final Context context, Intent intent) {
-            final String NOTIFICATION_ID = "NOTIFICATION_ID";
+            // Tell the MainActivity to refresh the list and the DialogEditActivity to kill the dialog
+            // We need to do that now (=> alarm has gone off) because doing it afterwards
+            // will crash the app if the user reschedules the alarm while it is still retrieving data
+            Intent i = new Intent(Const.INTENT_REFRESH_LIST);
+            context.sendBroadcast(i);
+
+            final String NOTIFICATION_ID_FLAG = "NOTIFICATION_ID";
 
             final String alarmId = intent.getStringExtra(Const.EXTRA_ALARM_ID);
 
             final SharedPreferences sp = getPrefs(context);
-            final int notificationId = sp.getInt(NOTIFICATION_ID, 0);
+            final int notificationId = sp.getInt(NOTIFICATION_ID_FLAG, 0);
 
             Realm.init(context);
             final Realm realm = Realm.getDefaultInstance();
@@ -166,7 +172,7 @@ public class AlarmUtils {
 
                     // update notification counter. this helps if a user sets alarms
                     // only a little apart (so notifications don't override each other)
-                    sp.edit().putInt(NOTIFICATION_ID, notificationId+1).apply();
+                    sp.edit().putInt(NOTIFICATION_ID_FLAG, notificationId+1).apply();
 
                     switch (alarm.getAlarmMode()) {
                         case Const.ALARM_ONETIME:
@@ -190,7 +196,7 @@ public class AlarmUtils {
                     Uri sound = (ringtone != null) ? Uri.parse(ringtone) : null;
 
                     NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    Notification x = new Notification.Builder(context)
+                    Notification info = new Notification.Builder(context)
                             .setSmallIcon(R.drawable.ic_notification)
                             .setContentTitle(context.getString(R.string.app_name))
                             .setContentText("Error: " + t.getMessage())
@@ -198,7 +204,7 @@ public class AlarmUtils {
                             .setVibrate(new long[]{0, Const.VIBRATION_DURATION[vibrationMode]})
                             .build();
 
-                    mNotificationManager.notify(notificationId, x);
+                    mNotificationManager.notify(notificationId, info);
                 }
             });
         }
@@ -209,6 +215,7 @@ public class AlarmUtils {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(LOG_TAG, "Received \"boot complete\": rescheduling all alarms");
             SharedPreferences sp = getPrefs(context);
             Map<String,?> keys = sp.getAll();
 
@@ -217,6 +224,7 @@ public class AlarmUtils {
 
             for (Map.Entry<String,?> entry : keys.entrySet()) {
                 // reschedule all alarms
+                Log.d(LOG_TAG, "Reschedule entry " + entry.getKey());
                 scheduleAlarm(context, realm.where(Alarm.class).equalTo("id", entry.getKey()).findFirst());
             }
         }

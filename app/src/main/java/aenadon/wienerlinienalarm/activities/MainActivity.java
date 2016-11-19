@@ -1,7 +1,10 @@
 package aenadon.wienerlinienalarm.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -34,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private TabLayout tabLayout;
 
+    // makes sure to refresh the list when an alarm goes off
+    private BroadcastReceiver refreshReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +67,27 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(MainActivity.this, AlarmSetterActivity.class), 0);
             }
         });
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Const.INTENT_REFRESH_LIST);
+
+        refreshReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mSectionsPagerAdapter.notifyDataSetChanged();
+            }
+        };
+        registerReceiver(refreshReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        // kill the receiver on activity destruction
+        if (refreshReceiver != null) {
+            unregisterReceiver(refreshReceiver);
+            refreshReceiver = null;
+        }
+        super.onDestroy();
     }
 
     @Override

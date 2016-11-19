@@ -58,6 +58,8 @@ public interface Const {
 
     String EXTRA_ALARM_ID = "";
 
+    String INTENT_REFRESH_LIST = "INTENT_REFRESH_LIST";
+
     // SharedPreferences names
     String PREFS_SCHEDULED_ALARMS = "SCHEDULED_ALARMS_LIST";
 

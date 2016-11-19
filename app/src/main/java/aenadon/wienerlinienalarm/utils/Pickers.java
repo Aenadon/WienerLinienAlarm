@@ -1,4 +1,4 @@
-package aenadon.wienerlinienalarm.activities;
+package aenadon.wienerlinienalarm.utils;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.activities.StationPickerActivity;
 import aenadon.wienerlinienalarm.models.Alarm;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
@@ -28,7 +29,7 @@ import aenadon.wienerlinienalarm.utils.StringDisplay;
 public class Pickers {
 
     // Contains all pickers for the alarm settings.
-    // They are in package "activites"
+    // They are for the picker activities
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
