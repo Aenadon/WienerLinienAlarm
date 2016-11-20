@@ -10,47 +10,11 @@
     tools:context=".activities.DialogEditActivity"
     tools:ignore="ContentDescription">
 
-    <!-- Button bar solution from:
-            http://stackoverflow.com/questions/2318775/how-to-create-fixed-footer-in-android-layout#5796606 -->
-    <LinearLayout
-        android:id="@+id/dialog_button_bar"
-        android:layout_alignParentBottom="true"
-        style="?android:buttonBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:layout_weight="1"
-            android:id="@+id/dialog_button_cancel"
-            style="?android:buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel"
-            android:onClick="onClickHandler" />
-        <Button
-            android:layout_weight="1"
-            android:id="@+id/dialog_button_delete"
-            style="?android:buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/delete"
-            android:onClick="onClickHandler" />
-        <Button
-            android:layout_weight="1"
-            android:id="@+id/dialog_button_ok"
-            style="?android:buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/ok"
-            android:onClick="onClickHandler" />
-    </LinearLayout>
-    <!--TODO why is there extra space between the title and the content?-->
     <ScrollView
-        android:layout_above="@id/dialog_button_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
-
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -241,5 +205,39 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <!-- Button bar solution from:
+        http://stackoverflow.com/questions/2318775/how-to-create-fixed-footer-in-android-layout#5796606 -->
+    <LinearLayout
+        android:id="@+id/dialog_button_bar"
+        android:layout_alignParentBottom="true"
+        style="?android:buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/dialog_button_cancel"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:onClick="onClickHandler" />
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/dialog_button_delete"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/delete"
+            android:onClick="onClickHandler" />
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/dialog_button_ok"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/ok"
+            android:onClick="onClickHandler" />
+    </LinearLayout>
 
 </RelativeLayout>

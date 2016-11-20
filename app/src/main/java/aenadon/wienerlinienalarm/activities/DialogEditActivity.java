@@ -135,7 +135,8 @@ public class DialogEditActivity extends AppCompatActivity {
     private void done() {
         realm.beginTransaction(); // we're doing it synchronously because it does not take much time
 
-        if (!alarmElement.isValid()) { // if alarm already went off, silently replace it with a backup
+        if (!alarmElement.isValid()) {
+            // if alarm already went off, silently replace it with a backup
             alarmElement = realm.copyToRealmOrUpdate(alarmElementBackup);
         }
 
