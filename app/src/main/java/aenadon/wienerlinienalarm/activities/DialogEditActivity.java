@@ -26,8 +26,10 @@ import io.realm.RealmResults;
 public class DialogEditActivity extends AppCompatActivity {
 
     private RealmResults<Alarm> alarms;
-    private Alarm alarmElement;
+    private Alarm alarmElement, alarmElementBackup;
     private int dbPosition;
+
+    Realm realm = Realm.getDefaultInstance();
 
     private Pickers.DatePickerFragment datePicker = new Pickers.DatePickerFragment();
     private Pickers.TimePickerFragment timePicker = new Pickers.TimePickerFragment();
@@ -35,9 +37,6 @@ public class DialogEditActivity extends AppCompatActivity {
     private Pickers.RingtonePicker ringtonePicker = new Pickers.RingtonePicker();
     private Pickers.VibrationPicker vibrationPicker = new Pickers.VibrationPicker();
     private Pickers.StationPicker stationPicker = new Pickers.StationPicker();
-
-    // if our alarm is gone already, kill the dialog
-    private BroadcastReceiver killReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +58,7 @@ public class DialogEditActivity extends AppCompatActivity {
 
         alarms = RealmUtils.getAlarms(DialogEditActivity.this, pageNumber);
         alarmElement = alarms.get(dbPosition);
+        alarmElementBackup = realm.copyFromRealm(alarmElement);
 
         if (pageNumber == Const.ALARM_ONETIME) {
             // Set date
@@ -83,25 +83,6 @@ public class DialogEditActivity extends AppCompatActivity {
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Const.INTENT_REFRESH_LIST);
-
-        killReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                DialogEditActivity.this.setResult(Activity.RESULT_CANCELED);
-                DialogEditActivity.this.finish();
-            }
-        };
-        registerReceiver(killReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onDestroy() {
-        // kill the receiver on activity destruction
-        if (killReceiver != null) {
-            unregisterReceiver(killReceiver);
-            killReceiver = null;
-        }
-        super.onDestroy();
     }
 
     public void onClickHandler(View view) {
@@ -152,8 +133,11 @@ public class DialogEditActivity extends AppCompatActivity {
     }
 
     private void done() {
-        Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction(); // we're doing it synchronously because it does not take much time
+
+        if (!alarmElement.isValid()) { // if alarm already went off, silently replace it with a backup
+            alarmElement = realm.copyToRealmOrUpdate(alarmElementBackup);
+        }
 
         AlarmUtils.cancelAlarm(DialogEditActivity.this, alarmElement); // cancel the old alarm
 
@@ -202,12 +186,14 @@ public class DialogEditActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        AlarmUtils.cancelAlarm(DialogEditActivity.this, alarmElement);
 
-                        Realm realm = Realm.getDefaultInstance();
-                        realm.beginTransaction();
-                        alarms.deleteFromRealm(dbPosition);
-                        realm.commitTransaction();
+                        if (alarmElement.isValid()) {
+                            AlarmUtils.cancelAlarm(DialogEditActivity.this, alarmElement);
+
+                            realm.beginTransaction();
+                            alarms.deleteFromRealm(dbPosition);
+                            realm.commitTransaction();
+                        }
 
                         setResult(Activity.RESULT_OK);
                         finish();

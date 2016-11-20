@@ -85,12 +85,6 @@ public class AlarmUtils {
 
         @Override
         public void onReceive(final Context context, Intent intent) {
-            // Tell the MainActivity to refresh the list and the DialogEditActivity to kill the dialog
-            // We need to do that now (=> alarm has gone off) because doing it afterwards
-            // will crash the app if the user reschedules the alarm while it is still retrieving data
-            Intent i = new Intent(Const.INTENT_REFRESH_LIST);
-            context.sendBroadcast(i);
-
             final String NOTIFICATION_ID_FLAG = "NOTIFICATION_ID";
 
             final String alarmId = intent.getStringExtra(Const.EXTRA_ALARM_ID);
@@ -185,8 +179,11 @@ public class AlarmUtils {
                             scheduleAlarm(context, alarm);
                             break;
                     }
-
                     Log.d(LOG_TAG, "Notification for " + alarmId + " was successful");
+
+                    // Tell the MainActivity to refresh the list and the DialogEditActivity to kill the dialog
+                    Intent i = new Intent(Const.INTENT_REFRESH_LIST);
+                    context.sendBroadcast(i);
                 }
 
                 @Override
