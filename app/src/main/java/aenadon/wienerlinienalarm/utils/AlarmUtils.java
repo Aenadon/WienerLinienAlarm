@@ -72,12 +72,14 @@ public class AlarmUtils {
         SharedPreferences.Editor se = getPrefs(ctx).edit();
         se.putBoolean(uid, true);
         se.apply();
+        Log.d(LOG_TAG, "Alarm with id " + uid + " added to prefs");
     }
 
     private static void removeAlarmFromPrefs(Context ctx, String uid) {
         SharedPreferences.Editor se = getPrefs(ctx).edit();
         se.remove(uid);
         se.apply();
+        Log.d(LOG_TAG, "Alarm with id " + uid + " removed from prefs");
     }
 
     // Receives the alarm broadcast
@@ -222,7 +224,13 @@ public class AlarmUtils {
             for (Map.Entry<String,?> entry : keys.entrySet()) {
                 // reschedule all alarms
                 Log.d(LOG_TAG, "Reschedule entry " + entry.getKey());
-                scheduleAlarm(context, realm.where(Alarm.class).equalTo("id", entry.getKey()).findFirst());
+                Alarm alarm = realm.where(Alarm.class).equalTo("id", entry.getKey()).findFirst();
+                if (alarm == null) {
+                    Log.w(LOG_TAG, "Alarm with id " + entry.getKey() + " is null! Removing from prefs...");
+                    removeAlarmFromPrefs(context, entry.getKey());
+                } else {
+                    scheduleAlarm(context, alarm);
+                }
             }
         }
     }
