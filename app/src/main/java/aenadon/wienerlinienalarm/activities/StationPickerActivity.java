@@ -83,7 +83,7 @@ public class StationPickerActivity extends AppCompatActivity {
                 stationsDisplay.clear(); // clear the displayed list
                 if (s.length() > 0) { // if the contents of the box are > 0
                     for (Halteobjekt h : stationsOriginal) { // loop through every object in the (original!) list of all stations
-                        if (h.getName().toLowerCase().contains(s.toString().toLowerCase())){ // and pick the matches
+                        if (h.getName().toLowerCase().contains(s.toString().toLowerCase().trim())){ // and pick the matches
                             stationsDisplay.add(h); // and add them to the displayed list
                         }
                     }
