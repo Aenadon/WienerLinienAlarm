@@ -55,8 +55,6 @@ public class AlarmSetterActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Realm.init(AlarmSetterActivity.this);
-
-        new GetApiFiles(AlarmSetterActivity.this).execute(); // get CSV files/check for updates on them
     }
 
     // handling all the click events from the view
@@ -225,77 +223,5 @@ public class AlarmSetterActivity extends AppCompatActivity {
         }
     }
 
-    class GetApiFiles extends AsyncTask<Void, Void, Boolean> {
 
-        ProgressDialog warten;
-        Context ctx;
-
-        GetApiFiles(Context c) {
-            ctx = c;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            warten = new ProgressDialog(ctx);
-            warten.setCancelable(false);
-            warten.setIndeterminate(true);
-            warten.setMessage(getString(R.string.updating_stations));
-            warten.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                Response<ResponseBody> versionResponse = RetrofitInfo.getCSVInfo().create(RetrofitInfo.CSVCalls.class).getVersionCSV().execute(); // check file version
-                String versionResponseString = versionResponse.body().string();
-
-                if (!versionResponse.isSuccessful()) return false;
-                File csv = new File(ctx.getFilesDir(), Const.CSV_FILENAME);
-                String csvString = CSVWorkUtils.getCSVfromFile(ctx);
-                if (csv.exists() && csvString != null) {
-                    String x = csvString.split(Const.CSV_FILE_SEPARATOR)[Const.CSV_PART_VERSION];
-                    if (x.equals(versionResponseString))
-                        return true; // if we already have the latest version, skip the redownload
-                }
-
-                Response<ResponseBody> haltestellenResponse = RetrofitInfo.getCSVInfo().create(RetrofitInfo.CSVCalls.class).getHaltestellenCSV().execute();
-                Response<ResponseBody> steigResponse = RetrofitInfo.getCSVInfo().create(RetrofitInfo.CSVCalls.class).getSteigeCSV().execute();
-
-                if (!haltestellenResponse.isSuccessful() || !steigResponse.isSuccessful()) {
-                    throw new IOException("At least one server response not successful " +
-                            "(" + haltestellenResponse.code() + "/" + steigResponse.code() + ")"); // [...] (403/403)
-                } else {
-                    if (csv.exists()) {
-                        //noinspection ResultOfMethodCallIgnored
-                        csv.delete();
-                    }
-                    String combined =
-                            versionResponseString      // last update date
-                                    + Const.CSV_FILE_SEPARATOR +             // separator
-                                    haltestellenResponse.body().string() // haltestellen CSV
-                                    + Const.CSV_FILE_SEPARATOR +             // separator
-                                    steigResponse.body().string();       // steige CSV
-
-                    FileOutputStream fos = new FileOutputStream(csv);
-                    fos.write(combined.getBytes());
-                    fos.close();
-                    return true;
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            warten.dismiss();
-
-            if (!success) {
-                AlertDialogs.serverNotAvailable(ctx);
-                findViewById(R.id.choose_station_button).setEnabled(false); // disable station picker
-            }
-        }
-    }
 }

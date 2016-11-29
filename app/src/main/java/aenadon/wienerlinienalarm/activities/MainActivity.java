@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        new GetApiFiles(MainActivity.this).execute(); // get CSV files/check for updates on them
+
         Realm.init(MainActivity.this); // for all database related stuff
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // receiver to refresh view after alarm goes off
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Const.INTENT_REFRESH_LIST);
 
