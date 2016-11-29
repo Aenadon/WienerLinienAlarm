@@ -56,7 +56,7 @@ public class StringDisplay {
 
     public static String getRingtone(Context c, String chosenRingtone) {
         if (chosenRingtone == null) {
-            return c.getString(R.string.alarm_no_ringtone_chosen);
+            return c.getString(R.string.alarm_none);
         }
         Uri uri = Uri.parse(chosenRingtone);
         Ringtone ringtone = RingtoneManager.getRingtone(c, uri);

@@ -28,24 +28,55 @@
 
             <RadioGroup
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:layout_width="match_parent"
+                android:orientation="horizontal">
 
                  <RadioButton
                      android:id="@+id/radio_frequency_one_time"
                      android:text="@string/alarm_frequency_once"
                      android:checked="true"
-                     android:layout_width="match_parent"
+                     android:layout_width="0dp"
                      android:layout_height="wrap_content"
-                     android:onClick="onClickHandler"/>
+                     android:onClick="onClickHandler"
+                     android:layout_weight="1"/>
 
                  <RadioButton
                      android:id="@+id/radio_frequency_recurring"
                      android:text="@string/alarm_frequency_recurring"
-                     android:layout_width="match_parent"
+                     android:layout_width="0dp"
                      android:layout_height="wrap_content"
+                     android:layout_weight="1"
                      android:onClick="onClickHandler"/>
 
             </RadioGroup>
+
+            <!--Separator--> <View android:layout_width="match_parent" android:layout_height="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/alarm_choose_station_direction"
+                android:textAppearance="@style/SectionTitleText"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/choose_station_button"
+                    style="?android:buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/alarm_choose_station_button"
+                    android:onClick="onClickHandler" />
+                <TextView
+                    android:id="@+id/choose_station_text"
+                    android:gravity="center"
+                    android:text="@string/alarm_no_station_selected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClickHandler" />
+            </LinearLayout>
 
             <!--Separator--> <View android:layout_width="match_parent" android:layout_height="10dp" />
 
@@ -166,7 +197,7 @@
                     <TextView
                         android:id="@+id/choose_ringtone_text"
                         android:gravity="center"
-                        android:text="@string/alarm_no_ringtone_chosen"
+                        android:text="@string/alarm_none"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:onClick="onClickHandler" />
@@ -189,39 +220,11 @@
                     <TextView
                         android:id="@+id/choose_vibration_text"
                         android:gravity="center"
-                        android:text="@string/alarm_no_vibration_chosen"
+                        android:text="@string/alarm_none"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:onClick="onClickHandler" />
                 </LinearLayout>
-            </LinearLayout>
-
-            <!--Separator--> <View android:layout_width="match_parent" android:layout_height="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/alarm_choose_station_direction"
-                android:textAppearance="@style/SectionTitleText"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_weight="7"
-                    android:id="@+id/choose_station_text"
-                    android:gravity="center"
-                    android:text="@string/alarm_no_station_selected"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:onClick="onClickHandler" />
-                <Button
-                    android:id="@+id/choose_station_button"
-                    android:layout_weight="1"
-                    style="?android:buttonBarButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/alarm_choose_station_button"
-                    android:onClick="onClickHandler" />
             </LinearLayout>
 
         </LinearLayout>

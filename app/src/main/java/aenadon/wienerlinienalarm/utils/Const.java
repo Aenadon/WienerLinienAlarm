@@ -39,7 +39,7 @@ public interface Const {
 
     // Strings for the vibration modes
     int[] VIBRATION_STRINGS = {
-            R.string.alarm_no_vibration_chosen,
+            R.string.alarm_none,
             R.string.alarm_vibration_short,
             R.string.alarm_vibration_medium,
             R.string.alarm_vibration_long

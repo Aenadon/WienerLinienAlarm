@@ -23,18 +23,16 @@
     <string name="alarm_no_time_set">No time set</string>
 
     <!--Notification setup-->
+    <string name="alarm_none">None</string>
     <string name="alarm_choose_alarm_mode">Choose alarm mode</string>
     <string name="alarm_choose_ringtone">Ringtone</string>
     <string name="alarm_choose_vibration">Vibration</string>
-    <string name="alarm_no_ringtone_chosen">(No sound)</string>
-    <string name="alarm_no_vibration_chosen">(No vibration)</string>
     <string name="alarm_choose_vibration_length">Choose vibration length</string>
-    <string name="alarm_vibration_none">None</string>
     <string name="alarm_vibration_short">Short</string>
     <string name="alarm_vibration_medium">Medium</string>
     <string name="alarm_vibration_long">Long</string>
     <string name="alarm_choose_station_direction">Choose station and line</string>
-    <string name="alarm_choose_station_button">Select</string>
+    <string name="alarm_choose_station_button">Select station</string>
     <string name="alarm_no_station_selected">No station selected</string>
 
     <string name="alarm_recurring_dialog_expl">Alarm should occur every:</string>
@@ -61,7 +59,7 @@
     <string name="please_wait">Please wait&#8230;</string>
     <string name="search_for_station">Search for station</string>
     <string name="choose_station">Choose station</string>
-    <string name="choose_steig">Choose line/platform</string>
+    <string name="choose_steig">Choose line and direction</string>
 
     <string name="ok">OK</string>
     <string name="delete">Delete</string>
@@ -86,7 +84,7 @@
     <string name="connection_error_text_add">The station picker will not work.</string>
 
     <string name="no_steigs_error_title">No lines available :(</string>
-    <string name="no_steigs_error_text">The API does not return any lines for this stations. Please choose another station.</string>
+    <string name="no_steigs_error_text">No lines are available for this station. Please try again later.</string>
 
     <string name="missing_info_title">Could not create alarm</string>
     <string name="missing_info_date">-No date was chosen.\n</string>
