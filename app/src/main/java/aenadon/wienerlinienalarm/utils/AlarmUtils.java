@@ -82,12 +82,14 @@ public class AlarmUtils {
         Log.d(LOG_TAG, "Alarm with id " + uid + " removed from prefs");
     }
 
+
+    private final static String NOTIFICATION_ID_FLAG = "NOTIFICATION_ID";
+
     // Receives the alarm broadcast
     public static class AlarmReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(final Context context, Intent intent) {
-            final String NOTIFICATION_ID_FLAG = "NOTIFICATION_ID";
 
             final String alarmId = intent.getStringExtra(Const.EXTRA_ALARM_ID);
 
@@ -223,6 +225,8 @@ public class AlarmUtils {
 
             for (Map.Entry<String,?> entry : keys.entrySet()) {
                 // reschedule all alarms
+                if (entry.getKey().equals(NOTIFICATION_ID_FLAG)) continue; // This is not an alarm!
+
                 Log.d(LOG_TAG, "Reschedule entry " + entry.getKey());
                 Alarm alarm = realm.where(Alarm.class).equalTo("id", entry.getKey()).findFirst();
                 if (alarm == null) {

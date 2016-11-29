@@ -8,8 +8,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.Calendar;
+
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.models.Alarm;
+import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.RealmUtils;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
@@ -46,9 +49,9 @@ public class AlarmListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
-        LayoutInflater infl = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
+            LayoutInflater infl = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infl.inflate(R.layout.alarm_list_item, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.date = (TextView) convertView.findViewById(R.id.alarm_list_date);
