@@ -104,11 +104,13 @@ public class SteigPickerActivity extends AppCompatActivity {
         };
     }
 
-    private class GetSteigNames extends AsyncTask<ArrayList<String>, Void, ArrayList<Halteobjekt>> {
+    private class GetSteigNames extends AsyncTask<ArrayList<String>, Void, Integer> {
+
+        ArrayList<Halteobjekt> halteobjekts;
 
         @SuppressWarnings("unchecked")
         @Override
-        protected ArrayList<Halteobjekt> doInBackground(ArrayList<String>... params) {
+        protected Integer doInBackground(ArrayList<String>... params) {
             ArrayList<String> steigs = params[0];
             steigDisplay.clear();
             for (String steigId : steigs) {
@@ -134,30 +136,34 @@ public class SteigPickerActivity extends AppCompatActivity {
                             String lineAndDirName = lineName + " " + lineDirection;
                             steigDisplay.add(new Halteobjekt(lineAndDirName, steigId, Integer.toString(arrayIndex)));
                         }
-                    } else Log.e(LOG_TAG, "API response unsuccessful: " + response.code());
+                    } else {
+                        Log.e(LOG_TAG, "API response unsuccessful: " + response.code());
+                        return Const.NETWORK_SERVER_ERROR;
+                    }
                 } catch (IOException | JSONException e) {
                     Log.e(LOG_TAG, "API request/JSON fail");
                     e.printStackTrace();
-                    return null;
+                    return Const.NETWORK_CONNECTION_ERROR;
                 }
             }
             Collections.sort(steigDisplay);
-            return steigDisplay;
+            halteobjekts = steigDisplay;
+            return Const.NETWORK_SUCCESS;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Halteobjekt> halteobjekts) {
+        protected void onPostExecute(Integer resultCode) {
             warten.dismiss();
-            if (halteobjekts == null) {
+            if (resultCode == Const.NETWORK_SERVER_ERROR) {
                 AlertDialogs.serverNotAvailable(SteigPickerActivity.this);
-                return;
-            }
-            if (halteobjekts.isEmpty()) {
+            } else if (resultCode == Const.NETWORK_CONNECTION_ERROR) {
+                AlertDialogs.noConnection(SteigPickerActivity.this);
+            } else if (resultCode == Const.NETWORK_SUCCESS && halteobjekts.isEmpty()) {
                 AlertDialogs.noSteigsAvailable(SteigPickerActivity.this);
-                return;
+            } else {
+                sa = new StationListAdapter(getApplicationContext(), halteobjekts); // give our displaylist to the adapter
+                list.setAdapter(sa); // set the adapter on the list (==> updates the list automatically)
             }
-            sa = new StationListAdapter(getApplicationContext(), halteobjekts); // give our displaylist to the adapter
-            list.setAdapter(sa); // set the adapter on the list (==> updates the list automatically)
         }
     }
 }

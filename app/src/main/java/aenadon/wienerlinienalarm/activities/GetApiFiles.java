@@ -1,6 +1,5 @@
 package aenadon.wienerlinienalarm.activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -17,7 +16,7 @@ import aenadon.wienerlinienalarm.utils.RetrofitInfo;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-class GetApiFiles extends AsyncTask<Void, Void, Boolean> {
+class GetApiFiles extends AsyncTask<Void, Void, Integer> {
 
     private ProgressDialog warten;
     private Context ctx;
@@ -31,7 +30,7 @@ class GetApiFiles extends AsyncTask<Void, Void, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(Void... params) {
+    protected Integer doInBackground(Void... params) {
         try {
             File csv = new File(ctx.getFilesDir(), Const.CSV_FILENAME);
             String csvString = CSVWorkUtils.getCSVfromFile(ctx);
@@ -43,11 +42,14 @@ class GetApiFiles extends AsyncTask<Void, Void, Boolean> {
             Response<ResponseBody> versionResponse = RetrofitInfo.getCSVInfo().create(RetrofitInfo.CSVCalls.class).getVersionCSV().execute();
             String versionResponseString = versionResponse.body().string();
 
-            if (!versionResponse.isSuccessful()) return false;
+            if (!versionResponse.isSuccessful()) {
+                return Const.NETWORK_SERVER_ERROR;
+            }
+
             if (csv.exists() && csvString != null) {
                 String x = csvString.split(Const.CSV_FILE_SEPARATOR)[Const.CSV_PART_VERSION];
                 if (x.equals(versionResponseString))
-                    return true; // if we already have the latest version, skip the redownload
+                    return Const.NETWORK_SUCCESS; // if we already have the latest version, we're done here
             }
 
             Response<ResponseBody> haltestellenResponse = RetrofitInfo.getCSVInfo().create(RetrofitInfo.CSVCalls.class).getHaltestellenCSV().execute();
@@ -71,13 +73,13 @@ class GetApiFiles extends AsyncTask<Void, Void, Boolean> {
                 FileOutputStream fos = new FileOutputStream(csv);
                 fos.write(combined.getBytes());
                 fos.close();
-                return true;
+                return Const.NETWORK_SUCCESS;
             }
 
-        } catch (IOException e) {
+        } catch (IOException | RuntimeException e) {
             e.printStackTrace();
+            return Const.NETWORK_CONNECTION_ERROR;
         }
-        return false;
     }
 
     @Override
@@ -87,12 +89,16 @@ class GetApiFiles extends AsyncTask<Void, Void, Boolean> {
     }
 
     @Override
-    protected void onPostExecute(Boolean success) {
+    protected void onPostExecute(Integer resultCode) {
         if (warten != null) warten.dismiss();
 
-        if (!success) {
-            AlertDialogs.serverNotAvailable(ctx);
-            ((Activity)ctx).findViewById(R.id.choose_station_button).setEnabled(false); // disable station picker
+        switch (resultCode) {
+            case Const.NETWORK_SERVER_ERROR:
+                AlertDialogs.serverNotAvailable(ctx);
+                break;
+            case Const.NETWORK_CONNECTION_ERROR:
+                AlertDialogs.noConnection(ctx);
+                break;
         }
     }
 }

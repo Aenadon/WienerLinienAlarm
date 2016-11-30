@@ -13,8 +13,15 @@ public class AlertDialogs {
 
     public static void serverNotAvailable(Context ctx) {
         createResultCanceledBox(ctx,
-                ctx.getString(R.string.connection_error_title),
-                ctx.getString(R.string.connection_error_text) + " " + ctx.getString(R.string.connection_error_text_add),
+                ctx.getString(R.string.server_broken_title),
+                ctx.getString(R.string.server_broken_text),
+                ctx.getString(R.string.ok));
+    }
+
+    public static void noConnection(Context ctx) {
+        createResultCanceledBox(ctx,
+                ctx.getString(R.string.no_connection_title),
+                ctx.getString(R.string.no_connection_text),
                 ctx.getString(R.string.ok));
     }
 
@@ -56,5 +63,4 @@ public class AlertDialogs {
                 .setCancelable(false)
                 .show();
     }
-
 }

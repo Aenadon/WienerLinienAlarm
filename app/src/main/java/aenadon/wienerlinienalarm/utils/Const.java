@@ -6,6 +6,11 @@ public interface Const {
 
     // This class is for constants used throughout the app.
 
+    // Network operation result constants
+    int NETWORK_SUCCESS = 0;
+    int NETWORK_SERVER_ERROR = 1;
+    int NETWORK_CONNECTION_ERROR = 2;
+
     // CSV
     String CSV_FILENAME = "halteinfo.csv";
     int CSV_PART_VERSION = 0;
