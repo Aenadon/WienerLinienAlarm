@@ -3,10 +3,14 @@ package aenadon.wienerlinienalarm.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
@@ -63,12 +67,26 @@ class GetApiFiles extends AsyncTask<Void, Void, Integer> {
                     //noinspection ResultOfMethodCallIgnored
                     csv.delete();
                 }
+                String haltestellenCSV = haltestellenResponse.body().string();
+                String steigCSV = steigResponse.body().string();
+
+                List<String> items = new ArrayList<>(Arrays.asList(haltestellenCSV.split("\n")));
+
+                for (int i = 0; i < items.size(); i++) {
+                    String[] columns = items.get(i).split(";");
+                    if (!steigCSV.contains(columns[0])) {
+                        items.remove(i);
+                    }
+                }
+
+                haltestellenCSV = TextUtils.join("\n", items.toArray());
+
                 String combined =
                         versionResponseString      // last update date
-                                + Const.CSV_FILE_SEPARATOR +             // separator
-                                haltestellenResponse.body().string() // haltestellen CSV
-                                + Const.CSV_FILE_SEPARATOR +             // separator
-                                steigResponse.body().string();       // steige CSV
+                                + Const.CSV_FILE_SEPARATOR +
+                                haltestellenCSV
+                                + Const.CSV_FILE_SEPARATOR +
+                                steigCSV;
 
                 FileOutputStream fos = new FileOutputStream(csv);
                 fos.write(combined.getBytes());

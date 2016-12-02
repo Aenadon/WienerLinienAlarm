@@ -55,7 +55,7 @@
     </plurals>
 
     <!--Station/Steig list-->
-    <string name="updating_stations">Updating station list&#8230;</string>
+    <string name="updating_stations">Need to update station list, please be patient&#8230;</string>
     <string name="please_wait">Please wait&#8230;</string>
     <string name="search_for_station">Search for station</string>
     <string name="choose_station">Choose station</string>
