@@ -1,18 +1,14 @@
 package aenadon.wienerlinienalarm.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.Calendar;
-
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.models.Alarm;
-import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.RealmUtils;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
@@ -74,8 +70,7 @@ public class AlarmListAdapter extends BaseAdapter {
                 date = StringDisplay.getRecurringDays(ctx, alarmElement.getRecurringChosenDays());
                 break;
             default:
-                Log.e(LOG_TAG, "Page index out of range");
-                return null;
+                throw new Error("Page index out of range");
         }
 
         viewHolder.date.setText(date);

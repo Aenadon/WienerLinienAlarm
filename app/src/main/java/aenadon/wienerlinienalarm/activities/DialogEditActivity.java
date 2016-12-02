@@ -2,8 +2,6 @@ package aenadon.wienerlinienalarm.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -60,17 +58,22 @@ public class DialogEditActivity extends AppCompatActivity {
         alarmElement = alarms.get(dbPosition);
         alarmElementBackup = realm.copyFromRealm(alarmElement);
 
-        if (pageNumber == Const.ALARM_ONETIME) {
-            // Set date
-            ((TextView)findViewById(R.id.dialog_date_text)).setText(StringDisplay.getOnetimeDate(alarmElement.getOneTimeAlarmYear(), alarmElement.getOneTimeAlarmMonth(), alarmElement.getOneTimeAlarmDay()));
-        } else {
-            // Hide date picker, show days picker
-            findViewById(R.id.dialog_date_title).setVisibility(View.GONE);
-            findViewById(R.id.dialog_date_box).setVisibility(View.GONE);
-            findViewById(R.id.dialog_days_title).setVisibility(View.VISIBLE);
-            findViewById(R.id.dialog_days_box).setVisibility(View.VISIBLE);
-            // Set days
-            ((TextView)findViewById(R.id.dialog_days_text)).setText(StringDisplay.getRecurringDays(DialogEditActivity.this, alarmElement.getRecurringChosenDays()));
+        switch (pageNumber) {
+            case Const.ALARM_ONETIME:
+                // Set date
+                ((TextView)findViewById(R.id.dialog_date_text)).setText(StringDisplay.getOnetimeDate(alarmElement.getOneTimeAlarmYear(), alarmElement.getOneTimeAlarmMonth(), alarmElement.getOneTimeAlarmDay()));
+                break;
+            case Const.ALARM_RECURRING:
+                // Hide date picker, show days picker
+                findViewById(R.id.dialog_date_title).setVisibility(View.GONE);
+                findViewById(R.id.dialog_date_box).setVisibility(View.GONE);
+                findViewById(R.id.dialog_days_title).setVisibility(View.VISIBLE);
+                findViewById(R.id.dialog_days_box).setVisibility(View.VISIBLE);
+                // Set days
+                ((TextView)findViewById(R.id.dialog_days_text)).setText(StringDisplay.getRecurringDays(DialogEditActivity.this, alarmElement.getRecurringChosenDays()));
+                break;
+            default:
+                throw new Error("Non-existant alarm mode");
         }
         // Set time
         ((TextView)findViewById(R.id.dialog_time_text)).setText(StringDisplay.getTime(alarmElement.getAlarmHour(), alarmElement.getAlarmMinute()));
@@ -150,7 +153,7 @@ public class DialogEditActivity extends AppCompatActivity {
                 if (daysPicker.daysChanged(alarmElement)) alarmElement.setRecurringChosenDays(daysPicker.getPickedDays());
                 break;
             default:
-                return;
+                throw new Error("Non-existant alarm mode");
         }
         if (timePicker.timeChanged(alarmElement)) alarmElement.setTimeAsArray(timePicker.getPickedTime());
         if (ringtonePicker.ringtoneChanged(alarmElement)) alarmElement.setChosenRingtone(ringtonePicker.getPickedRingtone());

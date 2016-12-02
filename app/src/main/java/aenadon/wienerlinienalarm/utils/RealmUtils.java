@@ -18,32 +18,37 @@ public class RealmUtils {
         String[] sortAfter;
         Sort[] sortOrder;
 
-        if (type == Const.ALARM_ONETIME) {
-            sortAfter = new String[]{
-                    "oneTimeAlarmYear",
-                    "oneTimeAlarmMonth",
-                    "oneTimeAlarmDay",
-                    "alarmHour",
-                    "alarmMinute"
-            };
-            sortOrder = new Sort[]{
-                    Sort.ASCENDING,
-                    Sort.ASCENDING,
-                    Sort.ASCENDING,
-                    Sort.ASCENDING,
-                    Sort.ASCENDING
-            };
-        } else {
-            sortAfter = new String[]{
-                    "alarmHour",
-                    "alarmMinute",
-                    "recurringChosenDays"
-            };
-            sortOrder = new Sort[]{
-                    Sort.ASCENDING,
-                    Sort.ASCENDING,
-                    Sort.ASCENDING
-            };
+        switch (type) {
+            case Const.ALARM_ONETIME:
+                sortAfter = new String[]{
+                        "oneTimeAlarmYear",
+                        "oneTimeAlarmMonth",
+                        "oneTimeAlarmDay",
+                        "alarmHour",
+                        "alarmMinute"
+                };
+                sortOrder = new Sort[]{
+                        Sort.ASCENDING,
+                        Sort.ASCENDING,
+                        Sort.ASCENDING,
+                        Sort.ASCENDING,
+                        Sort.ASCENDING
+                };
+                break;
+            case Const.ALARM_RECURRING:
+                sortAfter = new String[]{
+                        "alarmHour",
+                        "alarmMinute",
+                        "recurringChosenDays"
+                };
+                sortOrder = new Sort[]{
+                        Sort.ASCENDING,
+                        Sort.ASCENDING,
+                        Sort.ASCENDING
+                };
+                break;
+            default:
+                throw new Error("Non-existant alarm mode");
         }
 
         return realm.where(Alarm.class).equalTo("alarmMode", type).findAllSorted(sortAfter, sortOrder);
