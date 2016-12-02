@@ -52,7 +52,7 @@ public class CSVWorkUtils {
             case U6:
                 return direction.equals(H) ? U6H : U6R;
             default:
-                throw new Error("Non-existant U-Bahn line");
+                throw new Error("Non-existent U-Bahn line");
         }
     }
 

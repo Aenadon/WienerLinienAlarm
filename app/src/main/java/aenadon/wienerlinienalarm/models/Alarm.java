@@ -182,7 +182,7 @@ public class Alarm extends RealmObject {
                 c.set(Calendar.MINUTE, alarmMinute);
                 return c.getTimeInMillis();
             default:
-                throw new Error("Non-existant alarm mode");
+                throw new Error("Non-existent alarm mode");
         }
     }
     public String getChosenRingtone() {

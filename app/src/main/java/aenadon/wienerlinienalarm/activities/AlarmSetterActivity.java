@@ -149,7 +149,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 }
                 break;
             default:
-                throw new Error("Non-existant alarm mode");
+                throw new Error("Non-existent alarm mode");
         }
         // General checks
         if (chosenTime == null) {

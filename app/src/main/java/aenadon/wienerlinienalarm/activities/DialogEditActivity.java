@@ -73,7 +73,7 @@ public class DialogEditActivity extends AppCompatActivity {
                 ((TextView)findViewById(R.id.dialog_days_text)).setText(StringDisplay.getRecurringDays(DialogEditActivity.this, alarmElement.getRecurringChosenDays()));
                 break;
             default:
-                throw new Error("Non-existant alarm mode");
+                throw new Error("Non-existent alarm mode");
         }
         // Set time
         ((TextView)findViewById(R.id.dialog_time_text)).setText(StringDisplay.getTime(alarmElement.getAlarmHour(), alarmElement.getAlarmMinute()));
@@ -153,7 +153,7 @@ public class DialogEditActivity extends AppCompatActivity {
                 if (daysPicker.daysChanged(alarmElement)) alarmElement.setRecurringChosenDays(daysPicker.getPickedDays());
                 break;
             default:
-                throw new Error("Non-existant alarm mode");
+                throw new Error("Non-existent alarm mode");
         }
         if (timePicker.timeChanged(alarmElement)) alarmElement.setTimeAsArray(timePicker.getPickedTime());
         if (ringtonePicker.ringtoneChanged(alarmElement)) alarmElement.setChosenRingtone(ringtonePicker.getPickedRingtone());

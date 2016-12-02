@@ -48,7 +48,7 @@ public class RealmUtils {
                 };
                 break;
             default:
-                throw new Error("Non-existant alarm mode");
+                throw new Error("Non-existent alarm mode");
         }
 
         return realm.where(Alarm.class).equalTo("alarmMode", type).findAllSorted(sortAfter, sortOrder);
