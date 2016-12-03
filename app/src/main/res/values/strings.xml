@@ -24,7 +24,7 @@
 
     <!--Notification setup-->
     <string name="alarm_none">None</string>
-    <string name="alarm_choose_alarm_mode">Choose alarm mode</string>
+    <string name="alarm_choose_alarm_mode">Choose alarm mode (optional)</string>
     <string name="alarm_choose_ringtone">Ringtone</string>
     <string name="alarm_choose_vibration">Vibration</string>
     <string name="alarm_choose_vibration_length">Choose vibration length</string>
