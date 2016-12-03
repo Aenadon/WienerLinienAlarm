@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.models.Alarm;
@@ -117,7 +120,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
     private void done() {
         // Errorcheck
         boolean isError = false;
-        String errors = "";
+        List<String> errors = new ArrayList<>();
 
         int[] chosenDate = datePicker.getChosenDate();
         int[] chosenTime = timePicker.getPickedTime();
@@ -125,12 +128,16 @@ public class AlarmSetterActivity extends AppCompatActivity {
         String chosenRingtone = ringtonePicker.getPickedRingtone();
         int chosenVibratorMode = vibrationPicker.getPickedVibrationMode();
 
+        if (!stationPicker.stationWasSet()) {
+            isError = true;
+            errors.add(getString(R.string.missing_info_station));
+        }
         // Mode-specific checks
         switch (alarmMode) {
             case Const.ALARM_ONETIME:
                 if (chosenDate == null) {
                     isError = true;
-                    errors += getString(R.string.missing_info_date);
+                    errors.add(getString(R.string.missing_info_date));
                 }
                 if (chosenDate != null && chosenTime != null) {
                     Calendar now = Calendar.getInstance();
@@ -138,14 +145,14 @@ public class AlarmSetterActivity extends AppCompatActivity {
                     calDate.set(chosenDate[0], chosenDate[1], chosenDate[2], chosenTime[0], chosenTime[1], 0); // 0 seconds
                     if (calDate.compareTo(now) < 0) {
                         isError = true;
-                        errors += getString(R.string.missing_info_past);
+                        errors.add(getString(R.string.missing_info_past));
                     }
                 }
                 break;
             case Const.ALARM_RECURRING:
                 if (chosenDays == null || Arrays.equals(chosenDays, new boolean[7])) { // compare with empty array
                     isError = true;
-                    errors += getString(R.string.missing_info_days);
+                    errors.add(getString(R.string.missing_info_days));
                 }
                 break;
             default:
@@ -154,17 +161,12 @@ public class AlarmSetterActivity extends AppCompatActivity {
         // General checks
         if (chosenTime == null) {
             isError = true;
-            errors += getString(R.string.missing_info_time);
-        }
-        if (!stationPicker.stationWasSet()) {
-            isError = true;
-            errors += getString(R.string.missing_info_station);
+            errors.add(getString(R.string.missing_info_time));
         }
         // If error:
         if (isError) {
-            AlertDialogs.missingInfo(AlarmSetterActivity.this, errors);
-            return;
-            // if error, we're done here
+            AlertDialogs.missingInfo(AlarmSetterActivity.this, TextUtils.join("\n", errors.toArray()));
+            return; // if error, we're done here
         }
 
         Alarm newAlarm = new Alarm();

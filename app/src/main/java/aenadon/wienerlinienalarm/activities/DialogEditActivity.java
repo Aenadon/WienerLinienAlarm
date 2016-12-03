@@ -11,9 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.Calendar;
+
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.models.Alarm;
 import aenadon.wienerlinienalarm.utils.AlarmUtils;
+import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.Pickers;
 import aenadon.wienerlinienalarm.utils.RealmUtils;
@@ -136,6 +140,45 @@ public class DialogEditActivity extends AppCompatActivity {
     }
 
     private void done() {
+        // Errorcheck
+        boolean isError = false;
+        String error = ""; // only one error at a time possible
+
+        int[] chosenDate = datePicker.getChosenDate();
+        int[] chosenTime = timePicker.getPickedTime();
+        boolean[] chosenDays = daysPicker.getPickedDays();
+
+        // Mode-specific checks
+        switch (alarmElement.getAlarmMode()) {
+            case Const.ALARM_ONETIME:
+                Calendar now = Calendar.getInstance();
+                Calendar calDate = Calendar.getInstance();
+
+                int[] tempChosenDate = (chosenDate != null) ? chosenDate : alarmElement.getOneTimeDateAsArray();
+                int[] tempChosenTime = (chosenTime != null) ? chosenTime : alarmElement.getTimeAsArray();
+
+                calDate.set(tempChosenDate[0], tempChosenDate[1], tempChosenDate[2], tempChosenTime[0], tempChosenTime[1], 0); // 0 seconds
+                if (calDate.compareTo(now) < 0) {
+                    isError = true;
+                    error = getString(R.string.missing_info_past);
+                }
+                break;
+            case Const.ALARM_RECURRING:
+                boolean[] tempChosenDays = (chosenDays != null) ? chosenDays : alarmElement.getRecurringChosenDays();
+                if (Arrays.equals(tempChosenDays, new boolean[7])) { // compare with empty array
+                    isError = true;
+                    error = getString(R.string.missing_info_days);
+                }
+                break;
+            default:
+                throw new Error("Non-existent alarm mode");
+        }
+        // If error:
+        if (isError) {
+            AlertDialogs.missingInfo(DialogEditActivity.this, error);
+            return; // if error, we're done here
+        }
+
         realm.beginTransaction(); // we're doing it synchronously because it does not take much time
 
         if (!alarmElement.isValid()) {

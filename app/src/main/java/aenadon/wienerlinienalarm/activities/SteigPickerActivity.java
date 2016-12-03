@@ -19,14 +19,15 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import aenadon.wienerlinienalarm.BuildConfig;
-import aenadon.wienerlinienalarm.adapter.Halteobjekt;
 import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.adapter.Halteobjekt;
 import aenadon.wienerlinienalarm.adapter.StationListAdapter;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
-import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.CSVWorkUtils;
+import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.RetrofitInfo;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -37,8 +38,8 @@ public class SteigPickerActivity extends AppCompatActivity {
 
     private String LOG_TAG = SteigPickerActivity.class.getSimpleName();
 
-    ArrayList<String> steige = new ArrayList<>();
-    static ArrayList<Halteobjekt> steigDisplay = new ArrayList<>();
+    List<String> steige = new ArrayList<>();
+    static List<Halteobjekt> steigDisplay = new ArrayList<>();
     ListView list;
     String stationName, stationId;
     StationListAdapter sa;
@@ -104,14 +105,14 @@ public class SteigPickerActivity extends AppCompatActivity {
         };
     }
 
-    private class GetSteigNames extends AsyncTask<ArrayList<String>, Void, Integer> {
+    private class GetSteigNames extends AsyncTask<List<String>, Void, Integer> {
 
-        ArrayList<Halteobjekt> halteobjekts;
+        List<Halteobjekt> halteobjekts;
 
         @SuppressWarnings("unchecked")
         @Override
-        protected Integer doInBackground(ArrayList<String>... params) {
-            ArrayList<String> steigs = params[0];
+        protected Integer doInBackground(List<String>... params) {
+            List<String> steigs = params[0];
             steigDisplay.clear();
             for (String steigId : steigs) {
                 try {

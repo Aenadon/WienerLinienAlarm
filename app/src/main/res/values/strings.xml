@@ -89,10 +89,10 @@
     <string name="no_steigs_error_text">No lines are available for this station. Please try again later.</string>
 
     <string name="missing_info_title">Could not create alarm</string>
-       <string name="missing_info_date">-Please choose your alarm date.\n</string>
-       <string name="missing_info_time">-Please choose your alarm time.\n</string>
-       <string name="missing_info_days">-Please choose your alarm days.\n</string>
-       <string name="missing_info_past">-Please choose a time in the future.\n</string>
-    <string name="missing_info_station">-Please choose a station.\n</string>
+       <string name="missing_info_date">-Please choose your alarm date.</string>
+       <string name="missing_info_time">-Please choose your alarm time.</string>
+       <string name="missing_info_days">-Please choose your alarm days.</string>
+       <string name="missing_info_past">-Please choose a time in the future.</string>
+    <string name="missing_info_station">-Please choose a station.</string>
 
 </resources>

@@ -8,14 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class StationListAdapter extends ArrayAdapter<Halteobjekt> {
 
     private final Context context;
-    private final ArrayList<Halteobjekt> values;
+    private final List<Halteobjekt> values;
 
-    public StationListAdapter(Context context, ArrayList<Halteobjekt> list) {
+    public StationListAdapter(Context context, List<Halteobjekt> list) {
         super(context, -1, list);
         this.context = context;
         this.values = list;

@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.adapter.AlarmListAdapter;
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        private ArrayList<AlarmMenuFragment> fragments = new ArrayList<>();
+        private List<AlarmMenuFragment> fragments = new ArrayList<>();
 
         private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);

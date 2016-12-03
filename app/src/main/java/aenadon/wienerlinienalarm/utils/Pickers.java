@@ -23,8 +23,6 @@ import java.util.Calendar;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.activities.StationPickerActivity;
 import aenadon.wienerlinienalarm.models.Alarm;
-import aenadon.wienerlinienalarm.utils.Const;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
 
 public class Pickers {
 

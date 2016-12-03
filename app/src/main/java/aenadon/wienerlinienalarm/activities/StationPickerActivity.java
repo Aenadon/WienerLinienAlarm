@@ -16,17 +16,18 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
-import aenadon.wienerlinienalarm.adapter.Halteobjekt;
 import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.adapter.Halteobjekt;
 import aenadon.wienerlinienalarm.adapter.StationListAdapter;
-import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.CSVWorkUtils;
+import aenadon.wienerlinienalarm.utils.Const;
 
 public class StationPickerActivity extends AppCompatActivity {
 
-    ArrayList<Halteobjekt> stationsDisplay = new ArrayList<>();
-    ArrayList<Halteobjekt> stationsOriginal = new ArrayList<>();
+    List<Halteobjekt> stationsDisplay = new ArrayList<>();
+    List<Halteobjekt> stationsOriginal = new ArrayList<>();
     ListView list;
     StationListAdapter sa;
     ProgressDialog warten;
