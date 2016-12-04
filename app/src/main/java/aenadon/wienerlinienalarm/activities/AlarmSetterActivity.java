@@ -50,6 +50,28 @@ public class AlarmSetterActivity extends AppCompatActivity {
         Realm.init(AlarmSetterActivity.this);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBundle(Const.BUNDLE_DATE_PICKER, datePicker.saveState());
+        outState.putBundle(Const.BUNDLE_TIME_PICKER, timePicker.saveState());
+        outState.putBundle(Const.BUNDLE_DAYS_PICKER, daysPicker.saveState());
+        outState.putBundle(Const.BUNDLE_RINGTONE_PICKER, ringtonePicker.saveState());
+        outState.putBundle(Const.BUNDLE_VIBRATION_PICKER, vibrationPicker.saveState());
+        outState.putBundle(Const.BUNDLE_STATION_PICKER, stationPicker.saveState());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        datePicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DATE_PICKER));
+        timePicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_TIME_PICKER));
+        daysPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DAYS_PICKER));
+        ringtonePicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_RINGTONE_PICKER));
+        vibrationPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_VIBRATION_PICKER));
+        stationPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_STATION_PICKER));
+    }
+
     // handling all the click events from the view
     public void onClickHandler(View view) {
         switch (view.getId()) {
