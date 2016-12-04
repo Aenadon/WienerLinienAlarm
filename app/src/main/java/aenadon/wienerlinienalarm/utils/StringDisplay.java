@@ -68,7 +68,7 @@ public class StringDisplay {
         return c.getString(Const.VIBRATION_STRINGS[vibrationMode]);
     }
 
-    public static String getStation(String station, String direction) {
-        return station + "\n" + direction;
+    public static String getStation(String stationName, String stationDir) {
+        return stationName + "\n" + stationDir;
     }
 }

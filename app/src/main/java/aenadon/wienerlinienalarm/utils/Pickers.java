@@ -32,13 +32,14 @@ public class Pickers {
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
         private int[] chosenDate = null;
+        private int viewResId;
         private TextView viewToUse;
         private boolean firstRun = true;
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-            viewToUse = (TextView) getActivity().findViewById(getArguments().getInt(Const.EXTRA_VIEW_TO_USE));
+            viewResId = getArguments().getInt(Const.EXTRA_VIEW_TO_USE);
+            viewToUse = (TextView) getActivity().findViewById(viewResId);
             int[] prevDate = getArguments().getIntArray(Const.EXTRA_PREV_DATE);
 
             Calendar c = Calendar.getInstance();
@@ -83,18 +84,40 @@ public class Pickers {
             // else something changed, return true
             return !(chosenDate == null || Arrays.equals(chosenDate, alarm.getOneTimeDateAsArray()));
         }
+
+        private String viewResIdKey = "VIEW_RES_ID";
+        private String chosenDateKey = "CHOSEN_TIME";
+        private String firstRunKey = "FIRST_RUN";
+
+        public Bundle saveState() {
+            Bundle b = new Bundle();
+            b.putInt(viewResIdKey, viewResId);
+            b.putIntArray(chosenDateKey, chosenDate);
+            b.putBoolean(firstRunKey, firstRun);
+            return b;
+        }
+
+        public void restoreState(Context ctx, Bundle b) {
+            viewResId = b.getInt(viewResIdKey);
+            chosenDate = b.getIntArray(chosenDateKey);
+            firstRun = b.getBoolean(firstRunKey);
+
+            viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+            if (chosenDate != null) viewToUse.setText(StringDisplay.getOnetimeDate(chosenDate));
+        }
     }
 
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
         private int[] chosenTime = null;
+        private int viewResId;
         private TextView viewToUse;
         private boolean firstRun = true;
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-            viewToUse = (TextView) getActivity().findViewById(getArguments().getInt(Const.EXTRA_VIEW_TO_USE));
+            viewResId = getArguments().getInt(Const.EXTRA_VIEW_TO_USE);
+            viewToUse = (TextView) getActivity().findViewById(viewResId);
             int[] prevTime = getArguments().getIntArray(Const.EXTRA_PREV_TIME);
 
             int hour, minute;
@@ -133,6 +156,27 @@ public class Pickers {
             // else something changed, return true
             return !(chosenTime == null || Arrays.equals(chosenTime, alarm.getTimeAsArray()));
         }
+
+        private String viewResIdKey = "VIEW_RES_ID";
+        private String chosenTimeKey = "CHOSEN_TIME";
+        private String firstRunKey = "FIRST_RUN";
+
+        public Bundle saveState() {
+            Bundle b = new Bundle();
+            b.putInt(viewResIdKey, viewResId);
+            b.putIntArray(chosenTimeKey, chosenTime);
+            b.putBoolean(firstRunKey, firstRun);
+            return b;
+        }
+
+        public void restoreState(Context ctx, Bundle b) {
+            viewResId = b.getInt(viewResIdKey);
+            chosenTime = b.getIntArray(chosenTimeKey);
+            firstRun = b.getBoolean(firstRunKey);
+
+            viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+            if (chosenTime != null) viewToUse.setText(StringDisplay.getTime(chosenTime));
+        }
     }
 
     public static class DaysPicker {
@@ -140,8 +184,13 @@ public class Pickers {
         private String[] weekDayStrings;
         private boolean[] choice;
         private boolean[] tempChoice = new boolean[7];
+        private int viewResId;
+        private TextView viewToUse;
 
         public void show(final Context ctx, boolean[] previousChoice, final int viewResId) {
+            this.viewResId = viewResId;
+            viewToUse = (TextView)((Activity)ctx).findViewById(this.viewResId);
+
             if (choice == null) {
                 if (previousChoice != null) {
                     choice = previousChoice.clone();
@@ -173,7 +222,6 @@ public class Pickers {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             choice = tempChoice.clone();
-                            TextView viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
                             viewToUse.setText(StringDisplay.getRecurringDays(ctx, choice));
                         }
                     })
@@ -190,15 +238,40 @@ public class Pickers {
             // else something changed, return true
             return !(choice == null || Arrays.equals(choice, alarm.getRecurringChosenDays()));
         }
+
+        private String viewResIdKey = "VIEW_RES_ID";
+        private String choiceKey = "CHOICE";
+        private String tempChoiceKey = "TEMP_CHOICE";
+
+        public Bundle saveState() {
+            Bundle b = new Bundle();
+            b.putInt(viewResIdKey, viewResId);
+            b.putBooleanArray(choiceKey, choice);
+            b.putBooleanArray(tempChoiceKey, tempChoice);
+            return b;
+        }
+
+        public void restoreState(Context ctx, Bundle b) {
+            viewResId = b.getInt(viewResIdKey);
+            choice = b.getBooleanArray(choiceKey);
+            tempChoice = b.getBooleanArray(tempChoiceKey);
+
+            viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+            if (choice != null) viewToUse.setText(StringDisplay.getRecurringDays(ctx, choice));
+        }
     }
 
     public static class RingtonePicker {
 
         private String pickedRingtone;
+        private int viewResId;
         private TextView viewToUse;
         private boolean firstRun = true;
 
         public void show(Context ctx, String previousRingtone, int viewResId) {
+            this.viewResId = viewResId;
+            viewToUse = (TextView)((Activity)ctx).findViewById(this.viewResId);
+
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
 
@@ -210,7 +283,6 @@ public class Pickers {
             }
             ((Activity)ctx).startActivityForResult(intent, Const.REQUEST_RINGTONE);
             firstRun = false;
-            viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
         }
 
         public String getPickedRingtone() {
@@ -230,15 +302,38 @@ public class Pickers {
                     (pickedRingtone == null && alarm.getChosenRingtone() == null) || // or set it to null again
                     (pickedRingtone != null && pickedRingtone.equals(alarm.getChosenRingtone()))); // or set it to the same again
         }
+
+        private String viewResIdKey = "VIEW_RES_ID";
+        private String pickedRingtoneKey = "PICKED_RINGTONE_KEY";
+        private String firstRunKey = "FIRST_RUN";
+
+        public Bundle saveState() {
+            Bundle b = new Bundle();
+            b.putInt(viewResIdKey, viewResId);
+            b.putString(pickedRingtoneKey, pickedRingtone);
+            b.putBoolean(firstRunKey, firstRun);
+            return b;
+        }
+
+        public void restoreState(Context ctx, Bundle b) {
+            viewResId = b.getInt(viewResIdKey);
+            pickedRingtone = b.getString(pickedRingtoneKey);
+            firstRun = b.getBoolean(firstRunKey);
+
+            viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+            if (pickedRingtone != null) viewToUse.setText(StringDisplay.getRingtone(ctx, pickedRingtone));
+        }
     }
 
     public static class VibrationPicker {
 
         private int pickedVibrationMode = -1;
+        private int viewResId;
         private TextView viewToUse;
 
         public void show(final Context ctx, int viewResId) {
-            viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+            this.viewResId = viewResId;
+            viewToUse = (TextView)((Activity)ctx).findViewById(this.viewResId);
 
             final String[] vibrationModes = new String[]{
                     ctx.getString(Const.VIBRATION_STRINGS[Const.VIBRATION_NONE]),
@@ -275,6 +370,24 @@ public class Pickers {
             return !(pickedVibrationMode == -1 || pickedVibrationMode == alarm.getChosenVibrationMode());
         }
 
+        private String viewResIdKey = "VIEW_RES_ID";
+        private String pickedVibrationModeKey = "PICKED_VIBRATION_MODE_KEY";
+
+        public Bundle saveState() {
+            Bundle b = new Bundle();
+            b.putInt(viewResIdKey, viewResId);
+            b.putInt(pickedVibrationModeKey, pickedVibrationMode);
+            return b;
+        }
+
+        public void restoreState(Context ctx, Bundle b) {
+            viewResId = b.getInt(viewResIdKey);
+            pickedVibrationMode = b.getInt(pickedVibrationModeKey);
+
+            viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+            if (pickedVibrationMode != -1) viewToUse.setText(StringDisplay.getVibration(ctx, pickedVibrationMode));
+        }
+
     }
 
     public static class StationPicker {
@@ -285,11 +398,14 @@ public class Pickers {
         private String pickedStationId;
         private int pickedStationArrayIndex;
 
+        private int viewResId;
         private TextView viewToUse;
 
         public void show(Context ctx, int viewResId) {
+            this.viewResId = viewResId;
+            viewToUse = (TextView)((Activity)ctx).findViewById(this.viewResId);
+
             ((Activity)ctx).startActivityForResult(new Intent(ctx, StationPickerActivity.class), Const.REQUEST_STATION);
-            viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
         }
 
         public void setPickedStation(Intent data) {
@@ -331,6 +447,33 @@ public class Pickers {
             // if stationId is NULL OR stationId is SAME, then nothing changed, return false
             // else something changed, return true
             return !(pickedStationId == null || pickedStationId.equals(alarm.getStationId()));
+        }
+
+        private String viewResIdKey = "VIEW_RES_ID";
+        private String pickedStationNameKey = "PICKED_STATION_NAME_KEY";
+        private String pickedStationDirKey = "PICKED_STATION_DIR_KEY";
+        private String pickedStationIdKey = "PICKED_STATION_ID_KEY";
+        private String pickedStationArrayIndexKey = "PICKED_STATION_ARRAY_INDEX_KEY";
+
+        public Bundle saveState() {
+            Bundle b = new Bundle();
+            b.putInt(viewResIdKey, viewResId);
+            b.putString(pickedStationNameKey, pickedStationName);
+            b.putString(pickedStationDirKey, pickedStationDir);
+            b.putString(pickedStationIdKey, pickedStationId);
+            b.putInt(pickedStationArrayIndexKey, pickedStationArrayIndex);
+            return b;
+        }
+
+        public void restoreState(Context ctx, Bundle b) {
+            viewResId = b.getInt(viewResIdKey);
+            pickedStationName = b.getString(pickedStationNameKey);
+            pickedStationDir = b.getString(pickedStationDirKey);
+            pickedStationId = b.getString(pickedStationIdKey);
+            pickedStationArrayIndex = b.getInt(pickedStationArrayIndexKey);
+
+            viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+            if (pickedStationName != null) viewToUse.setText(StringDisplay.getStation(pickedStationName, pickedStationDir));
         }
     }
 
