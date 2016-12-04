@@ -92,6 +92,28 @@ public class DialogEditActivity extends AppCompatActivity {
         intentFilter.addAction(Const.INTENT_REFRESH_LIST);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBundle(Const.BUNDLE_DATE_PICKER, datePicker.saveState());
+        outState.putBundle(Const.BUNDLE_TIME_PICKER, timePicker.saveState());
+        outState.putBundle(Const.BUNDLE_DAYS_PICKER, daysPicker.saveState());
+        outState.putBundle(Const.BUNDLE_RINGTONE_PICKER, ringtonePicker.saveState());
+        outState.putBundle(Const.BUNDLE_VIBRATION_PICKER, vibrationPicker.saveState());
+        outState.putBundle(Const.BUNDLE_STATION_PICKER, stationPicker.saveState());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        datePicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DATE_PICKER));
+        timePicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_TIME_PICKER));
+        daysPicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DAYS_PICKER));
+        ringtonePicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_RINGTONE_PICKER));
+        vibrationPicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_VIBRATION_PICKER));
+        stationPicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_STATION_PICKER));
+    }
+
     public void onClickHandler(View view) {
         switch (view.getId()) {
             case R.id.dialog_date_text:
