@@ -25,6 +25,7 @@ import io.realm.Realm;
 public class AlarmSetterActivity extends AppCompatActivity {
 
     private int alarmMode = Const.ALARM_ONETIME;
+    private String alarmModeKey = "ALARM_MODE";
 
     private Pickers.DatePickerFragment datePicker = new Pickers.DatePickerFragment();
     private Pickers.TimePickerFragment timePicker = new Pickers.TimePickerFragment();
@@ -52,6 +53,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(alarmModeKey, alarmMode);
         outState.putBundle(Const.BUNDLE_DATE_PICKER, datePicker.saveState());
         outState.putBundle(Const.BUNDLE_TIME_PICKER, timePicker.saveState());
         outState.putBundle(Const.BUNDLE_DAYS_PICKER, daysPicker.saveState());
@@ -64,12 +66,15 @@ public class AlarmSetterActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        alarmMode = savedInstanceState.getInt(alarmModeKey);
         datePicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DATE_PICKER));
         timePicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_TIME_PICKER));
         daysPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DAYS_PICKER));
         ringtonePicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_RINGTONE_PICKER));
         vibrationPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_VIBRATION_PICKER));
         stationPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_STATION_PICKER));
+
+        pickAlarmFrequency(alarmMode);
     }
 
     // handling all the click events from the view
@@ -118,21 +123,17 @@ public class AlarmSetterActivity extends AppCompatActivity {
     }
 
     private void pickAlarmFrequency(int setTo) {
-        if (alarmMode == setTo) return; // if nothing changed, do nothing
-
         LinearLayout chooseDateContainer = (LinearLayout) findViewById(R.id.choose_date_container);
         LinearLayout chooseDaysContainer = (LinearLayout) findViewById(R.id.choose_days_container);
-        // LinearLayout chooseTimeContainer; --> always on screen!
 
+        // show selected, hide previous
         switch (setTo) {
-            case Const.ALARM_ONETIME:   // hide the days+time chooser and show the date chooser
+            case Const.ALARM_ONETIME:
                 chooseDaysContainer.setVisibility(View.GONE);
-                // -- //
                 chooseDateContainer.setVisibility(View.VISIBLE);
                 break;
-            case Const.ALARM_RECURRING: // hide the date chooser and show the days+time chooser
+            case Const.ALARM_RECURRING:
                 chooseDateContainer.setVisibility(View.GONE);
-                // -- //
                 chooseDaysContainer.setVisibility(View.VISIBLE);
                 break;
         }
