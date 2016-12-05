@@ -28,7 +28,7 @@ import io.realm.RealmResults;
 public class DialogEditActivity extends AppCompatActivity {
 
     private RealmResults<Alarm> alarms;
-    private Alarm alarmElement, alarmElementBackup;
+    private Alarm alarmElement;
     private int dbPosition;
 
     Realm realm = Realm.getDefaultInstance();
@@ -59,8 +59,7 @@ public class DialogEditActivity extends AppCompatActivity {
         }
 
         alarms = RealmUtils.getAlarms(DialogEditActivity.this, pageNumber);
-        alarmElement = alarms.get(dbPosition);
-        alarmElementBackup = realm.copyFromRealm(alarmElement);
+        alarmElement = realm.copyFromRealm(alarms.get(dbPosition));
 
         switch (pageNumber) {
             case Const.ALARM_ONETIME:
@@ -201,12 +200,8 @@ public class DialogEditActivity extends AppCompatActivity {
             return; // if error, we're done here
         }
 
-        realm.beginTransaction(); // we're doing it synchronously because it does not take much time
-
-        if (!alarmElement.isValid()) {
-            // if alarm already went off, silently replace it with a backup
-            alarmElement = realm.copyToRealmOrUpdate(alarmElementBackup);
-        }
+        realm.beginTransaction();
+        alarmElement = realm.copyToRealmOrUpdate(alarmElement);
 
         AlarmUtils.cancelAlarm(DialogEditActivity.this, alarmElement); // cancel the old alarm
 
