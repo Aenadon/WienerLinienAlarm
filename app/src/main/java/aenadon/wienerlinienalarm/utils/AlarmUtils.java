@@ -36,7 +36,7 @@ public class AlarmUtils {
     private static PendingIntent getPendingIntent(Context ctx, String uid) {
         Intent i = new Intent(ctx, AlarmReceiver.class);
         i.putExtra(Const.EXTRA_ALARM_ID, uid);
-        return PendingIntent.getBroadcast(ctx, Const.REQUEST_ALARM, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(ctx, getAutoincrementingInteger(ctx), i, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     public static void scheduleAlarm(Context ctx, Alarm alarm) {
@@ -66,6 +66,14 @@ public class AlarmUtils {
 
     private static SharedPreferences getPrefs(Context ctx) {
         return ctx.getSharedPreferences(Const.PREFS_SCHEDULED_ALARMS, Context.MODE_PRIVATE);
+    }
+
+    // gets the saved integer and autoincrements it, useful for
+    private static int getAutoincrementingInteger(Context ctx) {
+        SharedPreferences sp = getPrefs(ctx);
+        int id = sp.getInt(NOTIFICATION_ID_FLAG, -1) + 1;
+        sp.edit().putInt(NOTIFICATION_ID_FLAG, id).apply();
+        return id;
     }
 
     private static void addAlarmToPrefs(Context ctx, String uid) {
