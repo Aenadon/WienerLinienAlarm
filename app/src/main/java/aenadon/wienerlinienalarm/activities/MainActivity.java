@@ -16,12 +16,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,7 +172,10 @@ public class MainActivity extends AppCompatActivity {
 
             // http://stackoverflow.com/a/17807347/3673616
             @SuppressLint("InflateParams") View emptyView = inflater.inflate(R.layout.list_placeholder, null);
-            emptyView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            params.gravity = Gravity.CENTER;
+            emptyView.setLayoutParams(params);
+            ((LinearLayout)emptyView).setGravity(Gravity.CENTER);
             ((ViewGroup)list.getParent()).addView(emptyView);
             list.setEmptyView(emptyView);
 
