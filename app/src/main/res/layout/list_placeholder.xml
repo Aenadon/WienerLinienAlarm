@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Need to keep ImageView separate because adding the drawable as a compound drawable
+         to TextView causes a crash on Android <5.0 (because it's a vector drawable) -->
+
+    <ImageView
+        android:contentDescription="@string/list_empty"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_train"/>
+
+    <TextView
+        android:textSize="25sp"
+        android:textColor="@color/placeholderGray"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/list_empty"/>
+
+</LinearLayout>

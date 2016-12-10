@@ -210,7 +210,6 @@
         <!-- Button bar solution from:
     http://stackoverflow.com/questions/2318775/how-to-create-fixed-footer-in-android-layout#5796606 -->
         <LinearLayout
-            android:id="@+id/dialog_button_bar"
             android:layout_below="@id/content"
             style="?android:buttonBarStyle"
             android:layout_width="match_parent"

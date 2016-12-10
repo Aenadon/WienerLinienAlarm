@@ -1,5 +1,6 @@
 package aenadon.wienerlinienalarm.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,6 +168,13 @@ public class MainActivity extends AppCompatActivity {
             alarmMode = getArguments().getInt(Const.EXTRA_ALARM_MODE);
             adapter = new AlarmListAdapter(getActivity(), alarmMode);
             list.setAdapter(adapter);
+
+            // http://stackoverflow.com/a/17807347/3673616
+            @SuppressLint("InflateParams") View emptyView = inflater.inflate(R.layout.list_placeholder, null);
+            emptyView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+            ((ViewGroup)list.getParent()).addView(emptyView);
+            list.setEmptyView(emptyView);
+
             list.setOnItemClickListener(launchDialogEditor());
             return rootView;
         }

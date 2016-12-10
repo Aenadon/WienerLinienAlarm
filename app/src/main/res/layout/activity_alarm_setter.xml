@@ -88,7 +88,6 @@
 
             <LinearLayout
                 android:baselineAligned="false"
-                android:id="@+id/choose_date_time_days_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -142,7 +141,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/choose_time_container"
                     android:orientation="vertical"
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -177,11 +175,9 @@
 
             <LinearLayout
                 android:baselineAligned="false"
-                android:id="@+id/choose_notification_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
-                    android:id="@+id/choose_ringtone_container"
                     android:layout_weight="1"
                     android:orientation="vertical"
                     android:layout_width="0dp"

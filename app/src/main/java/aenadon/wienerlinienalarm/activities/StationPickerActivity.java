@@ -58,8 +58,8 @@ public class StationPickerActivity extends AppCompatActivity {
     private void populateListView(String csv) {
         warten.show();
         String[] rows = csv.split("\n"); // get each row (=station) as separate array entry
-        for (int i = 0; i < rows.length; i++) {
-            String[] columns = rows[i].split(";"); // get each column for each row as array entry
+        for (String row : rows) {
+            String[] columns = row.split(";"); // get each column for each row as array entry
             String rawStationName = columns[3]; // "Station"
             String stationId = columns[0]; // 123456789
             stationsOriginal.add(new Halteobjekt( // create an Halteobjekt for every station entry
