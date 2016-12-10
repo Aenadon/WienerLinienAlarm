@@ -80,14 +80,14 @@ public class AlarmUtils {
         SharedPreferences.Editor se = getPrefs(ctx).edit();
         se.putBoolean(uid, true);
         se.apply();
-        Log.d(LOG_TAG, "Alarm with id " + uid + " added to prefs");
+        Log.v(LOG_TAG, "Alarm with id " + uid + " added to prefs");
     }
 
     private static void removeAlarmFromPrefs(Context ctx, String uid) {
         SharedPreferences.Editor se = getPrefs(ctx).edit();
         se.remove(uid);
         se.apply();
-        Log.d(LOG_TAG, "Alarm with id " + uid + " removed from prefs");
+        Log.v(LOG_TAG, "Alarm with id " + uid + " removed from prefs");
     }
 
 
@@ -152,7 +152,7 @@ public class AlarmUtils {
                         } catch (IOException | JSONException e) {
                             e.printStackTrace();
                             info = e.getMessage();
-                            Log.d(LOG_TAG, "IO/JSONException: " + e.getMessage());
+                            Log.e(LOG_TAG, "IO/JSONException: " + e.getMessage());
                         }
                     }
                     Uri sound = (ringtone != null) ? Uri.parse(ringtone) : null;
@@ -235,7 +235,7 @@ public class AlarmUtils {
                 // reschedule all alarms
                 if (entry.getKey().equals(NOTIFICATION_ID_FLAG)) continue; // This is not an alarm!
 
-                Log.d(LOG_TAG, "Reschedule entry " + entry.getKey());
+                Log.v(LOG_TAG, "Reschedule entry " + entry.getKey());
                 Alarm alarm = realm.where(Alarm.class).equalTo("id", entry.getKey()).findFirst();
                 if (alarm == null) {
                     Log.w(LOG_TAG, "Alarm with id " + entry.getKey() + " is null! Removing from prefs...");
