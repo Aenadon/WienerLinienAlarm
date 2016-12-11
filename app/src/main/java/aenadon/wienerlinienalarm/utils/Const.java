@@ -26,7 +26,6 @@ public interface Const {
     int REQUEST_STATION = 0;
     int REQUEST_RINGTONE = 1;
     int REQUEST_EDIT_ALARM = 2;
-    int REQUEST_ALARM = 3;
 
     // Vibration modes
     int VIBRATION_NONE = 0;

@@ -10,7 +10,7 @@ import retrofit2.http.Query;
 
 public class RetrofitInfo {
 
-    private static Retrofit csvInfo = new Retrofit.Builder()
+    private static final Retrofit csvInfo = new Retrofit.Builder()
             .baseUrl("http://data.wien.gv.at/csv/")
             .build();
 
@@ -18,7 +18,7 @@ public class RetrofitInfo {
         return csvInfo;
     }
 
-    private static Retrofit realtimeInfo = new Retrofit.Builder()
+    private static final Retrofit realtimeInfo = new Retrofit.Builder()
             .baseUrl("https://www.wienerlinien.at/ogd_realtime/")
             .build();
 

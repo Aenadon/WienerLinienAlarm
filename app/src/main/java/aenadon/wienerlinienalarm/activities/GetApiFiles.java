@@ -22,8 +22,8 @@ import retrofit2.Response;
 
 class GetApiFiles extends AsyncTask<Void, Void, Integer> {
 
-    private ProgressDialog warten;
-    private Context ctx;
+    private final ProgressDialog warten;
+    private final Context ctx;
 
     GetApiFiles(Context c) {
         ctx = c;

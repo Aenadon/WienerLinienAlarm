@@ -34,16 +34,14 @@ import retrofit2.Response;
 
 public class SteigPickerActivity extends AppCompatActivity {
 
-    private String apikey = BuildConfig.API_TOKEN;
+    private final String LOG_TAG = SteigPickerActivity.class.getSimpleName();
 
-    private String LOG_TAG = SteigPickerActivity.class.getSimpleName();
-
-    List<String> steige = new ArrayList<>();
-    static List<Halteobjekt> steigDisplay = new ArrayList<>();
-    ListView list;
-    String stationName, stationId;
-    StationListAdapter sa;
-    ProgressDialog warten;
+    private final List<String> steige = new ArrayList<>();
+    private static final List<Halteobjekt> steigDisplay = new ArrayList<>();
+    private ListView list;
+    private String stationName;
+    private String stationId;
+    private ProgressDialog warten;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +110,7 @@ public class SteigPickerActivity extends AppCompatActivity {
         @SuppressWarnings("unchecked")
         @Override
         protected Integer doInBackground(List<String>... params) {
+            String apikey = BuildConfig.API_TOKEN;
             List<String> steigs = params[0];
             steigDisplay.clear();
             for (String steigId : steigs) {
@@ -162,7 +161,7 @@ public class SteigPickerActivity extends AppCompatActivity {
             } else if (resultCode == Const.NETWORK_SUCCESS && halteobjekts.isEmpty()) {
                 AlertDialogs.noSteigsAvailable(SteigPickerActivity.this);
             } else {
-                sa = new StationListAdapter(getApplicationContext(), halteobjekts); // give our displaylist to the adapter
+                StationListAdapter sa = new StationListAdapter(getApplicationContext(), halteobjekts);
                 list.setAdapter(sa); // set the adapter on the list (==> updates the list automatically)
             }
         }

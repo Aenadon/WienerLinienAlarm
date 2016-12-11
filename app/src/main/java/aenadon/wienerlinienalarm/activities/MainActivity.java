@@ -36,9 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private ViewPager mViewPager;
-    private TabLayout tabLayout;
-
     // makes sure to refresh the list when an alarm goes off
     private BroadcastReceiver refreshReceiver;
 
@@ -58,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_main);
@@ -105,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        private List<AlarmMenuFragment> fragments = new ArrayList<>();
+        private final List<AlarmMenuFragment> fragments = new ArrayList<>();
 
         private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);

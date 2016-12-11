@@ -16,12 +16,10 @@ import io.realm.RealmResults;
 
 public class AlarmListAdapter extends BaseAdapter {
 
-    private String LOG_TAG = AlarmListAdapter.class.getSimpleName();
+    private final Context ctx;
+    private final int alarmModePage;
 
-    private Context ctx;
-    private int alarmModePage;
-
-    private RealmResults<Alarm> alarms;
+    private final RealmResults<Alarm> alarms;
 
     public AlarmListAdapter(Context c, int alarmModePage) {
         ctx = c;

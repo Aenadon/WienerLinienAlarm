@@ -11,6 +11,7 @@ import io.realm.annotations.Required;
 
 public class Alarm extends RealmObject {
 
+    @SuppressWarnings("CanBeFinal") // "The only restriction a RealmObject has is that fields are not allowed to be final, transient' or volatile."
     @PrimaryKey
     private String id; // Unique ID (constructor)
 
@@ -231,10 +232,6 @@ public class Alarm extends RealmObject {
 
     public void setStationArrayIndex(int stationArrayIndex) {
         this.stationArrayIndex = stationArrayIndex;
-    }
-
-    public String[] getStationInfoAsArray(String[] info) {
-        return new String[]{stationName, stationDirection, stationId, Integer.toString(stationArrayIndex)};
     }
 
     public void setStationInfoAsArray(String[] info) {

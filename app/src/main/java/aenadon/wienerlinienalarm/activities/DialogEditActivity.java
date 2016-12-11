@@ -31,14 +31,14 @@ public class DialogEditActivity extends AppCompatActivity {
     private Alarm alarmElement;
     private int dbPosition;
 
-    Realm realm = Realm.getDefaultInstance();
+    private final Realm realm = Realm.getDefaultInstance();
 
-    private Pickers.DatePickerFragment datePicker = new Pickers.DatePickerFragment();
-    private Pickers.TimePickerFragment timePicker = new Pickers.TimePickerFragment();
-    private Pickers.DaysPicker daysPicker = new Pickers.DaysPicker();
-    private Pickers.RingtonePicker ringtonePicker = new Pickers.RingtonePicker();
-    private Pickers.VibrationPicker vibrationPicker = new Pickers.VibrationPicker();
-    private Pickers.StationPicker stationPicker = new Pickers.StationPicker();
+    private final Pickers.DatePickerFragment datePicker = new Pickers.DatePickerFragment();
+    private final Pickers.TimePickerFragment timePicker = new Pickers.TimePickerFragment();
+    private final Pickers.DaysPicker daysPicker = new Pickers.DaysPicker();
+    private final Pickers.RingtonePicker ringtonePicker = new Pickers.RingtonePicker();
+    private final Pickers.VibrationPicker vibrationPicker = new Pickers.VibrationPicker();
+    private final Pickers.StationPicker stationPicker = new Pickers.StationPicker();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

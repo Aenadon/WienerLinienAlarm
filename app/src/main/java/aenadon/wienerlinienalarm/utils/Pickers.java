@@ -85,9 +85,9 @@ public class Pickers {
             return !(chosenDate == null || Arrays.equals(chosenDate, alarm.getOneTimeDateAsArray()));
         }
 
-        private String viewResIdKey = "VIEW_RES_ID";
-        private String chosenDateKey = "CHOSEN_TIME";
-        private String firstRunKey = "FIRST_RUN";
+        private final String viewResIdKey = "VIEW_RES_ID";
+        private final String chosenDateKey = "CHOSEN_TIME";
+        private final String firstRunKey = "FIRST_RUN";
 
         public Bundle saveState() {
             Bundle b = new Bundle();
@@ -157,9 +157,9 @@ public class Pickers {
             return !(chosenTime == null || Arrays.equals(chosenTime, alarm.getTimeAsArray()));
         }
 
-        private String viewResIdKey = "VIEW_RES_ID";
-        private String chosenTimeKey = "CHOSEN_TIME";
-        private String firstRunKey = "FIRST_RUN";
+        private final String viewResIdKey = "VIEW_RES_ID";
+        private final String chosenTimeKey = "CHOSEN_TIME";
+        private final String firstRunKey = "FIRST_RUN";
 
         public Bundle saveState() {
             Bundle b = new Bundle();
@@ -239,9 +239,9 @@ public class Pickers {
             return !(choice == null || Arrays.equals(choice, alarm.getRecurringChosenDays()));
         }
 
-        private String viewResIdKey = "VIEW_RES_ID";
-        private String choiceKey = "CHOICE";
-        private String tempChoiceKey = "TEMP_CHOICE";
+        private final String viewResIdKey = "VIEW_RES_ID";
+        private final String choiceKey = "CHOICE";
+        private final String tempChoiceKey = "TEMP_CHOICE";
 
         public Bundle saveState() {
             Bundle b = new Bundle();
@@ -303,9 +303,9 @@ public class Pickers {
                     (pickedRingtone != null && pickedRingtone.equals(alarm.getChosenRingtone()))); // or set it to the same again
         }
 
-        private String viewResIdKey = "VIEW_RES_ID";
-        private String pickedRingtoneKey = "PICKED_RINGTONE_KEY";
-        private String firstRunKey = "FIRST_RUN";
+        private final String viewResIdKey = "VIEW_RES_ID";
+        private final String pickedRingtoneKey = "PICKED_RINGTONE_KEY";
+        private final String firstRunKey = "FIRST_RUN";
 
         public Bundle saveState() {
             Bundle b = new Bundle();
@@ -370,8 +370,8 @@ public class Pickers {
             return !(pickedVibrationMode == -1 || pickedVibrationMode == alarm.getChosenVibrationMode());
         }
 
-        private String viewResIdKey = "VIEW_RES_ID";
-        private String pickedVibrationModeKey = "PICKED_VIBRATION_MODE_KEY";
+        private final String viewResIdKey = "VIEW_RES_ID";
+        private final String pickedVibrationModeKey = "PICKED_VIBRATION_MODE_KEY";
 
         public Bundle saveState() {
             Bundle b = new Bundle();
@@ -449,11 +449,11 @@ public class Pickers {
             return !(pickedStationId == null || pickedStationId.equals(alarm.getStationId()));
         }
 
-        private String viewResIdKey = "VIEW_RES_ID";
-        private String pickedStationNameKey = "PICKED_STATION_NAME_KEY";
-        private String pickedStationDirKey = "PICKED_STATION_DIR_KEY";
-        private String pickedStationIdKey = "PICKED_STATION_ID_KEY";
-        private String pickedStationArrayIndexKey = "PICKED_STATION_ARRAY_INDEX_KEY";
+        private final String viewResIdKey = "VIEW_RES_ID";
+        private final String pickedStationNameKey = "PICKED_STATION_NAME_KEY";
+        private final String pickedStationDirKey = "PICKED_STATION_DIR_KEY";
+        private final String pickedStationIdKey = "PICKED_STATION_ID_KEY";
+        private final String pickedStationArrayIndexKey = "PICKED_STATION_ARRAY_INDEX_KEY";
 
         public Bundle saveState() {
             Bundle b = new Bundle();

@@ -26,11 +26,11 @@ import aenadon.wienerlinienalarm.utils.Const;
 
 public class StationPickerActivity extends AppCompatActivity {
 
-    List<Halteobjekt> stationsDisplay = new ArrayList<>();
-    List<Halteobjekt> stationsOriginal = new ArrayList<>();
-    ListView list;
-    StationListAdapter sa;
-    ProgressDialog warten;
+    private final List<Halteobjekt> stationsDisplay = new ArrayList<>();
+    private final List<Halteobjekt> stationsOriginal = new ArrayList<>();
+    private ListView list;
+    private StationListAdapter sa;
+    private ProgressDialog warten;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
