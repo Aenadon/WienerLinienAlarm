@@ -68,10 +68,11 @@ public class AlarmUtils {
         return ctx.getSharedPreferences(Const.PREFS_SCHEDULED_ALARMS, Context.MODE_PRIVATE);
     }
 
-    // gets the saved integer and autoincrements it, useful for
+    // gets the saved integer and autoincrements it, useful for notification IDs
     private static int getAutoincrementingInteger(Context ctx) {
-        SharedPreferences sp = getPrefs(ctx);
+        SharedPreferences sp = ctx.getSharedPreferences(Const.PREFS_AUTOINCREMENT_ID, Context.MODE_PRIVATE);
         int id = sp.getInt(NOTIFICATION_ID_FLAG, -1) + 1;
+        if (id == 1000000) id = 0; // just in case someone uses the app excessively
         sp.edit().putInt(NOTIFICATION_ID_FLAG, id).apply();
         return id;
     }

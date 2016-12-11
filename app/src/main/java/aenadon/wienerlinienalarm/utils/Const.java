@@ -66,6 +66,7 @@ public interface Const {
 
     // SharedPreferences names
     String PREFS_SCHEDULED_ALARMS = "SCHEDULED_ALARMS_LIST";
+    String PREFS_AUTOINCREMENT_ID = "AUTOINCREMENT";
 
     String BUNDLE_DATE_PICKER = "BUNDLE_DATE_PICKER";
     String BUNDLE_TIME_PICKER = "BUNDLE_TIME_PICKER";
