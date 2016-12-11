@@ -33,9 +33,12 @@ public class AlarmUtils {
     private static final String LOG_TAG = AlarmUtils.class.getSimpleName();
     private static final String apikey = BuildConfig.API_TOKEN;
 
+    private static final String INTENT_ACTION = "REQUEST_ALARM";
+
     private static PendingIntent getPendingIntent(Context ctx, String uid) {
         Intent i = new Intent(ctx, AlarmReceiver.class);
         i.putExtra(Const.EXTRA_ALARM_ID, uid);
+        i.setAction(INTENT_ACTION);
         return PendingIntent.getBroadcast(ctx, getAutoincrementingInteger(ctx), i, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
@@ -226,6 +229,12 @@ public class AlarmUtils {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(LOG_TAG, "Received \"boot complete\": rescheduling all alarms");
+
+            if (!INTENT_ACTION.equals(intent.getAction())) {
+                Log.e(LOG_TAG, "Intent Action code does not match");
+                return;
+            }
+
             SharedPreferences sp = getPrefs(context);
             Map<String,?> keys = sp.getAll();
 
