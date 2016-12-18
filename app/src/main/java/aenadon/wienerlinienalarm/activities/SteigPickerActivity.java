@@ -115,6 +115,7 @@ public class SteigPickerActivity extends AppCompatActivity {
             steigDisplay.clear();
             for (String steigId : steigs) {
                 try {
+                    if (steigId.equals("")) continue; // or else we get an unexplainable 400
                     Response<ResponseBody> response = RetrofitInfo.getRealtimeInfo().create(RetrofitInfo.RealtimeCalls.class).getRealtime(apikey, steigId).execute();
                     if (response.isSuccessful()) {
                         JSONArray monitors = new JSONObject(response.body().string())

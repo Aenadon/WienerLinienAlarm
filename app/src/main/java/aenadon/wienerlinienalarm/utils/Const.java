@@ -16,7 +16,7 @@ public interface Const {
     int CSV_PART_VERSION = 0;
     int CSV_PART_STATION = 1;
     int CSV_PART_STEIG = 2;
-    String CSV_FILE_SEPARATOR = "--------------------"; // 20 * -
+    String CSV_FILE_SEPARATOR = "--------------------\n"; // 20 * - + \n
 
     // Alarm types
     int ALARM_ONETIME = 0;
