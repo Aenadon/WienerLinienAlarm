@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,10 +23,11 @@ import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.Pickers;
 import io.realm.Realm;
 
+import static aenadon.wienerlinienalarm.utils.Const.EXTRA_ALARM_MODE;
+
 public class AlarmSetterActivity extends AppCompatActivity {
 
     private int alarmMode = Const.ALARM_ONETIME;
-    private final String alarmModeKey = "ALARM_MODE";
 
     private final Pickers.DatePickerFragment datePicker = new Pickers.DatePickerFragment();
     private final Pickers.TimePickerFragment timePicker = new Pickers.TimePickerFragment();
@@ -48,12 +50,15 @@ public class AlarmSetterActivity extends AppCompatActivity {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        alarmMode = getIntent().getIntExtra(Const.EXTRA_ALARM_MODE, Const.ALARM_ONETIME); // default: onetime
+        pickAlarmFrequency(alarmMode); // initial setup
+
         Realm.init(AlarmSetterActivity.this);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(alarmModeKey, alarmMode);
+        outState.putInt(EXTRA_ALARM_MODE, alarmMode);
         outState.putBundle(Const.BUNDLE_DATE_PICKER, datePicker.saveState());
         outState.putBundle(Const.BUNDLE_TIME_PICKER, timePicker.saveState());
         outState.putBundle(Const.BUNDLE_DAYS_PICKER, daysPicker.saveState());
@@ -66,7 +71,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        alarmMode = savedInstanceState.getInt(alarmModeKey);
+        alarmMode = savedInstanceState.getInt(EXTRA_ALARM_MODE);
         datePicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DATE_PICKER));
         timePicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_TIME_PICKER));
         daysPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DAYS_PICKER));
@@ -123,16 +128,23 @@ public class AlarmSetterActivity extends AppCompatActivity {
     }
 
     private void pickAlarmFrequency(int setTo) {
+        final RadioButton radioOnetime = (RadioButton)findViewById(R.id.radio_frequency_one_time);
+        final RadioButton radioRecurring = (RadioButton)findViewById(R.id.radio_frequency_recurring);
+
         LinearLayout chooseDateContainer = (LinearLayout) findViewById(R.id.choose_date_container);
         LinearLayout chooseDaysContainer = (LinearLayout) findViewById(R.id.choose_days_container);
 
         // show selected, hide previous
         switch (setTo) {
             case Const.ALARM_ONETIME:
+                radioOnetime.setChecked(true);
+                radioRecurring.setChecked(false);
                 chooseDaysContainer.setVisibility(View.GONE);
                 chooseDateContainer.setVisibility(View.VISIBLE);
                 break;
             case Const.ALARM_RECURRING:
+                radioOnetime.setChecked(false);
+                radioRecurring.setChecked(true);
                 chooseDateContainer.setVisibility(View.GONE);
                 chooseDaysContainer.setVisibility(View.VISIBLE);
                 break;
@@ -223,7 +235,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
         AlarmUtils.scheduleAlarm(AlarmSetterActivity.this, newAlarm);
 
-        setResult(Activity.RESULT_OK, new Intent().putExtra(Const.EXTRA_ALARM_MODE, alarmMode));
+        setResult(Activity.RESULT_OK, new Intent().putExtra(EXTRA_ALARM_MODE, alarmMode));
         finish(); // we're done here.
     }
 

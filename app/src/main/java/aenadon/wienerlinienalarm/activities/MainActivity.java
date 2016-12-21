@@ -32,9 +32,12 @@ import aenadon.wienerlinienalarm.adapter.AlarmListAdapter;
 import aenadon.wienerlinienalarm.utils.Const;
 import io.realm.Realm;
 
+import static aenadon.wienerlinienalarm.utils.Const.EXTRA_ALARM_MODE;
+
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
 
     // makes sure to refresh the list when an alarm goes off
     private BroadcastReceiver refreshReceiver;
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -65,7 +68,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(MainActivity.this, AlarmSetterActivity.class), 0);
+                Intent i = new Intent(MainActivity.this, AlarmSetterActivity.class);
+                i.putExtra(Const.EXTRA_ALARM_MODE, mViewPager.getCurrentItem());
+                startActivityForResult(i, 0);
             }
         });
 
@@ -96,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             mSectionsPagerAdapter.notifyDataSetChanged();
+            if (data != null) {
+                mViewPager.setCurrentItem(data.getIntExtra(EXTRA_ALARM_MODE, 0));
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -153,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         public static AlarmMenuFragment getInstance(int pageNumber) {
             AlarmMenuFragment fragment = new AlarmMenuFragment();
             Bundle args = new Bundle();
-            args.putInt(Const.EXTRA_ALARM_MODE, pageNumber);
+            args.putInt(EXTRA_ALARM_MODE, pageNumber);
             fragment.setArguments(args);
             return fragment;
         }
@@ -163,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             ListView list = (ListView) rootView.findViewById(R.id.alarm_list);
-            alarmMode = getArguments().getInt(Const.EXTRA_ALARM_MODE);
+            alarmMode = getArguments().getInt(EXTRA_ALARM_MODE);
             adapter = new AlarmListAdapter(getActivity(), alarmMode);
             list.setAdapter(adapter);
 
@@ -184,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent i = new Intent(getActivity(), DialogEditActivity.class);
-                    i.putExtra(Const.EXTRA_ALARM_MODE, alarmMode);
+                    i.putExtra(EXTRA_ALARM_MODE, alarmMode);
                     i.putExtra(Const.EXTRA_DB_POSITION, position);
                     startActivityForResult(i, Const.REQUEST_EDIT_ALARM);
                 }
