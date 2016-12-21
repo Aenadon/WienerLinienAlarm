@@ -70,16 +70,26 @@ class GetApiFiles extends AsyncTask<Void, Void, Integer> {
                 String haltestellenCSV = haltestellenResponse.body().string();
                 String steigCSV = steigResponse.body().string();
 
-                List<String> items = new ArrayList<>(Arrays.asList(haltestellenCSV.split("\n")));
+                List<String> haltestellenList = new ArrayList<>(Arrays.asList(haltestellenCSV.split("\n")));
+                List<String> steigList = new ArrayList<>(Arrays.asList(steigCSV.split("\n")));
 
-                for (int i = 0; i < items.size(); i++) {
-                    String[] columns = items.get(i).split(";");
-                    if (!steigCSV.contains(columns[0])) {
-                        items.remove(i);
+                for (int i = steigList.size() - 1; i >= 0; i--) { // backwards because removing elements alters the indexes
+                    String[] columns = steigList.get(i).split(";");
+                    if (columns[5].equals("\"\"")) { // columns[5] == RBL_NUMMER -> if no RBL_NUMMER, then remove it
+                        steigList.remove(i);
                     }
                 }
 
-                haltestellenCSV = TextUtils.join("\n", items.toArray());
+                steigCSV = TextUtils.join("\n", steigList.toArray());
+
+                for (int i = haltestellenList.size() - 1; i >= 0; i--) {
+                    String[] columns = haltestellenList.get(i).split(";");
+                    if (!steigCSV.contains(columns[0])) {
+                        haltestellenList.remove(i);
+                    }
+                }
+
+                haltestellenCSV = TextUtils.join("\n", haltestellenList.toArray());
 
                 String combined =
                         versionResponseString      // last update date
