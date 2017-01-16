@@ -35,6 +35,9 @@ public class AlarmUtils {
 
     private static final String INTENT_ACTION = "REQUEST_ALARM";
 
+    private static final long thirtySeconds = 30000;
+    private static final long oneMinute = 60000;
+
     private static PendingIntent getPendingIntent(Context ctx, String uid) {
         Intent i = new Intent(ctx, AlarmReceiver.class);
         i.putExtra(Const.EXTRA_ALARM_ID, uid);
@@ -46,7 +49,10 @@ public class AlarmUtils {
         AlarmManager alarmManager = (AlarmManager)ctx.getSystemService(Context.ALARM_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(), getPendingIntent(ctx, alarm.getId()));
+            // alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(), getPendingIntent(ctx, alarm.getId()));
+
+            // tries to make sure that the alarm triggers between one minute before and thirty seconds after alarm point
+            alarmManager.setWindow(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis() - oneMinute, oneMinute + thirtySeconds, getPendingIntent(ctx, alarm.getId()));
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(), getPendingIntent(ctx, alarm.getId()));
         }
