@@ -11,12 +11,17 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 import aenadon.wienerlinienalarm.BuildConfig;
@@ -35,8 +40,8 @@ public class AlarmUtils {
 
     private static final String INTENT_ACTION = "REQUEST_ALARM";
 
+    private static final long tenSeconds = 10000;
     private static final long thirtySeconds = 30000;
-    private static final long oneMinute = 60000;
 
     private static PendingIntent getPendingIntent(Context ctx, String uid) {
         Intent i = new Intent(ctx, AlarmReceiver.class);
@@ -49,15 +54,19 @@ public class AlarmUtils {
         AlarmManager alarmManager = (AlarmManager)ctx.getSystemService(Context.ALARM_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(), getPendingIntent(ctx, alarm.getId()));
-
-            // tries to make sure that the alarm triggers between one minute before and thirty seconds after alarm point
-            alarmManager.setWindow(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis() - oneMinute, oneMinute + thirtySeconds, getPendingIntent(ctx, alarm.getId()));
+            // tries to make sure that the alarm triggers between 10 sec before and 20 sec after alarm point
+            alarmManager.setWindow(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis() - tenSeconds, thirtySeconds, getPendingIntent(ctx, alarm.getId()));
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(), getPendingIntent(ctx, alarm.getId()));
         }
 
         addAlarmToPrefs(ctx, alarm.getId());
+
+        // display a toast of next alarm occuring
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(alarm.getAlarmInstantMillis());
+        Date d = new Date(c.getTimeInMillis());
+        Toast.makeText(ctx, String.format(Locale.getDefault(), ctx.getString(R.string.alarm_next_ring), DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(d)), Toast.LENGTH_LONG).show();
 
         Log.d(LOG_TAG, "Scheduled alarm with id: " + alarm.getId());
     }
