@@ -34,6 +34,9 @@
     <string name="alarm_no_station_selected">No station selected</string>
 
     <string name="alarm_recurring_dialog_expl">Alarm should occur every:</string>
+
+    <string name="alarm_next_ring" formatted="false">Next alarm set for %s</string>
+
     <!--All Weekdays-->
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
