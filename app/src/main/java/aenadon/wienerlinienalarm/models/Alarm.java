@@ -1,9 +1,12 @@
 package aenadon.wienerlinienalarm.models;
 
 
+import android.util.Log;
+
 import java.util.Calendar;
 import java.util.UUID;
 
+import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.Const;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -146,6 +149,7 @@ public class Alarm extends RealmObject {
 
     // EXTRA
     public long getAlarmInstantMillis() {
+        String LOG_TAG = Alarm.class.getSimpleName();
         Calendar c = Calendar.getInstance();
         switch(alarmMode) {
             case Const.ALARM_ONETIME:
@@ -159,11 +163,15 @@ public class Alarm extends RealmObject {
                 for (int i = currentWeekday; i <= days.length + currentWeekday; i++) {
                     if (days[i % 7]) {
                         if (i % 7 == currentWeekday) {
-                            Calendar d = Calendar.getInstance();
-                            int currentHour = d.get(Calendar.HOUR_OF_DAY);
-                            int currentMinute = d.get(Calendar.MINUTE);
+                            Calendar alarmTime = Calendar.getInstance();
+                            alarmTime.set(Calendar.HOUR_OF_DAY, alarmHour);
+                            alarmTime.set(Calendar.MINUTE, alarmMinute);
+                            alarmTime.set(Calendar.SECOND, 0);
 
-                            if (alarmHour < currentHour || (alarmHour == currentHour && alarmMinute <= currentMinute)) {
+                            Calendar realTime = Calendar.getInstance();
+
+                            Log.d(LOG_TAG, "Alarmtime: " + alarmTime.getTimeInMillis() + "\n Realtime: " + realTime.getTimeInMillis());
+                            if (realTime.getTimeInMillis() > alarmTime.getTimeInMillis() - AlarmUtils.tenSeconds) {
                                 offset = 7;
                             } else {
                                 offset = 0;
@@ -176,8 +184,10 @@ public class Alarm extends RealmObject {
                     }
                 }
                 if (offset == -1) {
-                    throw new Error("Day comparison went wrong - offset still -1!");
+                    throw new Error("Day comparison went wrong - offset did not change!");
                 }
+
+                Log.d(LOG_TAG, "Offset: " + offset);
                 c.add(Calendar.DAY_OF_MONTH, offset);
                 c.set(Calendar.HOUR_OF_DAY, alarmHour);
                 c.set(Calendar.MINUTE, alarmMinute);
