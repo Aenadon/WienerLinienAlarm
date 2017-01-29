@@ -120,7 +120,7 @@ public class AlarmUtils {
             final String alarmId = intent.getStringExtra(Const.EXTRA_ALARM_ID);
 
             final SharedPreferences sp = getPrefs(context);
-            final int notificationId = sp.getInt(NOTIFICATION_ID_FLAG, 0);
+            final int notificationId = getAutoincrementingInteger(context);
 
             Realm.init(context);
             final Realm realm = Realm.getDefaultInstance();
