@@ -53,7 +53,7 @@ public class AlarmUtils {
         AlarmManager alarmManager = (AlarmManager)ctx.getSystemService(Context.ALARM_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // Window set for alarmTime - 10sec to alarmTime. It will probably never trigger exactly in that window but very soon after
+            // Window set for alarmTime - 10sec to alarmTime + 20sec. It will probably never trigger exactly in that window but very soon after
             alarmManager.setWindow(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis() - tenSeconds, tenSeconds*3, getPendingIntent(ctx, alarm.getId()));
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getAlarmInstantMillis(), getPendingIntent(ctx, alarm.getId()));
