@@ -4,9 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -14,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -21,12 +27,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import aenadon.wienerlinienalarm.BuildConfig;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.adapter.AlarmListAdapter;
 import aenadon.wienerlinienalarm.utils.Const;
@@ -48,6 +56,42 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         new GetApiFiles(MainActivity.this).execute(); // get CSV files/check for updates on them
+
+        // TODO finish this
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final String BATTERY_NEVER_ASK_AGAIN = "BATTERY_NEVER_ASK_AGAIN";
+            final SharedPreferences batteryNeverAskAgain = MainActivity.this.getPreferences(MODE_PRIVATE);
+            boolean batteryNeverAskAgainChecked = batteryNeverAskAgain.getBoolean(BATTERY_NEVER_ASK_AGAIN, false);
+
+            PowerManager pm = (PowerManager)getSystemService(POWER_SERVICE);
+            if (!batteryNeverAskAgainChecked && !pm.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)) {
+                final View checkBoxView = View.inflate(MainActivity.this, R.layout.checkbox, null);
+
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(getString(R.string.battery_message_title))
+                        .setMessage(getString(R.string.battery_message_text))
+                        .setView(checkBoxView)
+                        .setPositiveButton(R.string.allow, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    Intent batterySettings = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                                    startActivity(batterySettings);
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                CheckBox neverShowAgain = (CheckBox)checkBoxView.findViewById(R.id.never_show_again_checkbox);
+                                if (neverShowAgain.isChecked()) {
+                                    batteryNeverAskAgain.edit().putBoolean(BATTERY_NEVER_ASK_AGAIN, true).apply();
+                                }
+                            }
+                        })
+                        .show();
+            }
+        }
 
         Realm.init(MainActivity.this); // for all database related stuff
 

@@ -1,7 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--https://stackoverflow.com/questions/3656371/dynamic-string-using-string-xml/24903097#24903097-->
+<!DOCTYPE resources [
+    <!ENTITY appname "WienerLinien Alarm">
+    ]>
+
 <resources>
-    <string name="app_name">WienerLinien Alarm</string>
+    <string name="app_name">&appname;</string>
 
     <!--Main screen menu-->
+        <!--Battery optimization warning-->
+        <string name="battery_message_title">Whitelist permission needed</string>
+        <string name="battery_message_text">In order for this app to be able to send you notifications at the desired time, you need to allow
+        \"&appname;\" to \"ignore battery optimizations\". Pressing "Allow" takes you to the settings menu where you can do so. If you do not
+        feel like it and would like to try the app first, press "Cancel". Please keep in mind that if you cancel, notifications may not arrive
+        on time when your device is inactive.</string>
+        <string name="allow">Allow</string>
+        <string name="never_show_again">Never show again</string>
+
     <string name="list_empty">No alarms set</string>
 
     <!--Alarm Setup 1-->
