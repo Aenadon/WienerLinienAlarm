@@ -7,16 +7,20 @@
 <resources>
     <string name="app_name">&appname;</string>
 
-    <!--Main screen menu-->
-        <!--Battery optimization warning-->
-        <string name="battery_message_title">Whitelist permission needed</string>
-        <string name="battery_message_text">In order for this app to be able to send you notifications at the desired time, you need to allow
-        \"&appname;\" to \"ignore battery optimizations\". Pressing "Allow" takes you to the settings menu where you can do so. If you do not
-        feel like it and would like to try the app first, press "Cancel". Please keep in mind that if you cancel, notifications may not arrive
-        on time when your device is inactive.</string>
-        <string name="allow">Allow</string>
-        <string name="never_show_again">Never show again</string>
+    <!--Battery optimization warnings-->
+    <string name="battery_message_title">Whitelist permission needed</string>
+    <string name="battery_message_text">In order for this app to be able to send you notifications at the desired time, you need to put
+    \"&appname;\" on your battery optimizations whitelist to allow it to run in the background. If you are using a task killer, you have
+    to whitelist the app there as well. Keep in mind that notifications will not work correctly if this app is not whitelisted.</string>
 
+    <string name="doze_message_title">Doze Mode</string>
+    <string name="doze_message_text">With Android 6.0, a new feature called \"Doze\" was introduced, preventing apps from running in the
+    background. Additionally to disabling the battery optimizations, you need to also disable Doze mode for \"&appname;\". By selecting
+    \"Allow\", you will be taken to the settings where you can do so.</string>
+    <string name="allow">Allow</string>
+    <string name="never_show_again">Never show again</string>
+
+    <!--Main screen menu-->
     <string name="list_empty">No alarms set</string>
 
     <!--Alarm Setup 1-->

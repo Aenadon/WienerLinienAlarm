@@ -1,6 +1,7 @@
 package aenadon.wienerlinienalarm.activities;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -57,41 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         new GetApiFiles(MainActivity.this).execute(); // get CSV files/check for updates on them
 
-        // TODO finish this
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            final String BATTERY_NEVER_ASK_AGAIN = "BATTERY_NEVER_ASK_AGAIN";
-            final SharedPreferences batteryNeverAskAgain = MainActivity.this.getPreferences(MODE_PRIVATE);
-            boolean batteryNeverAskAgainChecked = batteryNeverAskAgain.getBoolean(BATTERY_NEVER_ASK_AGAIN, false);
-
-            PowerManager pm = (PowerManager)getSystemService(POWER_SERVICE);
-            if (!batteryNeverAskAgainChecked && !pm.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)) {
-                final View checkBoxView = View.inflate(MainActivity.this, R.layout.checkbox, null);
-
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle(getString(R.string.battery_message_title))
-                        .setMessage(getString(R.string.battery_message_text))
-                        .setView(checkBoxView)
-                        .setPositiveButton(R.string.allow, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    Intent batterySettings = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-                                    startActivity(batterySettings);
-                                }
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                CheckBox neverShowAgain = (CheckBox)checkBoxView.findViewById(R.id.never_show_again_checkbox);
-                                if (neverShowAgain.isChecked()) {
-                                    batteryNeverAskAgain.edit().putBoolean(BATTERY_NEVER_ASK_AGAIN, true).apply();
-                                }
-                            }
-                        })
-                        .show();
-            }
-        }
+        showBatteryWarning();
 
         Realm.init(MainActivity.this); // for all database related stuff
 
@@ -129,6 +96,63 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         registerReceiver(refreshReceiver, intentFilter);
+    }
+
+    private void showBatteryWarning() {
+        final SharedPreferences batteryReminderPrefs = MainActivity.this.getPreferences(MODE_PRIVATE);
+        final String BATTERY_REMINDER = "BATTERY_REMINDER";
+        final String BATTERY_REMINDER_DOZE = "BATTERY_REMINDER_DOZE";
+
+        boolean batteryReminderDismissed = batteryReminderPrefs.getBoolean(BATTERY_REMINDER, false);
+        final boolean batteryReminderDozeDismissed = batteryReminderPrefs.getBoolean(BATTERY_REMINDER_DOZE, false);
+
+        View batteryReminderDialog = View.inflate(MainActivity.this, R.layout.checkbox, null);
+        final CheckBox batteryReminderCheckbox = (CheckBox)batteryReminderDialog.findViewById(R.id.battery_reminder_checkbox);
+        // we need to have 2 separate objects of the view because we can't
+        // assign the same instance of the view to two dialog boxes at once
+        View batteryReminderDialog2 = View.inflate(MainActivity.this, R.layout.checkbox, null);
+        final CheckBox batteryReminderCheckbox2 = (CheckBox)batteryReminderDialog2.findViewById(R.id.battery_reminder_checkbox);
+
+        PowerManager pm = (PowerManager)getSystemService(POWER_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !pm.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID) && !batteryReminderDozeDismissed) {
+
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(getString(R.string.doze_message_title))
+                    .setMessage(getString(R.string.doze_message_text))
+                    .setView(batteryReminderDialog)
+                    .setPositiveButton(R.string.allow, new DialogInterface.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.M)
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent batterySettings = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                            startActivity(batterySettings);
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (batteryReminderCheckbox.isChecked()) {
+                                batteryReminderPrefs.edit().putBoolean(BATTERY_REMINDER_DOZE, true).apply();
+                            }
+                        }
+                    })
+                    .show();
+        }
+        if (!batteryReminderDismissed) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(getString(R.string.battery_message_title))
+                    .setMessage(getString(R.string.battery_message_text))
+                    .setView(batteryReminderDialog2)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (batteryReminderCheckbox2.isChecked()) {
+                                batteryReminderPrefs.edit().putBoolean(BATTERY_REMINDER, true).apply();
+                            }
+                        }
+                    })
+                    .show();
+        }
     }
 
     @Override
