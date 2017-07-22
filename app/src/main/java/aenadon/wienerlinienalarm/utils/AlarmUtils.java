@@ -36,7 +36,7 @@ import retrofit2.Response;
 public class AlarmUtils {
 
     private static final String LOG_TAG = AlarmUtils.class.getSimpleName();
-    private static final String apikey = BuildConfig.API_TOKEN;
+    private static final String apikey = BuildConfig.API_KEY;
 
     private static final String INTENT_ACTION = "REQUEST_ALARM";
 

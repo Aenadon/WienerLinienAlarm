@@ -110,7 +110,7 @@ public class SteigPickerActivity extends AppCompatActivity {
         @SuppressWarnings("unchecked")
         @Override
         protected Integer doInBackground(List<String>... params) {
-            String apikey = BuildConfig.API_TOKEN;
+            String apikey = BuildConfig.API_KEY;
             List<String> steigs = params[0];
             steigDisplay.clear();
             for (String steigId : steigs) {

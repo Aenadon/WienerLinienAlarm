@@ -1,16 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 
-//noinspection GroovyMissingReturnStatement
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "aenadon.wienerlinienalarm"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -19,15 +18,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         buildTypes.each {
-            it.buildConfigField('String', 'API_TOKEN', WienerLinienAPIToken)
+            it.buildConfigField('String', 'API_KEY', WienerLinienAPIKey)
         }
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:design:25.1.1'
+    compile 'com.android.support:appcompat-v7:25.4.0'
+    compile 'com.android.support:design:25.4.0'
 
     // Extra Libraries
     compile 'com.squareup.retrofit2:retrofit:2.1.0'

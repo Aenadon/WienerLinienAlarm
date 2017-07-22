@@ -273,7 +273,8 @@ public class Pickers {
             viewToUse = (TextView)((Activity)ctx).findViewById(this.viewResId);
 
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION)
+                    .putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
 
             if (!firstRun) { // if user already saved a ringtone during the session, set it
                 // he couldn't have done it before the first run
