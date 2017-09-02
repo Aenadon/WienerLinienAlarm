@@ -2,7 +2,7 @@ package aenadon.wienerlinienalarm.utils;
 
 import android.content.Context;
 
-import aenadon.wienerlinienalarm.models.Alarm;
+import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -11,7 +11,7 @@ public class RealmService {
 
     // This class contains some methods for working with Realm
 
-    public static RealmResults<Alarm> getAlarms(Context c, int type) {
+    public static RealmResults<LegacyAlarm> getAlarms(Context c, int type) {
         Realm.init(c);
         Realm realm = Realm.getDefaultInstance();
 
@@ -51,7 +51,7 @@ public class RealmService {
                 throw new Error("Non-existent alarm mode");
         }
 
-        return realm.where(Alarm.class).equalTo("alarmMode", type).findAllSorted(sortAfter, sortOrder);
+        return realm.where(LegacyAlarm.class).equalTo("alarmMode", type).findAllSorted(sortAfter, sortOrder);
     }
 
 }

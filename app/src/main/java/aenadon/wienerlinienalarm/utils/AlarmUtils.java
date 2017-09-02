@@ -26,7 +26,7 @@ import java.util.Map;
 
 import aenadon.wienerlinienalarm.BuildConfig;
 import aenadon.wienerlinienalarm.R;
-import aenadon.wienerlinienalarm.models.Alarm;
+import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
 import io.realm.Realm;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -49,7 +49,7 @@ public class AlarmUtils {
         return PendingIntent.getBroadcast(ctx, getAutoincrementingInteger(ctx), i, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
-    public static void scheduleAlarm(Context ctx, Alarm alarm) {
+    public static void scheduleAlarm(Context ctx, LegacyAlarm alarm) {
         AlarmManager alarmManager = (AlarmManager)ctx.getSystemService(Context.ALARM_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -70,7 +70,7 @@ public class AlarmUtils {
         Log.d(LOG_TAG, "Scheduled alarm with id: " + alarm.getId());
     }
 
-    public static void cancelAlarm(Context ctx, Alarm alarm) {
+    public static void cancelAlarm(Context ctx, LegacyAlarm alarm) {
         AlarmManager alarmManager = (AlarmManager)ctx.getSystemService(Context.ALARM_SERVICE);
         PendingIntent pi = getPendingIntent(ctx, alarm.getId());
         pi.cancel();
@@ -98,14 +98,14 @@ public class AlarmUtils {
         SharedPreferences.Editor se = getPrefs(ctx).edit();
         se.putBoolean(uid, true);
         se.apply();
-        Log.v(LOG_TAG, "Alarm with id " + uid + " added to prefs");
+        Log.v(LOG_TAG, "LegacyAlarm with id " + uid + " added to prefs");
     }
 
     private static void removeAlarmFromPrefs(Context ctx, String uid) {
         SharedPreferences.Editor se = getPrefs(ctx).edit();
         se.remove(uid);
         se.apply();
-        Log.v(LOG_TAG, "Alarm with id " + uid + " removed from prefs");
+        Log.v(LOG_TAG, "LegacyAlarm with id " + uid + " removed from prefs");
     }
 
 
@@ -125,7 +125,7 @@ public class AlarmUtils {
             Realm.init(context);
             final Realm realm = Realm.getDefaultInstance();
 
-            final Alarm alarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+            final LegacyAlarm alarm = realm.where(LegacyAlarm.class).equalTo("id", alarmId).findFirst();
 
             final String ringtone = alarm.getChosenRingtone();
             final int vibrationMode = alarm.getChosenVibrationMode();
@@ -202,7 +202,7 @@ public class AlarmUtils {
                         case Const.ALARM_ONETIME:
                             removeAlarmFromPrefs(context, alarmId);
                             realm.beginTransaction();
-                            realm.where(Alarm.class).equalTo("id", alarmId).findFirst().deleteFromRealm();
+                            realm.where(LegacyAlarm.class).equalTo("id", alarmId).findFirst().deleteFromRealm();
                             realm.commitTransaction();
                             break;
                         case Const.ALARM_RECURRING:
@@ -260,9 +260,9 @@ public class AlarmUtils {
                 if (entry.getKey().equals(NOTIFICATION_ID_FLAG)) continue; // This is not an alarm!
 
                 Log.v(LOG_TAG, "Reschedule entry " + entry.getKey());
-                Alarm alarm = realm.where(Alarm.class).equalTo("id", entry.getKey()).findFirst();
+                LegacyAlarm alarm = realm.where(LegacyAlarm.class).equalTo("id", entry.getKey()).findFirst();
                 if (alarm == null) {
-                    Log.w(LOG_TAG, "Alarm with id " + entry.getKey() + " is null! Removing from prefs...");
+                    Log.w(LOG_TAG, "LegacyAlarm with id " + entry.getKey() + " is null! Removing from prefs...");
                     removeAlarmFromPrefs(context, entry.getKey());
                 } else {
                     scheduleAlarm(context, alarm);

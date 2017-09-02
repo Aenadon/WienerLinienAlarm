@@ -16,7 +16,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import aenadon.wienerlinienalarm.R;
-import aenadon.wienerlinienalarm.models.Alarm;
+import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
 import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.Const;
@@ -204,7 +204,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
             return; // if error, we're done here
         }
 
-        Alarm newAlarm = new Alarm();
+        LegacyAlarm newAlarm = new LegacyAlarm();
         newAlarm.setAlarmMode(alarmMode);
         switch (alarmMode) {
             case Const.ALARM_ONETIME:

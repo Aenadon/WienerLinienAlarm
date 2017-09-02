@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import aenadon.wienerlinienalarm.R;
-import aenadon.wienerlinienalarm.models.Alarm;
+import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.RealmService;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
@@ -19,13 +19,13 @@ public class AlarmListAdapter extends BaseAdapter {
     private final Context ctx;
     private final int alarmModePage;
 
-    private final RealmResults<Alarm> alarms;
+    private final RealmResults<LegacyAlarm> alarms;
 
     public AlarmListAdapter(Context c, int alarmModePage) {
         ctx = c;
         this.alarmModePage = alarmModePage;
 
-        alarms = RealmService.getAlarms(alarmModePage);
+        alarms = RealmService.getAlarms(c, alarmModePage);
     }
 
     @Override public Object getItem(int position) {
@@ -55,7 +55,7 @@ public class AlarmListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder)convertView.getTag();
         }
 
-        Alarm alarmElement = alarms.get(position);
+        LegacyAlarm alarmElement = alarms.get(position);
 
         String date;
         String time = StringDisplay.getTime(alarmElement.getAlarmHour(), alarmElement.getAlarmMinute());

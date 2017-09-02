@@ -2,6 +2,7 @@ package aenadon.wienerlinienalarm.utils;
 
 import aenadon.wienerlinienalarm.R;
 
+@Deprecated
 public interface Const {
 
     // This class is for constants used throughout the app.
@@ -18,7 +19,7 @@ public interface Const {
     int CSV_PART_STEIG = 2;
     String CSV_FILE_SEPARATOR = "--------------------\n"; // 20 * - + \n
 
-    // Alarm types
+    // LegacyAlarm types
     int ALARM_ONETIME = 0;
     int ALARM_RECURRING = 1;
 

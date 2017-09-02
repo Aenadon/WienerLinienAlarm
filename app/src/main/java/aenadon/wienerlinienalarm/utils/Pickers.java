@@ -22,7 +22,7 @@ import java.util.Calendar;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.activities.StationPickerActivity;
-import aenadon.wienerlinienalarm.models.Alarm;
+import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
 
 public class Pickers {
 
@@ -79,7 +79,7 @@ public class Pickers {
             return chosenDate;
         }
 
-        public boolean dateChanged(Alarm alarm) {
+        public boolean dateChanged(LegacyAlarm alarm) {
             // if date is NULL OR date is SAME, then nothing changed, return false
             // else something changed, return true
             return !(chosenDate == null || Arrays.equals(chosenDate, alarm.getOneTimeDateAsArray()));
@@ -151,7 +151,7 @@ public class Pickers {
             return chosenTime;
         }
 
-        public boolean timeChanged(Alarm alarm) {
+        public boolean timeChanged(LegacyAlarm alarm) {
             // if time is NULL OR time is SAME, then nothing changed, return false
             // else something changed, return true
             return !(chosenTime == null || Arrays.equals(chosenTime, alarm.getTimeAsArray()));
@@ -233,7 +233,7 @@ public class Pickers {
             return choice;
         }
 
-        public boolean daysChanged(Alarm alarm) {
+        public boolean daysChanged(LegacyAlarm alarm) {
             // if days are NULL OR days are SAME, then nothing changed, return false
             // else something changed, return true
             return !(choice == null || Arrays.equals(choice, alarm.getRecurringChosenDays()));
@@ -296,7 +296,7 @@ public class Pickers {
             viewToUse.setText(StringDisplay.getRingtone(ctx, pickedRingtone));
         }
 
-        public boolean ringtoneChanged(Alarm alarm) {
+        public boolean ringtoneChanged(LegacyAlarm alarm) {
             // if ringtone is SAME, then nothing changed, return false
             // else something changed, return true
             return !(firstRun || // if user hasn't set anything yet
@@ -365,7 +365,7 @@ public class Pickers {
             else return pickedVibrationMode;
         }
 
-        public boolean vibrationChanged(Alarm alarm) {
+        public boolean vibrationChanged(LegacyAlarm alarm) {
             // if vibration is -1 OR vibration is SAME, then nothing changed, return false
             // else something changed, return true
             return !(pickedVibrationMode == -1 || pickedVibrationMode == alarm.getChosenVibrationMode());
@@ -444,7 +444,7 @@ public class Pickers {
             return pickedStationId != null; // if one of them is not null, none are null (all are set at once)
         }
 
-        public boolean stationChanged(Alarm alarm) {
+        public boolean stationChanged(LegacyAlarm alarm) {
             // if stationId is NULL OR stationId is SAME, then nothing changed, return false
             // else something changed, return true
             return !(pickedStationId == null || pickedStationId.equals(alarm.getStationId()));

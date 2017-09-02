@@ -1,4 +1,4 @@
-package aenadon.wienerlinienalarm.models;
+package aenadon.wienerlinienalarm.models.alarm;
 
 
 import android.util.Log;
@@ -12,7 +12,8 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
-public class Alarm extends RealmObject {
+@Deprecated
+public class LegacyAlarm extends RealmObject {
 
     @SuppressWarnings("CanBeFinal") // "The only restriction a RealmObject has is that fields are not allowed to be final, transient' or volatile."
     @PrimaryKey
@@ -32,7 +33,7 @@ public class Alarm extends RealmObject {
     private int alarmHour;
     private int alarmMinute;
 
-    // Alarm mode
+    // LegacyAlarm mode
     private String chosenRingtone; // can be null
     private int chosenVibrationMode; // constant values, see Const
 
@@ -47,7 +48,7 @@ public class Alarm extends RealmObject {
 
     /////
 
-    public Alarm() {
+    public LegacyAlarm() {
         id = UUID.randomUUID().toString();
     }
 
@@ -149,7 +150,7 @@ public class Alarm extends RealmObject {
 
     // EXTRA
     public long getAlarmInstantMillis() {
-        String LOG_TAG = Alarm.class.getSimpleName();
+        String LOG_TAG = LegacyAlarm.class.getSimpleName();
         Calendar c = Calendar.getInstance();
         switch(alarmMode) {
             case Const.ALARM_ONETIME:

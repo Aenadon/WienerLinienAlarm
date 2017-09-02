@@ -19,11 +19,11 @@
     <!--Main screen menu-->
     <string name="list_empty">No alarms set</string>
 
-    <!--Alarm Setup 1-->
+    <!--LegacyAlarm Setup 1-->
     <string name="activity_one_time_alarms">One time</string>
     <string name="activity_recurring_alarms">Recurring</string>
 
-    <!--Alarm Setup 2-->
+    <!--LegacyAlarm Setup 2-->
     <string name="activity_alarm_setter">Set Alarm</string>
     <string name="alarm_frequency">Alarm Frequency</string>
     <string name="alarm_frequency_once">One time</string>
@@ -81,7 +81,7 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
 
-    <!--Alarm settings-->
+    <!--LegacyAlarm settings-->
     <string name="alarm_settings">Alarm settings</string>
 
     <string name="delete_alarm_title">Delete alarm?</string>

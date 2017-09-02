@@ -13,7 +13,7 @@ import aenadon.wienerlinienalarm.R;
 
 public class StringDisplay {
 
-    // Used for parsing the display strings on Alarm set/edit
+    // Used for parsing the display strings on LegacyAlarm set/edit
 
     // Gets the onetime date in the phone's default locale
     public static String getOnetimeDate(int year, int month, int day) {

@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 import aenadon.wienerlinienalarm.R;
-import aenadon.wienerlinienalarm.models.Alarm;
+import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
 import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.Const;
@@ -27,8 +27,8 @@ import io.realm.RealmResults;
 
 public class DialogEditActivity extends AppCompatActivity {
 
-    private RealmResults<Alarm> alarms;
-    private Alarm alarmElement;
+    private RealmResults<LegacyAlarm> alarms;
+    private LegacyAlarm alarmElement;
     private int dbPosition;
 
     private final Realm realm = Realm.getDefaultInstance();
