@@ -135,7 +135,7 @@ public class AlarmUtils {
             final int stationIndex = alarm.getStationArrayIndex();
 
             Log.d(LOG_TAG, "Retrieving realtime data for " + alarmId + " ...");
-            RetrofitInfo.getRealtimeInfo().create(RetrofitInfo.RealtimeCalls.class).getRealtime(apikey, stationId).enqueue(new Callback<ResponseBody>() {
+            RetrofitService.getRealtimeInfo().create(RetrofitService.RealtimeCalls.class).getRealtime(apikey, stationId).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     String info = "";

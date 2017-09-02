@@ -10,7 +10,7 @@ import android.widget.TextView;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.models.Alarm;
 import aenadon.wienerlinienalarm.utils.Const;
-import aenadon.wienerlinienalarm.utils.RealmUtils;
+import aenadon.wienerlinienalarm.utils.RealmService;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
 import io.realm.RealmResults;
 
@@ -25,7 +25,7 @@ public class AlarmListAdapter extends BaseAdapter {
         ctx = c;
         this.alarmModePage = alarmModePage;
 
-        alarms = RealmUtils.getAlarms(c, alarmModePage);
+        alarms = RealmService.getAlarms(alarmModePage);
     }
 
     @Override public Object getItem(int position) {

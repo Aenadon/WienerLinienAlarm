@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 
 // This is a class containing the API calls
 
-public class RetrofitInfo {
+public class RetrofitService {
 
     private static final Retrofit csvInfo = new Retrofit.Builder()
             .baseUrl("http://data.wien.gv.at/csv/")

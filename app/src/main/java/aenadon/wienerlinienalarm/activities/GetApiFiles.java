@@ -13,28 +13,29 @@ import java.util.Arrays;
 import java.util.List;
 
 import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.enums.NetworkStatus;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.CSVWorkUtils;
 import aenadon.wienerlinienalarm.utils.Const;
-import aenadon.wienerlinienalarm.utils.RetrofitInfo;
+import aenadon.wienerlinienalarm.utils.RetrofitService;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-class GetApiFiles extends AsyncTask<Void, Void, Integer> {
+class GetApiFiles extends AsyncTask<Void, Void, NetworkStatus> {
 
-    private final ProgressDialog warten;
+    private final ProgressDialog loadingDialog;
     private final Context ctx;
 
     GetApiFiles(Context c) {
         ctx = c;
-        warten = new ProgressDialog(ctx);
-        warten.setCancelable(false);
-        warten.setIndeterminate(true);
-        warten.setMessage(ctx.getString(R.string.updating_stations));
+        loadingDialog = new ProgressDialog(ctx);
+        loadingDialog.setCancelable(false);
+        loadingDialog.setIndeterminate(true);
+        loadingDialog.setMessage(ctx.getString(R.string.updating_stations));
     }
 
     @Override
-    protected Integer doInBackground(Void... params) {
+    protected NetworkStatus doInBackground(Void... params) {
         try {
             File csv = new File(ctx.getFilesDir(), Const.CSV_FILENAME);
             String csvString = CSVWorkUtils.getCSVfromFile(ctx);
@@ -43,21 +44,21 @@ class GetApiFiles extends AsyncTask<Void, Void, Integer> {
             }
 
             // check file version
-            Response<ResponseBody> versionResponse = RetrofitInfo.getCSVInfo().create(RetrofitInfo.CSVCalls.class).getVersionCSV().execute();
+            Response<ResponseBody> versionResponse = RetrofitService.getCSVInfo().create(RetrofitService.CSVCalls.class).getVersionCSV().execute();
             String versionResponseString = versionResponse.body().string();
 
             if (!versionResponse.isSuccessful()) {
-                return Const.NETWORK_SERVER_ERROR;
+                return NetworkStatus.ERROR_SERVER;
             }
 
             if (csv.exists() && csvString != null) {
                 String x = csvString.split(Const.CSV_FILE_SEPARATOR)[Const.CSV_PART_VERSION];
                 if (x.equals(versionResponseString))
-                    return Const.NETWORK_SUCCESS; // if we already have the latest version, we're done here
+                    return NetworkStatus.SUCCESS;
             }
 
-            Response<ResponseBody> haltestellenResponse = RetrofitInfo.getCSVInfo().create(RetrofitInfo.CSVCalls.class).getHaltestellenCSV().execute();
-            Response<ResponseBody> steigResponse = RetrofitInfo.getCSVInfo().create(RetrofitInfo.CSVCalls.class).getSteigeCSV().execute();
+            Response<ResponseBody> haltestellenResponse = RetrofitService.getCSVInfo().create(RetrofitService.CSVCalls.class).getHaltestellenCSV().execute();
+            Response<ResponseBody> steigResponse = RetrofitService.getCSVInfo().create(RetrofitService.CSVCalls.class).getSteigeCSV().execute();
 
             if (!haltestellenResponse.isSuccessful() || !steigResponse.isSuccessful()) {
                 throw new IOException("At least one server response not successful " +
@@ -101,30 +102,24 @@ class GetApiFiles extends AsyncTask<Void, Void, Integer> {
                 FileOutputStream fos = new FileOutputStream(csv);
                 fos.write(combined.getBytes());
                 fos.close();
-                return Const.NETWORK_SUCCESS;
+                return NetworkStatus.SUCCESS;
             }
 
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
-            return Const.NETWORK_CONNECTION_ERROR;
+            return NetworkStatus.NO_CONNECTION;
         }
     }
 
     @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
-        warten.show();
-    }
-
-    @Override
-    protected void onPostExecute(Integer resultCode) {
-        if (warten != null) warten.dismiss();
+    protected void onPostExecute(NetworkStatus resultCode) {
+        if (loadingDialog != null) loadingDialog.dismiss();
 
         switch (resultCode) {
-            case Const.NETWORK_SERVER_ERROR:
+            case ERROR_SERVER:
                 AlertDialogs.serverNotAvailable(ctx);
                 break;
-            case Const.NETWORK_CONNECTION_ERROR:
+            case NO_CONNECTION:
                 AlertDialogs.noConnection(ctx);
                 break;
         }

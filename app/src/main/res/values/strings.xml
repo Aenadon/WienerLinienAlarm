@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--https://stackoverflow.com/questions/3656371/dynamic-string-using-string-xml/24903097#24903097-->
-<!DOCTYPE resources [
-    <!ENTITY appname "WienerLinien Alarm">
-    ]>
+<?xml version="1.0" encoding="utf-8"?><!--https://stackoverflow.com/questions/3656371/dynamic-string-using-string-xml/24903097#24903097--><!DOCTYPE resources [<!ENTITY appname "WienerLinien Alarm">]>
 
 <resources>
     <string name="app_name">&appname;</string>
@@ -48,7 +44,7 @@
     <string name="alarm_vibration_short">Short</string>
     <string name="alarm_vibration_medium">Medium</string>
     <string name="alarm_vibration_long">Long</string>
-    <string name="alarm_choose_station_direction">Choose station and line</string>
+    <string name="alarm_choose_station_direction">Choose station and lineId</string>
     <string name="alarm_choose_station_button">Select station</string>
     <string name="alarm_no_station_selected">No station selected</string>
 
@@ -79,7 +75,7 @@
     <string name="please_wait">Please wait&#8230;</string>
     <string name="search_for_station">Search for station</string>
     <string name="choose_station">Choose station</string>
-    <string name="choose_steig">Choose line and direction</string>
+    <string name="choose_steig">Choose lineId and direction</string>
 
     <string name="ok">OK</string>
     <string name="delete">Delete</string>
@@ -109,10 +105,11 @@
     <string name="no_steigs_error_text">No lines are available for this station. Please try again later.</string>
 
     <string name="missing_info_title">Could not create alarm</string>
-       <string name="missing_info_date">-Please choose your alarm date.</string>
-       <string name="missing_info_time">-Please choose your alarm time.</string>
-       <string name="missing_info_days">-Please choose your alarm days.</string>
-       <string name="missing_info_past">-Please choose a time in the future.</string>
+    <string name="missing_info_date">-Please choose your alarm date.</string>
+    <string name="missing_info_time">-Please choose your alarm time.</string>
+    <string name="missing_info_days">-Please choose your alarm days.</string>
+    <string name="missing_info_past">-Please choose a time in the future.</string>
     <string name="missing_info_station">-Please choose a station.</string>
+    <string name="title_activity_main2">Main2Activity</string>
 
 </resources>

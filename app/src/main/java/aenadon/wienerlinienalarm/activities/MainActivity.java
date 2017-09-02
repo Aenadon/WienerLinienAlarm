@@ -39,14 +39,13 @@ import aenadon.wienerlinienalarm.BuildConfig;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.adapter.AlarmListAdapter;
 import aenadon.wienerlinienalarm.utils.Const;
-import io.realm.Realm;
 
 import static aenadon.wienerlinienalarm.utils.Const.EXTRA_ALARM_MODE;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
+    private SectionsPagerAdapter tabAdapter;
+    private ViewPager tabContainer;
 
     // makes sure to refresh the list when an alarm goes off
     private BroadcastReceiver refreshReceiver;
@@ -56,49 +55,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new GetApiFiles(MainActivity.this).execute(); // get CSV files/check for updates on them
-
-        showBatteryWarning();
-
-        Realm.init(MainActivity.this); // for all database related stuff
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the two
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_main);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, AlarmSetterActivity.class);
-                i.putExtra(Const.EXTRA_ALARM_MODE, mViewPager.getCurrentItem());
-                startActivityForResult(i, 0);
-            }
-        });
-
-        // receiver to refresh view after alarm goes off
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Const.INTENT_REFRESH_LIST);
-
-        refreshReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                mSectionsPagerAdapter.notifyDataSetChanged();
-            }
-        };
-        registerReceiver(refreshReceiver, intentFilter);
+        updateStationData();
+        showBatteryWarningDialog();
+        setupViews();
+        setupAlarmReceiver();
     }
 
-    private void showBatteryWarning() {
+    private void updateStationData() {
+        new GetApiFiles(MainActivity.this).execute();
+    }
+
+    private void showBatteryWarningDialog() {
         final SharedPreferences batteryReminderPrefs = MainActivity.this.getPreferences(MODE_PRIVATE);
         final String BATTERY_REMINDER = "BATTERY_REMINDER";
         final String BATTERY_REMINDER_DOZE = "BATTERY_REMINDER_DOZE";
@@ -155,9 +122,43 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setupViews() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        tabAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        tabContainer = (ViewPager) findViewById(R.id.container);
+        tabContainer.setAdapter(tabAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(tabContainer);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_main);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, AlarmSetterActivity.class);
+                i.putExtra(Const.EXTRA_ALARM_MODE, tabContainer.getCurrentItem());
+                startActivityForResult(i, 0);
+            }
+        });
+    }
+
+    private void setupAlarmReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Const.INTENT_REFRESH_LIST);
+
+        refreshReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                tabAdapter.notifyDataSetChanged();
+            }
+        };
+        registerReceiver(refreshReceiver, intentFilter);
+    }
+
     @Override
     protected void onDestroy() {
-        // kill the receiver on activity destruction
         if (refreshReceiver != null) {
             unregisterReceiver(refreshReceiver);
             refreshReceiver = null;
@@ -168,9 +169,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            mSectionsPagerAdapter.notifyDataSetChanged();
+            tabAdapter.notifyDataSetChanged();
             if (data != null) {
-                mViewPager.setCurrentItem(data.getIntExtra(EXTRA_ALARM_MODE, 0));
+                tabContainer.setCurrentItem(data.getIntExtra(EXTRA_ALARM_MODE, 0));
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

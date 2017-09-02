@@ -20,7 +20,7 @@ import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.Pickers;
-import aenadon.wienerlinienalarm.utils.RealmUtils;
+import aenadon.wienerlinienalarm.utils.RealmService;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -58,7 +58,7 @@ public class DialogEditActivity extends AppCompatActivity {
             findViewById(R.id.dialog_vibration_box).setVisibility(View.GONE);
         }
 
-        alarms = RealmUtils.getAlarms(DialogEditActivity.this, pageNumber);
+        alarms = RealmService.getAlarms(DialogEditActivity.this, pageNumber);
         alarmElement = realm.copyFromRealm(alarms.get(dbPosition));
 
         switch (pageNumber) {

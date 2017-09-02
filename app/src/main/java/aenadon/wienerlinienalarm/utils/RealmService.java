@@ -7,7 +7,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-public class RealmUtils {
+public class RealmService {
 
     // This class contains some methods for working with Realm
 
