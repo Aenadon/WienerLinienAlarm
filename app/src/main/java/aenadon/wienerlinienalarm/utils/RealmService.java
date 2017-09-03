@@ -12,7 +12,6 @@ public class RealmService {
     // This class contains some methods for working with Realm
 
     public static RealmResults<LegacyAlarm> getAlarms(Context c, int type) {
-        Realm.init(c);
         Realm realm = Realm.getDefaultInstance();
 
         String[] sortAfter;

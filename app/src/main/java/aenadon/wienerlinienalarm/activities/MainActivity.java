@@ -38,16 +38,15 @@ import java.util.List;
 import aenadon.wienerlinienalarm.BuildConfig;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.adapter.AlarmListAdapter;
+import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.utils.Const;
-
-import static aenadon.wienerlinienalarm.utils.Const.EXTRA_ALARM_MODE;
+import aenadon.wienerlinienalarm.utils.Keys;
 
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter tabAdapter;
     private ViewPager tabContainer;
 
-    // makes sure to refresh the list when an alarm goes off
     private BroadcastReceiver refreshReceiver;
 
     @Override
@@ -138,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, AlarmSetterActivity.class);
-                i.putExtra(Const.EXTRA_ALARM_MODE, tabContainer.getCurrentItem());
+                i.putExtra(Keys.Extra.ALARM_MODE, tabContainer.getCurrentItem());
                 startActivityForResult(i, 0);
             }
         });
@@ -171,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             tabAdapter.notifyDataSetChanged();
             if (data != null) {
-                tabContainer.setCurrentItem(data.getIntExtra(EXTRA_ALARM_MODE, 0));
+                tabContainer.setCurrentItem(data.getIntExtra(Keys.Extra.ALARM_MODE, 0));
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -180,41 +179,35 @@ public class MainActivity extends AppCompatActivity {
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private final List<AlarmMenuFragment> fragments = new ArrayList<>();
+        private AlarmType[] alarmTypes;
 
         private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            alarmTypes = AlarmType.values();
         }
 
         @Override
         public Fragment getItem(int pageNumber) {
-            // getItem is called to instantiate the fragment for the given page.
             fragments.add(AlarmMenuFragment.getInstance(pageNumber));
             return fragments.get(pageNumber);
         }
 
         @Override
         public int getCount() {
-            // Show 2 total pages.
-            return 2;
+            return alarmTypes.length;
         }
 
         @Override
         public void notifyDataSetChanged() {
             for (AlarmMenuFragment a : fragments) {
-                a.updateAdapter(); // also update the underlying data lists
+                a.updateUnderlyingList();
             }
             super.notifyDataSetChanged();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return getString(R.string.activity_one_time_alarms);
-                case 1:
-                    return getString(R.string.activity_recurring_alarms);
-            }
-            return null;
+            return getString(alarmTypes[position].getMessageCode());
         }
     }
 
@@ -223,14 +216,14 @@ public class MainActivity extends AppCompatActivity {
         private int alarmMode;
         private AlarmListAdapter adapter;
 
-        public void updateAdapter() {
+        public void updateUnderlyingList() {
             adapter.notifyDataSetChanged();
         }
 
         public static AlarmMenuFragment getInstance(int pageNumber) {
             AlarmMenuFragment fragment = new AlarmMenuFragment();
             Bundle args = new Bundle();
-            args.putInt(EXTRA_ALARM_MODE, pageNumber);
+            args.putInt(Keys.Extra.ALARM_MODE, pageNumber);
             fragment.setArguments(args);
             return fragment;
         }
@@ -240,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             ListView list = (ListView) rootView.findViewById(R.id.alarm_list);
-            alarmMode = getArguments().getInt(EXTRA_ALARM_MODE);
+            alarmMode = getArguments().getInt(Keys.Extra.ALARM_MODE);
             adapter = new AlarmListAdapter(getActivity(), alarmMode);
             list.setAdapter(adapter);
 
@@ -261,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent i = new Intent(getActivity(), DialogEditActivity.class);
-                    i.putExtra(EXTRA_ALARM_MODE, alarmMode);
+                    i.putExtra(Keys.Extra.ALARM_MODE, alarmMode);
                     i.putExtra(Const.EXTRA_DB_POSITION, position);
                     startActivityForResult(i, Const.REQUEST_EDIT_ALARM);
                 }

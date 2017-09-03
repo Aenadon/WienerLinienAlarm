@@ -20,10 +20,9 @@ import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
 import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.Const;
+import aenadon.wienerlinienalarm.utils.Keys;
 import aenadon.wienerlinienalarm.utils.Pickers;
 import io.realm.Realm;
-
-import static aenadon.wienerlinienalarm.utils.Const.EXTRA_ALARM_MODE;
 
 public class AlarmSetterActivity extends AppCompatActivity {
 
@@ -50,15 +49,13 @@ public class AlarmSetterActivity extends AppCompatActivity {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        alarmMode = getIntent().getIntExtra(Const.EXTRA_ALARM_MODE, Const.ALARM_ONETIME); // default: onetime
+        alarmMode = getIntent().getIntExtra(Keys.Extra.ALARM_MODE, Const.ALARM_ONETIME); // default: onetime
         pickAlarmFrequency(alarmMode); // initial setup
-
-        Realm.init(AlarmSetterActivity.this);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(EXTRA_ALARM_MODE, alarmMode);
+        outState.putInt(Keys.Extra.ALARM_MODE, alarmMode);
         outState.putBundle(Const.BUNDLE_DATE_PICKER, datePicker.saveState());
         outState.putBundle(Const.BUNDLE_TIME_PICKER, timePicker.saveState());
         outState.putBundle(Const.BUNDLE_DAYS_PICKER, daysPicker.saveState());
@@ -71,7 +68,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        alarmMode = savedInstanceState.getInt(EXTRA_ALARM_MODE);
+        alarmMode = savedInstanceState.getInt(Keys.Extra.ALARM_MODE);
         datePicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DATE_PICKER));
         timePicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_TIME_PICKER));
         daysPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DAYS_PICKER));
@@ -235,7 +232,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
         AlarmUtils.scheduleAlarm(AlarmSetterActivity.this, newAlarm);
 
-        setResult(Activity.RESULT_OK, new Intent().putExtra(EXTRA_ALARM_MODE, alarmMode));
+        setResult(Activity.RESULT_OK, new Intent().putExtra(Keys.Extra.ALARM_MODE, alarmMode));
         finish(); // we're done here.
     }
 

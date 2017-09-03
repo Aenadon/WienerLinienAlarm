@@ -19,6 +19,7 @@ import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
 import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.Const;
+import aenadon.wienerlinienalarm.utils.Keys;
 import aenadon.wienerlinienalarm.utils.Pickers;
 import aenadon.wienerlinienalarm.utils.RealmService;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
@@ -45,7 +46,7 @@ public class DialogEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_edit_alarm);
 
-        int pageNumber = getIntent().getIntExtra(Const.EXTRA_ALARM_MODE, -1);
+        int pageNumber = getIntent().getIntExtra(Keys.Extra.ALARM_MODE, -1);
         dbPosition = getIntent().getIntExtra(Const.EXTRA_DB_POSITION, -1);
 
         if (pageNumber == -1 || dbPosition == -1) {

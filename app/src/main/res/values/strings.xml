@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--https://stackoverflow.com/questions/3656371/dynamic-string-using-string-xml/24903097#24903097--><!DOCTYPE resources [<!ENTITY appname "WienerLinien Alarm">]>
+<?xml version="1.0" encoding="utf-8"?>
+<!--https://stackoverflow.com/questions/3656371/dynamic-string-using-string-xml/24903097#24903097-->
+<!DOCTYPE resources [<!ENTITY appname "WienerLinien Alarm">]>
 
 <resources>
     <string name="app_name">&appname;</string>
@@ -20,8 +22,8 @@
     <string name="list_empty">No alarms set</string>
 
     <!--LegacyAlarm Setup 1-->
-    <string name="activity_one_time_alarms">One time</string>
-    <string name="activity_recurring_alarms">Recurring</string>
+    <string name="one_time_alarms">One time</string>
+    <string name="recurring_alarms">Recurring</string>
 
     <!--LegacyAlarm Setup 2-->
     <string name="activity_alarm_setter">Set Alarm</string>

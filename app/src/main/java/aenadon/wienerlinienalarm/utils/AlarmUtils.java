@@ -122,7 +122,6 @@ public class AlarmUtils {
             final SharedPreferences sp = getPrefs(context);
             final int notificationId = getAutoincrementingInteger(context);
 
-            Realm.init(context);
             final Realm realm = Realm.getDefaultInstance();
 
             final LegacyAlarm alarm = realm.where(LegacyAlarm.class).equalTo("id", alarmId).findFirst();
@@ -135,7 +134,7 @@ public class AlarmUtils {
             final int stationIndex = alarm.getStationArrayIndex();
 
             Log.d(LOG_TAG, "Retrieving realtime data for " + alarmId + " ...");
-            RetrofitService.getRealtimeInfo().create(RetrofitService.RealtimeCalls.class).getRealtime(apikey, stationId).enqueue(new Callback<ResponseBody>() {
+            ApiProvider.getRealtimeApi().getRealtime(apikey, stationId).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     String info = "";
@@ -252,7 +251,6 @@ public class AlarmUtils {
             SharedPreferences sp = getPrefs(context);
             Map<String,?> keys = sp.getAll();
 
-            Realm.init(context);
             Realm realm = Realm.getDefaultInstance();
 
             for (Map.Entry<String,?> entry : keys.entrySet()) {

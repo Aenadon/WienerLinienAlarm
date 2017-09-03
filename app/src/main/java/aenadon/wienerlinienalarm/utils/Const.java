@@ -51,7 +51,6 @@ public interface Const {
     };
 
     // Key names for extra variables in bundles/intents
-    String EXTRA_ALARM_MODE = "ALARM_MODE";
     String EXTRA_VIEW_TO_USE = "VIEW_TO_USE";
     String EXTRA_PREV_DATE = "PREV_DATE";
     String EXTRA_PREV_TIME = "PREV_TIME";

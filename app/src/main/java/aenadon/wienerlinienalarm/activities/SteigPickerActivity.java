@@ -28,7 +28,7 @@ import aenadon.wienerlinienalarm.adapter.StationListAdapter;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.CSVWorkUtils;
 import aenadon.wienerlinienalarm.utils.Const;
-import aenadon.wienerlinienalarm.utils.RetrofitService;
+import aenadon.wienerlinienalarm.utils.ApiProvider;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
@@ -116,7 +116,7 @@ public class SteigPickerActivity extends AppCompatActivity {
             for (String steigId : steigs) {
                 try {
                     if (steigId.equals("")) continue; // or else we get an unexplainable 400
-                    Response<ResponseBody> response = RetrofitService.getRealtimeInfo().create(RetrofitService.RealtimeCalls.class).getRealtime(apikey, steigId).execute();
+                    Response<ResponseBody> response = ApiProvider.getRealtimeApi().getRealtime(apikey, steigId).execute();
                     if (response.isSuccessful()) {
                         JSONArray monitors = new JSONObject(response.body().string())
                                 .getJSONObject("data")

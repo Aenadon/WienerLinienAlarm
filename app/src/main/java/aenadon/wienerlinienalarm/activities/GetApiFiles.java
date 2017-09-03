@@ -17,7 +17,7 @@ import aenadon.wienerlinienalarm.enums.NetworkStatus;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.CSVWorkUtils;
 import aenadon.wienerlinienalarm.utils.Const;
-import aenadon.wienerlinienalarm.utils.RetrofitService;
+import aenadon.wienerlinienalarm.utils.ApiProvider;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
@@ -44,7 +44,7 @@ class GetApiFiles extends AsyncTask<Void, Void, NetworkStatus> {
             }
 
             // check file version
-            Response<ResponseBody> versionResponse = RetrofitService.getCSVInfo().create(RetrofitService.CSVCalls.class).getVersionCSV().execute();
+            Response<ResponseBody> versionResponse = ApiProvider.getCSVApi().getVersionCSV().execute();
             String versionResponseString = versionResponse.body().string();
 
             if (!versionResponse.isSuccessful()) {
@@ -57,8 +57,8 @@ class GetApiFiles extends AsyncTask<Void, Void, NetworkStatus> {
                     return NetworkStatus.SUCCESS;
             }
 
-            Response<ResponseBody> haltestellenResponse = RetrofitService.getCSVInfo().create(RetrofitService.CSVCalls.class).getHaltestellenCSV().execute();
-            Response<ResponseBody> steigResponse = RetrofitService.getCSVInfo().create(RetrofitService.CSVCalls.class).getSteigeCSV().execute();
+            Response<ResponseBody> haltestellenResponse = ApiProvider.getCSVApi().getHaltestellenCSV().execute();
+            Response<ResponseBody> steigResponse = ApiProvider.getCSVApi().getSteigeCSV().execute();
 
             if (!haltestellenResponse.isSuccessful() || !steigResponse.isSuccessful()) {
                 throw new IOException("At least one server response not successful " +
