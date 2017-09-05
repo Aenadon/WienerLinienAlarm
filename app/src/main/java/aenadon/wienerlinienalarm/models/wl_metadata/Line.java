@@ -9,17 +9,17 @@ public class Line extends RealmObject {
     @PrimaryKey
     private String id;
     private String line;
-    private int order;
+    private int lineSortOrder;
     private boolean realtimeEnabled;
     private String type;
 
     public Line() {
     }
 
-    public Line(String id, String line, int order, boolean realtimeEnabled, String type) {
+    public Line(String id, String line, int lineSortOrder, boolean realtimeEnabled, String type) {
         this.id = id;
         this.line = line;
-        this.order = order;
+        this.lineSortOrder = lineSortOrder;
         this.realtimeEnabled = realtimeEnabled;
         this.type = type;
     }
@@ -40,12 +40,12 @@ public class Line extends RealmObject {
         this.line = line;
     }
 
-    public int getOrder() {
-        return order;
+    public int getLineSortOrder() {
+        return lineSortOrder;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setLineSortOrder(int lineSortOrder) {
+        this.lineSortOrder = lineSortOrder;
     }
 
     public boolean isRealtimeEnabled() {

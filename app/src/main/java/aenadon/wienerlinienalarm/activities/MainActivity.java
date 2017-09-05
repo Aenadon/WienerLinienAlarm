@@ -39,6 +39,7 @@ import aenadon.wienerlinienalarm.BuildConfig;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.adapter.AlarmListAdapter;
 import aenadon.wienerlinienalarm.enums.AlarmType;
+import aenadon.wienerlinienalarm.update.UpdateDataset;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.Keys;
 
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateStationData() {
-        new GetApiFiles(MainActivity.this).execute();
+        new UpdateDataset(MainActivity.this).execute();
     }
 
     private void showBatteryWarningDialog() {
