@@ -1,16 +1,22 @@
 package aenadon.wienerlinienalarm.models.wl_metadata;
 
+import java.util.List;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 
 public class Station extends RealmObject {
 
     @PrimaryKey
     private String id;
+    @Required
     private String idForXMLApi;
+    @Required
     private String name;
+    @Required
     private String city;
     private RealmList<Steig> steigs;
 
@@ -49,11 +55,13 @@ public class Station extends RealmObject {
         this.city = city;
     }
 
-    public RealmList<Steig> getSteigs() {
+    public List<Steig> getSteigs() {
         return steigs;
     }
 
-    public void setSteigs(RealmList<Steig> steigs) {
-        this.steigs = steigs;
+    public void setSteigs(List<Steig> steigs) {
+        RealmList<Steig> steigList = new RealmList<>();
+        steigList.addAll(steigs);
+        this.steigs = steigList;
     }
 }

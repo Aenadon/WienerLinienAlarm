@@ -1,39 +1,57 @@
 package aenadon.wienerlinienalarm.models.wl_metadata;
 
+import aenadon.wienerlinienalarm.enums.Direction;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 
 public class Steig extends RealmObject {
 
     @PrimaryKey
+    private String id;
+    @Required
     private String rbl;
-    private String lineId;
+    @Required
+    private Line line;
+    @Required
+    private String stationId;
+    @Required
     private String direction;
 
     public Steig() {
     }
 
-    public Steig(String rbl, String lineId, String direction) {
-        this.rbl = rbl;
-        this.lineId = lineId;
-        this.direction = direction;
+    public String getId() {
+        return id;
     }
 
-    public String getLineId() {
-        return lineId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setLineId(String lineId) {
-        this.lineId = lineId;
+    public Line getLine() {
+        return line;
     }
 
-    public String getDirection() {
-        return direction;
+    public void setLine(Line line) {
+        this.line = line;
     }
 
-    public void setDirection(String direction) {
-        this.direction = direction;
+    public String getStationId() {
+        return stationId;
+    }
+
+    public void setStationId(String stationId) {
+        this.stationId = stationId;
+    }
+
+    public Direction getDirection() {
+        return Direction.valueOf(direction);
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction.toString();
     }
 
     public String getRbl() {

@@ -1,27 +1,23 @@
 package aenadon.wienerlinienalarm.models.wl_metadata;
 
+import aenadon.wienerlinienalarm.enums.TransportType;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 
 public class Line extends RealmObject {
 
     @PrimaryKey
     private String id;
-    private String line;
+    @Required
+    private String lineName;
     private int lineSortOrder;
     private boolean realtimeEnabled;
-    private String type;
+    @Required
+    private String transportType;
 
     public Line() {
-    }
-
-    public Line(String id, String line, int lineSortOrder, boolean realtimeEnabled, String type) {
-        this.id = id;
-        this.line = line;
-        this.lineSortOrder = lineSortOrder;
-        this.realtimeEnabled = realtimeEnabled;
-        this.type = type;
     }
 
     public String getId() {
@@ -32,12 +28,12 @@ public class Line extends RealmObject {
         this.id = id;
     }
 
-    public String getLine() {
-        return line;
+    public String getLineName() {
+        return lineName;
     }
 
-    public void setLine(String line) {
-        this.line = line;
+    public void setLineName(String lineName) {
+        this.lineName = lineName;
     }
 
     public int getLineSortOrder() {
@@ -56,11 +52,11 @@ public class Line extends RealmObject {
         this.realtimeEnabled = realtimeEnabled;
     }
 
-    public String getType() {
-        return type;
+    public TransportType getTransportType() {
+        return TransportType.findByTypeString(transportType);
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTransportType(TransportType type) {
+        this.transportType = type.getTypeString();
     }
 }

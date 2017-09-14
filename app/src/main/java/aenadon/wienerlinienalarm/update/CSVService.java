@@ -24,7 +24,7 @@ class CSVService {
         csvApi = ApiProvider.getCSVApi();
     }
 
-    boolean checkForChangedDataset() throws NetworkClientException, NetworkServerException {
+    boolean datasetChanged() throws NetworkClientException, NetworkServerException {
         try {
             Response<String> csvLastUpdatedCall = csvApi.getVersionCSV().execute();
             if (!csvLastUpdatedCall.isSuccessful()) {
