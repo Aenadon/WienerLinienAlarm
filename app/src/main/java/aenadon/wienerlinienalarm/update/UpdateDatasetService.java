@@ -25,18 +25,18 @@ import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class UpdateDataset extends AsyncTask<Void, Void, NetworkStatus> {
+public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
 
-    private static final String LOG_TAG = UpdateDataset.class.getSimpleName();
+    private static final String LOG_TAG = UpdateDatasetService.class.getSimpleName();
 
     private final Context ctx;
     private final ProgressDialog loadingDialog;
     private Realm realm;
 
     private final ApiProvider.CSVApi csvApi;
-    private CSVService CSVService;
+    private CheckForUpdateService CheckForUpdateService;
 
-    public UpdateDataset(Context c) {
+    public UpdateDatasetService(Context c) {
         ctx = c;
         loadingDialog = new ProgressDialog(ctx);
         loadingDialog.setCancelable(false);
@@ -45,13 +45,13 @@ public class UpdateDataset extends AsyncTask<Void, Void, NetworkStatus> {
         realm = Realm.getDefaultInstance();
 
         csvApi = ApiProvider.getCSVApi();
-        CSVService = new CSVService(ctx);
+        CheckForUpdateService = new CheckForUpdateService(ctx);
     }
 
     @Override
     protected NetworkStatus doInBackground(Void... params) {
         try {
-            boolean datasetUnchanged = !CSVService.datasetChanged();
+            boolean datasetUnchanged = !CheckForUpdateService.datasetChanged();
             if (datasetUnchanged) {
                 return NetworkStatus.SUCCESS;
             }
