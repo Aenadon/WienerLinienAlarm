@@ -42,7 +42,6 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
         loadingDialog.setCancelable(false);
         loadingDialog.setIndeterminate(true);
         loadingDialog.setMessage(ctx.getString(R.string.updating_stations));
-        realm = Realm.getDefaultInstance();
 
         csvApi = ApiProvider.getCSVApi();
         CheckForUpdateService = new CheckForUpdateService(ctx);
@@ -68,6 +67,7 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
             List<String> steigList = new ArrayList<>(Arrays.asList(steigCSV.split("\n")));
             List<String> haltestellenList = new ArrayList<>(Arrays.asList(haltestellenCSV.split("\n")));
 
+            realm = Realm.getDefaultInstance(); // need to create instance in the same thread
             processLineData(lineList);
             processSteigData(steigList);
             processStationData(haltestellenList);
@@ -91,7 +91,7 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
             String lineName = lineInfo[1];
             int sortOrder = Integer.parseInt(lineInfo[2]);
             boolean realtimeEnabled = "1".equals(lineInfo[3]);
-            TransportType type = TransportType.findByTypeString(lineInfo[4]);
+            TransportType type = TransportType.findByTypeString(removeQuotes(lineInfo[4]));
 
             Line line = new Line();
             line.setId(id);
