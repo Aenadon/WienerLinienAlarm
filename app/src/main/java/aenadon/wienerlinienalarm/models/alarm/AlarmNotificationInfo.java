@@ -1,10 +1,20 @@
 package aenadon.wienerlinienalarm.models.alarm;
 
+import java.util.Date;
+import java.util.List;
+
+import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.enums.VibrationMode;
-import io.realm.RealmObject;
+import aenadon.wienerlinienalarm.enums.Weekday;
+import io.realm.annotations.Required;
 
+public class AlarmNotificationInfo {
 
-public abstract class AlarmData extends RealmObject {
+    @Required
+    private String alarmType;
+
+    private Date onetimeAlarmDate;
+    private byte recurringChosenDays;
 
     private int alarmHour;
     private int alarmMinute;
@@ -12,9 +22,28 @@ public abstract class AlarmData extends RealmObject {
     private String chosenRingtone;
     private String chosenVibrationMode;
 
-    private AlarmStationData alarmStationData;
+    public AlarmType getAlarmType() {
+        return AlarmType.valueOf(alarmType);
+    }
 
-    public AlarmData() {
+    public void setAlarmType(AlarmType alarmType) {
+        this.alarmType = alarmType.toString();
+    }
+
+    public Date getOnetimeAlarmDate() {
+        return onetimeAlarmDate;
+    }
+
+    public void setOnetimeAlarmDate(Date onetimeAlarmDate) {
+        this.onetimeAlarmDate = onetimeAlarmDate;
+    }
+
+    public List<Weekday> getRecurringChosenDays() {
+        return Weekday.weekdaysFromByte(recurringChosenDays);
+    }
+
+    public void setRecurringChosenDays(List<Weekday> recurringChosenDays) {
+        this.recurringChosenDays = Weekday.byteFromWeekdays(recurringChosenDays);
     }
 
     public int getAlarmHour() {
@@ -47,13 +76,5 @@ public abstract class AlarmData extends RealmObject {
 
     public void setChosenVibrationMode(VibrationMode chosenVibrationMode) {
         this.chosenVibrationMode = chosenVibrationMode.toString();
-    }
-
-    public AlarmStationData getAlarmStationData() {
-        return alarmStationData;
-    }
-
-    public void setAlarmStationData(AlarmStationData alarmStationData) {
-        this.alarmStationData = alarmStationData;
     }
 }

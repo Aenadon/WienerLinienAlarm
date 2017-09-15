@@ -1,5 +1,7 @@
 package aenadon.wienerlinienalarm.models.alarm;
 
+import aenadon.wienerlinienalarm.models.wl_metadata.Station;
+import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
 import io.realm.RealmObject;
 import io.realm.annotations.Required;
 
@@ -7,55 +9,26 @@ import io.realm.annotations.Required;
 public class AlarmStationData extends RealmObject {
 
     @Required
-    private String stationName;
+    private Station station;
     @Required
-    private String stationDirection;
-    @Required
-    private String stationIdForXMLApi;
-    @Required
-    private String rbl;
-    private int jsonStationIndex;
+    private Steig steig;
 
     public AlarmStationData() {
     }
 
-    public String getStationName() {
-        return stationName;
+    public Station getStation() {
+        return station;
     }
 
-    public void setStationName(String stationName) {
-        this.stationName = stationName;
+    public void setStation(Station station) {
+        this.station = station;
     }
 
-    public String getStationDirection() {
-        return stationDirection;
+    public Steig getSteig() {
+        return steig;
     }
 
-    public void setStationDirection(String stationDirection) {
-        this.stationDirection = stationDirection;
-    }
-
-    public String getStationIdForXMLApi() {
-        return stationIdForXMLApi;
-    }
-
-    public void setStationIdForXMLApi(String stationIdForXMLApi) {
-        this.stationIdForXMLApi = stationIdForXMLApi;
-    }
-
-    public String getRbl() {
-        return rbl;
-    }
-
-    public void setRbl(String rbl) {
-        this.rbl = rbl;
-    }
-
-    public int getJsonStationIndex() {
-        return jsonStationIndex;
-    }
-
-    public void setJsonStationIndex(int jsonStationIndex) {
-        this.jsonStationIndex = jsonStationIndex;
+    public void setSteig(Steig steig) {
+        this.steig = steig;
     }
 }

@@ -2,7 +2,6 @@ package aenadon.wienerlinienalarm.models.alarm;
 
 import java.util.UUID;
 
-import aenadon.wienerlinienalarm.enums.AlarmType;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
@@ -10,11 +9,11 @@ import io.realm.annotations.Required;
 public class Alarm extends RealmObject {
 
     @PrimaryKey
-    @Required
     private String id;
     @Required
-    private String alarmMode;
-    private AlarmData alarmData;
+    private AlarmNotificationInfo alarmNotificationInfo;
+    @Required
+    private AlarmStationData alarmStationData;
 
     public Alarm() {
         id = UUID.randomUUID().toString();
@@ -24,19 +23,19 @@ public class Alarm extends RealmObject {
         return id;
     }
 
-    public AlarmType getAlarmMode() {
-        return AlarmType.valueOf(alarmMode);
+    public AlarmNotificationInfo getAlarmNotificationInfo() {
+        return alarmNotificationInfo;
     }
 
-    public void setAlarmMode(AlarmType alarmMode) {
-        this.alarmMode = alarmMode.toString();
+    public void setAlarmNotificationInfo(AlarmNotificationInfo alarmNotificationInfo) {
+        this.alarmNotificationInfo = alarmNotificationInfo;
     }
 
-    public AlarmData getAlarmData() {
-        return alarmData;
+    public AlarmStationData getAlarmStationData() {
+        return alarmStationData;
     }
 
-    public void setAlarmData(AlarmData alarmData) {
-        this.alarmData = alarmData;
+    public void setAlarmStationData(AlarmStationData alarmStationData) {
+        this.alarmStationData = alarmStationData;
     }
 }
