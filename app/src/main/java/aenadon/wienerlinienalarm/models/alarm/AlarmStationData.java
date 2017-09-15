@@ -8,9 +8,7 @@ import io.realm.annotations.Required;
 
 public class AlarmStationData extends RealmObject {
 
-    @Required
     private Station station;
-    @Required
     private Steig steig;
 
     public AlarmStationData() {

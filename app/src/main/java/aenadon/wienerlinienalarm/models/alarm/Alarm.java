@@ -10,9 +10,8 @@ public class Alarm extends RealmObject {
 
     @PrimaryKey
     private String id;
-    @Required
+
     private AlarmNotificationInfo alarmNotificationInfo;
-    @Required
     private AlarmStationData alarmStationData;
 
     public Alarm() {

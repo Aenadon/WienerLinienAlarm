@@ -13,11 +13,11 @@ public class Steig extends RealmObject {
     @Required
     private String rbl;
     @Required
-    private Line line;
-    @Required
     private String stationId;
     @Required
     private String direction;
+
+    private Line line;
 
     public Steig() {
     }
@@ -30,12 +30,12 @@ public class Steig extends RealmObject {
         this.id = id;
     }
 
-    public Line getLine() {
-        return line;
+    public String getRbl() {
+        return rbl;
     }
 
-    public void setLine(Line line) {
-        this.line = line;
+    public void setRbl(String rbl) {
+        this.rbl = rbl;
     }
 
     public String getStationId() {
@@ -54,11 +54,11 @@ public class Steig extends RealmObject {
         this.direction = direction.toString();
     }
 
-    public String getRbl() {
-        return rbl;
+    public Line getLine() {
+        return line;
     }
 
-    public void setRbl(String rbl) {
-        this.rbl = rbl;
+    public void setLine(Line line) {
+        this.line = line;
     }
 }

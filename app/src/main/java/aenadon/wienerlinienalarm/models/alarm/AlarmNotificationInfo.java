@@ -6,9 +6,10 @@ import java.util.List;
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.enums.VibrationMode;
 import aenadon.wienerlinienalarm.enums.Weekday;
+import io.realm.RealmObject;
 import io.realm.annotations.Required;
 
-public class AlarmNotificationInfo {
+public class AlarmNotificationInfo extends RealmObject {
 
     @Required
     private String alarmType;
