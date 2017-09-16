@@ -7,6 +7,7 @@ import android.util.Log;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
@@ -81,6 +82,18 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
         }
     }
 
+    @Override
+    protected void onPostExecute(NetworkStatus resultCode) {
+        switch (resultCode) {
+            case ERROR_SERVER:
+                AlertDialogs.serverNotAvailable(ctx);
+                break;
+            case NO_CONNECTION:
+                AlertDialogs.noConnection(ctx);
+                break;
+        }
+    }
+
     private Response<String> call(Call<String> networkCall) throws NetworkClientException, NetworkServerException {
         Response<String> response;
         try {
@@ -105,8 +118,7 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
             boolean realtimeEnabled = "1".equals(lineRecord.get(LinienHeader.ECHTZEIT));
             TransportType type = TransportType.findByTypeString(lineRecord.get(LinienHeader.VERKEHRSMITTEL));
 
-            Line line = new Line();
-            line.setId(id);
+            Line line = getLineObject(id);
             line.setLineName(lineName);
             line.setLineSortOrder(sortOrder);
             line.setRealtimeEnabled(realtimeEnabled);
@@ -142,8 +154,7 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
                 continue;
             }
 
-            Steig steig = new Steig();
-            steig.setId(id);
+            Steig steig = getSteigObject(id);
             steig.setRbl(rbl);
             steig.setLine(steigLine);
             steig.setStationId(stationId);
@@ -168,8 +179,7 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
                     .equalTo("stationId", id)
                     .findAll();
 
-            Station station = new Station();
-            station.setId(id);
+            Station station = getStationObject(id);
             station.setIdForXMLApi(idForXMLApi);
             station.setName(stationName);
             station.setCity(city);
@@ -181,18 +191,34 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
     }
 
     private Iterable<CSVRecord> getCSVIterator(Class<? extends Enum<?>> header, String csv) throws IOException {
-        return baseCsvFormat.withHeader(header).parse(new StringReader(csv));
+        return baseCsvFormat.withHeader(header).parse(new BufferedReader(new StringReader(csv)));
     }
 
-    @Override
-    protected void onPostExecute(NetworkStatus resultCode) {
-        switch (resultCode) {
-            case ERROR_SERVER:
-                AlertDialogs.serverNotAvailable(ctx);
-                break;
-            case NO_CONNECTION:
-                AlertDialogs.noConnection(ctx);
-                break;
+    private Line getLineObject(String id) {
+        Line line = realm.where(Line.class).equalTo("id", id).findFirst();
+        if (line == null) {
+            line = new Line();
+            line.setId(id);
         }
+        return line;
     }
+
+    private Steig getSteigObject(String id) {
+        Steig steig = realm.where(Steig.class).equalTo("id", id).findFirst();
+        if (steig == null) {
+            steig = new Steig();
+            steig.setId(id);
+        }
+        return steig;
+    }
+
+    private Station getStationObject(String id) {
+        Station station = realm.where(Station.class).equalTo("id", id).findFirst();
+        if (station == null) {
+            station = new Station();
+            station.setId(id);
+        }
+        return station;
+    }
+
 }

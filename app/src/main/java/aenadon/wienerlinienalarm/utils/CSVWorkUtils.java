@@ -6,6 +6,7 @@ import android.content.Context;
 import java.io.File;
 import java.io.FileInputStream;
 
+@Deprecated
 public class CSVWorkUtils {
 
     // This class contains some methods for working with the CSV files

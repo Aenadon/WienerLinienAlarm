@@ -15,7 +15,7 @@ public class AlarmNotificationInfo extends RealmObject {
     private String alarmType;
 
     private Date onetimeAlarmDate;
-    private byte recurringChosenDays;
+    private Byte recurringChosenDays;
 
     private int alarmHour;
     private int alarmMinute;
