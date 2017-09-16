@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import trikita.log.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -33,8 +33,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 public class SteigPickerActivity extends AppCompatActivity {
-
-    private final String LOG_TAG = SteigPickerActivity.class.getSimpleName();
 
     private final List<String> steige = new ArrayList<>();
     private static final List<Halteobjekt> steigDisplay = new ArrayList<>();
@@ -138,12 +136,11 @@ public class SteigPickerActivity extends AppCompatActivity {
                             steigDisplay.add(new Halteobjekt(lineAndDirName, steigId, Integer.toString(arrayIndex)));
                         }
                     } else {
-                        Log.e(LOG_TAG, "API response unsuccessful: " + response.code());
+                        Log.e("API response unsuccessful: " + response.code());
                         return Const.NETWORK_SERVER_ERROR;
                     }
                 } catch (IOException | JSONException e) {
-                    Log.e(LOG_TAG, "API request/JSON fail");
-                    e.printStackTrace();
+                    Log.e("API request/JSON fail", e);
                     return Const.NETWORK_CONNECTION_ERROR;
                 }
             }

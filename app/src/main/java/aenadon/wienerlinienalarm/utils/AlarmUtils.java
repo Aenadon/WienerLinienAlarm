@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
+import trikita.log.Log;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -33,9 +33,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.R.attr.id;
+
 public class AlarmUtils {
 
-    private static final String LOG_TAG = AlarmUtils.class.getSimpleName();
     private static final String apikey = BuildConfig.API_KEY;
 
     private static final String INTENT_ACTION = "REQUEST_ALARM";
@@ -67,7 +68,7 @@ public class AlarmUtils {
         Date d = new Date(c.getTimeInMillis());
         Toast.makeText(ctx, String.format(Locale.getDefault(), ctx.getString(R.string.alarm_next_ring), DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(d)), Toast.LENGTH_LONG).show();
 
-        Log.d(LOG_TAG, "Scheduled alarm with id: " + alarm.getId());
+        Log.d("Scheduled alarm with id: " + alarm.getId());
     }
 
     public static void cancelAlarm(Context ctx, LegacyAlarm alarm) {
@@ -78,7 +79,7 @@ public class AlarmUtils {
 
         removeAlarmFromPrefs(ctx, alarm.getId());
 
-        Log.d(LOG_TAG, "Canceled alarm with id: " + alarm.getId());
+        Log.d("Canceled alarm with id: " + alarm.getId());
     }
 
     private static SharedPreferences getPrefs(Context ctx) {
@@ -98,14 +99,14 @@ public class AlarmUtils {
         SharedPreferences.Editor se = getPrefs(ctx).edit();
         se.putBoolean(uid, true);
         se.apply();
-        Log.v(LOG_TAG, "LegacyAlarm with id " + uid + " added to prefs");
+        Log.v("LegacyAlarm with id " + uid + " added to prefs");
     }
 
     private static void removeAlarmFromPrefs(Context ctx, String uid) {
         SharedPreferences.Editor se = getPrefs(ctx).edit();
         se.remove(uid);
         se.apply();
-        Log.v(LOG_TAG, "LegacyAlarm with id " + uid + " removed from prefs");
+        Log.v("LegacyAlarm with id " + uid + " removed from prefs");
     }
 
 
@@ -133,16 +134,16 @@ public class AlarmUtils {
             String stationId = alarm.getStationId();
             final int stationIndex = alarm.getStationArrayIndex();
 
-            Log.d(LOG_TAG, "Retrieving realtime data for " + alarmId + " ...");
+            Log.d("Retrieving realtime data for " + alarmId + " ...");
             ApiProvider.getRealtimeApi().getRealtime(apikey, stationId).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     String info = "";
                     if (!response.isSuccessful()) {
-                        Log.e(LOG_TAG, "API response for " + alarmId + "unsuccessful");
+                        Log.e("API response for " + alarmId + "unsuccessful");
                         info = "Error: Request failed - Code " + response.code();
                     } else {
-                        Log.d(LOG_TAG, "API response for " + alarmId + " successful");
+                        Log.d("API response for " + alarmId + " successful");
                         try {
                             JSONArray lines = new JSONObject(response.body().string())
                                     .getJSONObject("data")
@@ -169,7 +170,7 @@ public class AlarmUtils {
                         } catch (IOException | JSONException e) {
                             e.printStackTrace();
                             info = e.getMessage();
-                            Log.e(LOG_TAG, "IO/JSONException: " + e.getMessage());
+                            Log.e("IO/JSONException: " + e.getMessage());
                         }
                     }
                     Uri sound = (ringtone != null) ? Uri.parse(ringtone) : null;
@@ -208,7 +209,7 @@ public class AlarmUtils {
                             scheduleAlarm(context, alarm);
                             break;
                     }
-                    Log.d(LOG_TAG, "Notification for " + alarmId + " was successful");
+                    Log.d("Notification for " + alarmId + " was successful");
 
                     // Tell the MainActivity to refresh the list and the DialogEditActivity to kill the dialog
                     Intent i = new Intent(Const.INTENT_REFRESH_LIST);
@@ -217,7 +218,7 @@ public class AlarmUtils {
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Log.e(LOG_TAG, "Network request failed: " + t.getMessage());
+                    Log.e("Network request failed: " + t.getMessage());
 
                     Uri sound = (ringtone != null) ? Uri.parse(ringtone) : null;
 
@@ -241,10 +242,10 @@ public class AlarmUtils {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(LOG_TAG, "Received \"boot complete\": rescheduling all alarms");
+            Log.d("Received \"boot complete\": rescheduling all alarms");
 
             if (!INTENT_ACTION.equals(intent.getAction())) {
-                Log.e(LOG_TAG, "Intent Action code does not match");
+                Log.e("Intent Action code does not match");
                 return;
             }
 
@@ -257,10 +258,10 @@ public class AlarmUtils {
                 // reschedule all alarms
                 if (entry.getKey().equals(NOTIFICATION_ID_FLAG)) continue; // This is not an alarm!
 
-                Log.v(LOG_TAG, "Reschedule entry " + entry.getKey());
+                Log.v("Reschedule entry " + entry.getKey());
                 LegacyAlarm alarm = realm.where(LegacyAlarm.class).equalTo("id", entry.getKey()).findFirst();
                 if (alarm == null) {
-                    Log.w(LOG_TAG, "LegacyAlarm with id " + entry.getKey() + " is null! Removing from prefs...");
+                    Log.w("LegacyAlarm with id " + entry.getKey() + " is null! Removing from prefs...");
                     removeAlarmFromPrefs(context, entry.getKey());
                 } else {
                     scheduleAlarm(context, alarm);

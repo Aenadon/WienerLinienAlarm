@@ -2,7 +2,9 @@ package aenadon.wienerlinienalarm.update;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+
+import hugo.weaving.DebugLog;
+import trikita.log.Log;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -31,8 +33,6 @@ import retrofit2.Response;
 
 public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
 
-    private static final String LOG_TAG = UpdateDatasetService.class.getSimpleName();
-
     private final Context ctx;
     private Realm realm;
 
@@ -49,6 +49,7 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
     }
 
     @Override
+    @DebugLog
     protected NetworkStatus doInBackground(Void... params) {
         // TODO add loading screen activity for first launch + do in background from then on
         try {
@@ -67,13 +68,13 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
 
             return NetworkStatus.SUCCESS;
         } catch (NetworkClientException e) {
-            Log.e(LOG_TAG, "ClientError while retrieving Metadata CSV", e);
+            Log.e("ClientError while retrieving Metadata CSV", e);
             return NetworkStatus.NO_CONNECTION;
         } catch (NetworkServerException e) {
-            Log.e(LOG_TAG, "ServerError while retrieving Metadata CSV", e);
+            Log.e("ServerError while retrieving Metadata CSV", e);
             return NetworkStatus.ERROR_SERVER;
         } catch (IOException e) {
-            Log.wtf(LOG_TAG, "Error while reading/parsing CSV", e);
+            Log.e("Error while reading/parsing CSV", e);
             throw new RuntimeException(e);
         } finally {
             if (realm != null) {
@@ -141,7 +142,6 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
             String rbl = steigRecord.get(SteigHeader.RBL_NUMMER);
 
             if ("".equals(rbl)) {
-                Log.d(LOG_TAG, "No RBL for steig with ID " + id + ", skipping");
                 continue;
             }
 
@@ -150,7 +150,7 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
                     .findFirst();
 
             if (steigLine == null) {
-                Log.w(LOG_TAG, "Line with ID " + lineId + " not found. Skipping steig with ID " + id);
+                Log.w("Line with ID " + lineId + " not found. Skipping steig with ID " + id);
                 continue;
             }
 
