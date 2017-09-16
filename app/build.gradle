@@ -22,6 +22,12 @@ android {
             it.buildConfigField('String', 'API_KEY', WienerLinienAPIDevelopmentKey)
         }
     }
+
+    // The three Jackson JARs all have a license file called LICENSE ==> "DuplicateFileException"
+    // TODO Add in-app activity screen for displaying licenses
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 dependencies {
@@ -32,6 +38,8 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-scalars:2.1.0'
     compile 'com.squareup.retrofit2:converter-jackson:2.1.0'
+
+    compile 'org.apache.commons:commons-csv:1.5'
 }
 repositories {
     mavenCentral()

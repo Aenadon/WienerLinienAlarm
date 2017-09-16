@@ -39,7 +39,7 @@ class CheckForUpdateService {
     private boolean lastUpdatedHasChanged(String newLastUpdatedCsv) {
         SharedPreferences prefs = getCsvLastUpdatedPrefs();
         String oldLastUpdatedCsv = prefs.getString(PREF_KEY_CSV_LAST_UPDATED, "");
-        boolean hasChanged = oldLastUpdatedCsv.equals(newLastUpdatedCsv);
+        boolean hasChanged = !oldLastUpdatedCsv.equals(newLastUpdatedCsv);
         if (hasChanged) {
             setCsvLastUpdated(newLastUpdatedCsv);
         }

@@ -1,16 +1,16 @@
 package aenadon.wienerlinienalarm.update;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.StringReader;
 import java.util.List;
 
-import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.enums.Direction;
 import aenadon.wienerlinienalarm.enums.NetworkStatus;
 import aenadon.wienerlinienalarm.enums.TransportType;
@@ -19,6 +19,9 @@ import aenadon.wienerlinienalarm.exceptions.NetworkServerException;
 import aenadon.wienerlinienalarm.models.wl_metadata.Line;
 import aenadon.wienerlinienalarm.models.wl_metadata.Station;
 import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
+import aenadon.wienerlinienalarm.update.csv_header.HaltestellenHeader;
+import aenadon.wienerlinienalarm.update.csv_header.LinienHeader;
+import aenadon.wienerlinienalarm.update.csv_header.SteigHeader;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.ApiProvider;
 import io.realm.Realm;
@@ -30,47 +33,36 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
     private static final String LOG_TAG = UpdateDatasetService.class.getSimpleName();
 
     private final Context ctx;
-    private final ProgressDialog loadingDialog;
     private Realm realm;
 
     private final ApiProvider.CSVApi csvApi;
-    private CheckForUpdateService CheckForUpdateService;
+    private final CSVFormat baseCsvFormat;
+    private CheckForUpdateService checkForUpdateService;
 
     public UpdateDatasetService(Context c) {
         ctx = c;
-        loadingDialog = new ProgressDialog(ctx);
-        loadingDialog.setCancelable(false);
-        loadingDialog.setIndeterminate(true);
-        loadingDialog.setMessage(ctx.getString(R.string.updating_stations));
 
         csvApi = ApiProvider.getCSVApi();
-        CheckForUpdateService = new CheckForUpdateService(ctx);
+        baseCsvFormat = CSVFormat.newFormat(';').withQuote('"').withTrim().withSkipHeaderRecord();
+        checkForUpdateService = new CheckForUpdateService(ctx);
     }
 
     @Override
     protected NetworkStatus doInBackground(Void... params) {
+        // TODO add loading screen activity for first launch + do in background from then on
         try {
-            boolean datasetUnchanged = !CheckForUpdateService.datasetChanged();
+            boolean datasetUnchanged = !checkForUpdateService.datasetChanged();
             if (datasetUnchanged) {
                 return NetworkStatus.SUCCESS;
             }
-
-            Response<String> haltestellenResponse = call(csvApi.getHaltestellenCSV());
-            Response<String> steigResponse = call(csvApi.getSteigeCSV());
-            Response<String> lineResponse = call(csvApi.getLinienCSV());
-
-            String haltestellenCSV = haltestellenResponse.body();
-            String steigCSV = steigResponse.body();
-            String lineCSV = lineResponse.body();
-
-            List<String> lineList = new ArrayList<>(Arrays.asList(lineCSV.split("\n")));
-            List<String> steigList = new ArrayList<>(Arrays.asList(steigCSV.split("\n")));
-            List<String> haltestellenList = new ArrayList<>(Arrays.asList(haltestellenCSV.split("\n")));
+            String haltestellenCSV = call(csvApi.getHaltestellenCSV()).body();
+            String steigCSV = call(csvApi.getSteigeCSV()).body();
+            String lineCSV = call(csvApi.getLinienCSV()).body();
 
             realm = Realm.getDefaultInstance(); // need to create instance in the same thread
-            processLineData(lineList);
-            processSteigData(steigList);
-            processStationData(haltestellenList);
+            processLineData(lineCSV);
+            processSteigData(steigCSV);
+            processStationData(haltestellenCSV);
 
             return NetworkStatus.SUCCESS;
         } catch (NetworkClientException e) {
@@ -79,19 +71,39 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
         } catch (NetworkServerException e) {
             Log.e(LOG_TAG, "ServerError while retrieving Metadata CSV", e);
             return NetworkStatus.ERROR_SERVER;
+        } catch (IOException e) {
+            Log.wtf(LOG_TAG, "Error while reading/parsing CSV", e);
+            throw new RuntimeException(e);
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
         }
     }
 
-    private void processLineData(List<String> lineData) {
-        realm.beginTransaction();
-        for (int i = 1; i < lineData.size(); i++) { // i = 1 ==> skip CSV column headers
-            String[] lineInfo = lineData.get(i).split(";");
+    private Response<String> call(Call<String> networkCall) throws NetworkClientException, NetworkServerException {
+        Response<String> response;
+        try {
+            response = networkCall.execute();
+            if (!response.isSuccessful()) {
+                throw new NetworkServerException(response.code());
+            }
+        } catch (IOException e) {
+            throw new NetworkClientException(e.getMessage(), e);
+        }
+        return response;
+    }
 
-            String id = lineInfo[0];
-            String lineName = lineInfo[1];
-            int sortOrder = Integer.parseInt(lineInfo[2]);
-            boolean realtimeEnabled = "1".equals(lineInfo[3]);
-            TransportType type = TransportType.findByTypeString(removeQuotes(lineInfo[4]));
+    private void processLineData(String csv) throws IOException {
+        Iterable<CSVRecord> lines = getCSVIterator(LinienHeader.class, csv);
+
+        realm.beginTransaction();
+        for (CSVRecord lineRecord : lines) {
+            String id = lineRecord.get(LinienHeader.LINIEN_ID);
+            String lineName = lineRecord.get(LinienHeader.BEZEICHNUNG);
+            int sortOrder = Integer.parseInt(lineRecord.get(LinienHeader.REIHENFOLGE));
+            boolean realtimeEnabled = "1".equals(lineRecord.get(LinienHeader.ECHTZEIT));
+            TransportType type = TransportType.findByTypeString(lineRecord.get(LinienHeader.VERKEHRSMITTEL));
 
             Line line = new Line();
             line.setId(id);
@@ -105,16 +117,16 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
         realm.commitTransaction();
     }
 
-    private void processSteigData(List<String> steigData) {
-        realm.beginTransaction();
-        for (int i = 1; i < steigData.size(); i++) { // i = 1 ==> skip CSV column headers
-            String[] steigInfo = steigData.get(i).split(";");
+    private void processSteigData(String csv) throws IOException {
+        Iterable<CSVRecord> steigs = getCSVIterator(SteigHeader.class, csv);
 
-            String id = steigInfo[0];
-            String lineId = steigInfo[1];
-            String stationId = steigInfo[2];
-            Direction direction = Direction.valueOf(removeQuotes(steigInfo[3]));
-            String rbl = removeQuotes(steigInfo[5]);
+        realm.beginTransaction();
+        for (CSVRecord steigRecord : steigs) {
+            String id = steigRecord.get(SteigHeader.STEIG_ID);
+            String lineId = steigRecord.get(SteigHeader.FK_LINIEN_ID);
+            String stationId = steigRecord.get(SteigHeader.FK_HALTESTELLEN_ID);
+            Direction direction = Direction.valueOf(steigRecord.get(SteigHeader.RICHTUNG));
+            String rbl = steigRecord.get(SteigHeader.RBL_NUMMER);
 
             if ("".equals(rbl)) {
                 Log.d(LOG_TAG, "No RBL for steig with ID " + id + ", skipping");
@@ -142,15 +154,15 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
         realm.commitTransaction();
     }
 
-    private void processStationData(List<String> stationData) {
-        realm.beginTransaction();
-        for (int i = 1; i < stationData.size(); i++) { // i = 1 ==> skip CSV column headers
-            String[] stationInfo = stationData.get(i).split(";");
+    private void processStationData(String csv) throws IOException {
+        Iterable<CSVRecord> stations = getCSVIterator(HaltestellenHeader.class, csv);
 
-            String id = stationInfo[0];
-            String idForXMLApi = stationInfo[2];
-            String stationName = stationInfo[3];
-            String city = stationInfo[4];
+        realm.beginTransaction();
+        for (CSVRecord stationRecord : stations) {
+            String id = stationRecord.get(HaltestellenHeader.HALTESTELLEN_ID);
+            String idForXMLApi = stationRecord.get(HaltestellenHeader.DIVA);
+            String stationName = stationRecord.get(HaltestellenHeader.NAME);
+            String city = stationRecord.get(HaltestellenHeader.GEMEINDE);
 
             List<Steig> steigsForStation = realm.where(Steig.class)
                     .equalTo("stationId", id)
@@ -168,27 +180,12 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
         realm.commitTransaction();
     }
 
-    private String removeQuotes(String string) {
-        return string.replace("\"", "");
-    }
-
-    private Response<String> call(Call<String> networkCall) throws NetworkClientException, NetworkServerException {
-        Response<String> response;
-        try {
-            response = networkCall.execute();
-            if (!response.isSuccessful()) {
-                throw new NetworkServerException(response.code());
-            }
-        } catch (IOException e) {
-            throw new NetworkClientException(e.getMessage(), e);
-        }
-        return response;
+    private Iterable<CSVRecord> getCSVIterator(Class<? extends Enum<?>> header, String csv) throws IOException {
+        return baseCsvFormat.withHeader(header).parse(new StringReader(csv));
     }
 
     @Override
     protected void onPostExecute(NetworkStatus resultCode) {
-        if (loadingDialog != null) loadingDialog.dismiss();
-
         switch (resultCode) {
             case ERROR_SERVER:
                 AlertDialogs.serverNotAvailable(ctx);
