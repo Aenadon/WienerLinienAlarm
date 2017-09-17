@@ -83,7 +83,7 @@ public class SteigPickerActivity extends AppCompatActivity {
             steigDisplay.add(steigWithLineName);
         }
 
-        SteigListAdapter sa = new SteigListAdapter(getApplicationContext(), steigDisplay);
+        SteigListAdapter sa = new SteigListAdapter(SteigPickerActivity.this, steigDisplay);
         list.setAdapter(sa);
     }
 
