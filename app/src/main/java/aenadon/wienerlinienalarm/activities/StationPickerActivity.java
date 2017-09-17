@@ -1,7 +1,6 @@
 package aenadon.wienerlinienalarm.activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,103 +18,38 @@ import java.util.Collections;
 import java.util.List;
 
 import aenadon.wienerlinienalarm.R;
-import aenadon.wienerlinienalarm.adapter.Halteobjekt;
 import aenadon.wienerlinienalarm.adapter.StationListAdapter;
-import aenadon.wienerlinienalarm.utils.CSVWorkUtils;
-import aenadon.wienerlinienalarm.utils.Const;
+import aenadon.wienerlinienalarm.models.wl_metadata.Station;
+import aenadon.wienerlinienalarm.utils.Keys;
+import hugo.weaving.DebugLog;
+import io.realm.Realm;
 
 public class StationPickerActivity extends AppCompatActivity {
 
-    private final List<Halteobjekt> stationsDisplay = new ArrayList<>();
-    private final List<Halteobjekt> stationsOriginal = new ArrayList<>();
-    private ListView list;
-    private StationListAdapter sa;
-    private ProgressDialog warten;
+    private final List<Station> stationsToDisplay = new ArrayList<>();
+    private final List<Station> stationsCompleteList = new ArrayList<>();
+    private StationListAdapter stationAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_picker);
 
-        // The waiting dialog to be shown whenever the user should wait
-        warten = new ProgressDialog(StationPickerActivity.this);
-        warten.setMessage(getString(R.string.please_wait));
-        warten.setIndeterminate(true);
-        warten.setCancelable(false);
+        Realm realm = Realm.getDefaultInstance();
+        stationsCompleteList.addAll(realm.where(Station.class).findAll());
+        Collections.sort(stationsCompleteList);
+        realm.close();
 
-        list = (ListView) findViewById (R.id.station_resultlist); // find the list view
-        list.setOnItemClickListener(listListener()); // listen for presses
+        stationsToDisplay.addAll(stationsCompleteList);
 
-        EditText queryBox = (EditText) findViewById(R.id.station_search_edittext); // initialize the search box
-        queryBox.addTextChangedListener(editTextChangeListener()); // listen for text changes
+        ListView list = (ListView) findViewById(R.id.station_resultlist);
+        list.setOnItemClickListener(new StationListListener());
 
-        String wholeCSV = CSVWorkUtils.getCSVfromFile(StationPickerActivity.this);
-        if (wholeCSV != null) {
-            populateListView(wholeCSV.split(Const.CSV_FILE_SEPARATOR)[Const.CSV_PART_STATION]);
-        }
-    }
+        stationAdapter = new StationListAdapter(StationPickerActivity.this, stationsToDisplay);
+        list.setAdapter(stationAdapter);
 
-    private void populateListView(String csv) {
-        warten.show();
-        String[] rows = csv.split("\n"); // get each row (=station) as separate array entry
-        for (String row : rows) {
-            String[] columns = row.split(";"); // get each column for each row as array entry
-            String rawStationName = columns[3]; // "Station"
-            String stationId = columns[0]; // 123456789
-            stationsOriginal.add(new Halteobjekt( // create an Halteobjekt for every station entry
-                    rawStationName.substring(1, rawStationName.length() - 1), // "Station" --> Station
-                    stationId,
-                    null // we don't need array index for the stations
-            ));
-        }
-        Collections.sort(stationsOriginal);
-        stationsDisplay.addAll(stationsOriginal); // copy the complete list to another variable so the original list remains unaltered
-        Collections.sort(stationsDisplay);
-        sa = new StationListAdapter(StationPickerActivity.this, stationsDisplay); // give our displaylist to the adapter
-        list.setAdapter(sa); // set the adapter on the list (==> updates the list automatically)
-        warten.dismiss();
-    }
-
-    // this listens for text changes
-    private TextWatcher editTextChangeListener() {
-        return new TextWatcher() { // and tell it what it has to do when the user types in something
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { // when the user changed the text inside (==> typed something)
-                stationsDisplay.clear(); // clear the displayed list
-                if (s.length() > 0) { // if the contents of the box are > 0
-                    for (Halteobjekt h : stationsOriginal) { // loop through every object in the (original!) list of all stations
-                        if (h.getName().toLowerCase().contains(s.toString().toLowerCase().trim())){ // and pick the matches
-                            stationsDisplay.add(h); // and add them to the displayed list
-                        }
-                    }
-                    sa.notifyDataSetChanged(); // tell the adapter that the list has changed
-                } else {
-                    stationsDisplay.addAll(stationsOriginal); // if user deleted everything, restore the original list
-                    sa.notifyDataSetChanged(); // tell the adapter that the list has changed
-                }
-            }
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {/* not needed */}
-            @Override public void afterTextChanged(Editable s) {/* not needed */}
-        };
-    }
-
-    private AdapterView.OnItemClickListener listListener() {
-        return new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView parent, View view, int position, long id) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(parent
-                        .getWindowToken(), 0);
-
-                String stationName; String stationId;
-                stationName = stationsDisplay.get(position).getName();
-                stationId = stationsDisplay.get(position).getId(); // pass name and id to the SteigPickerActivity so he can offer the steigs
-
-                Intent i = new Intent(getApplicationContext(), SteigPickerActivity.class);
-                i.putExtra(Const.EXTRA_STATION_NAME, stationName).putExtra(Const.EXTRA_STATION_ID, stationId);
-                startActivityForResult(i, 0);
-            }
-        };
+        EditText queryBox = (EditText) findViewById(R.id.station_search_edittext);
+        queryBox.addTextChangedListener(new StationSearchTextWatcher());
     }
 
     @Override
@@ -124,6 +58,52 @@ public class StationPickerActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             setResult(Activity.RESULT_OK, data);
             finish();
+        }
+    }
+
+    private class StationSearchTextWatcher implements TextWatcher {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+        @Override
+        public void onTextChanged(CharSequence inputText, int start, int before, int count) { }
+
+        @Override
+        @DebugLog
+        public void afterTextChanged(Editable s) {
+            stationsToDisplay.clear();
+
+            String inputText = s.toString();
+            if (inputText.length() > 0) {
+                for (Station station : stationsCompleteList) {
+                    if (stationNameContains(station, inputText)){
+                        stationsToDisplay.add(station);
+                    }
+                }
+            } else {
+                stationsToDisplay.addAll(stationsCompleteList);
+            }
+            stationAdapter.notifyDataSetChanged();
+        }
+
+        private boolean stationNameContains(Station station, CharSequence inputText) {
+            String stationName = station.getName().toLowerCase().trim();
+            String input = inputText.toString().toLowerCase().trim();
+            return stationName.contains(input);
+        }
+    }
+
+    private class StationListListener implements AdapterView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(parent.getWindowToken(), 0);
+
+            Intent selectSteigIntent = new Intent(StationPickerActivity.this, SteigPickerActivity.class);
+            selectSteigIntent.putExtra(Keys.Extra.SELECTED_STATION_ID, stationsToDisplay.get(position).getId());
+            startActivityForResult(selectSteigIntent, Keys.RequestCode.SELECT_STEIG);
         }
     }
 }

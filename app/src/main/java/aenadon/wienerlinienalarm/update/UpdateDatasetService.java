@@ -179,6 +179,10 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
                     .equalTo("stationId", id)
                     .findAll();
 
+            if (steigsForStation.isEmpty()) {
+                continue;
+            }
+
             Station station = getStationObject(id);
             station.setIdForXMLApi(idForXMLApi);
             station.setName(stationName);

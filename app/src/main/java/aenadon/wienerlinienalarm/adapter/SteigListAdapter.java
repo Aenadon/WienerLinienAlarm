@@ -10,17 +10,15 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import aenadon.wienerlinienalarm.models.wl_metadata.Station;
-
-public class StationListAdapter extends ArrayAdapter<Station> {
+public class SteigListAdapter extends ArrayAdapter<SteigWithLineName> {
 
     private final Context context;
-    private final List<Station> stations;
+    private final List<SteigWithLineName> steigs;
 
-    public StationListAdapter(Context context, List<Station> stations) {
-        super(context, -1, stations);
+    public SteigListAdapter(Context context, List<SteigWithLineName> steigs) {
+        super(context, -1, steigs);
         this.context = context;
-        this.stations = stations;
+        this.steigs = steigs;
     }
 
     @NonNull
@@ -38,7 +36,7 @@ public class StationListAdapter extends ArrayAdapter<Station> {
         } else {
             resultView = (ResultViewHolder) convertView.getTag();
         }
-        resultView.textView.setText(stations.get(position).getName());
+        resultView.textView.setText(steigs.get(position).getLineNameAndDirection());
 
         return convertView;
     }
@@ -46,4 +44,5 @@ public class StationListAdapter extends ArrayAdapter<Station> {
     private static class ResultViewHolder {
         TextView textView;
     }
+
 }

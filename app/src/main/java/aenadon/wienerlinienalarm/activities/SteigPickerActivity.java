@@ -6,6 +6,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import aenadon.wienerlinienalarm.adapter.SteigListAdapter;
+import aenadon.wienerlinienalarm.adapter.SteigWithLineName;
+import aenadon.wienerlinienalarm.models.wl_metadata.Station;
+import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
+import aenadon.wienerlinienalarm.utils.Keys;
+import io.realm.Realm;
 import trikita.log.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,11 +41,9 @@ import retrofit2.Response;
 
 public class SteigPickerActivity extends AppCompatActivity {
 
-    private final List<String> steige = new ArrayList<>();
-    private static final List<Halteobjekt> steigDisplay = new ArrayList<>();
+    private static final List<SteigWithLineName> steigDisplay = new ArrayList<>();
+    private Station selectedStation;
     private ListView list;
-    private String stationName;
-    private String stationId;
     private ProgressDialog warten;
 
     @Override
@@ -46,62 +51,58 @@ public class SteigPickerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steig_picker);
 
-        // The waiting dialog to be shown whenever the user should wait
         warten = new ProgressDialog(SteigPickerActivity.this);
         warten.setMessage(getString(R.string.please_wait));
         warten.setIndeterminate(true);
         warten.setCancelable(false);
 
-        warten.show();
+//        warten.show();
 
         Bundle b = getIntent().getExtras();
-        stationName = b.getString(Const.EXTRA_STATION_NAME);
-        stationId = b.getString(Const.EXTRA_STATION_ID);
+        String stationId = b.getString(Keys.Extra.SELECTED_STATION_ID);
+
+        Realm realm = Realm.getDefaultInstance();
+        selectedStation = realm.where(Station.class).equalTo("id", stationId).findFirst();
+        realm.close();
 
         TextView stationDisplay = (TextView) findViewById(R.id.steig_stationdisplay);
-        stationDisplay.setText(stationName); // display the selected station to the user
+        stationDisplay.setText(selectedStation.getName());
 
-        list = (ListView) findViewById(R.id.steig_resultlist); // find the list view
-        list.setOnItemClickListener(listListener()); // listen for presses
+        list = (ListView) findViewById(R.id.steig_resultlist);
+        list.setOnItemClickListener(listListener());
 
-        String wholeCSV = CSVWorkUtils.getCSVfromFile(SteigPickerActivity.this);
-        if (wholeCSV != null) {
-            populateListView(wholeCSV.split(Const.CSV_FILE_SEPARATOR)[Const.CSV_PART_STEIG]);
-        }
-
+        populateListView();
     }
 
-    private void populateListView(String csv) {
-        if (stationId == null) return;
-        String[] rows = csv.split("\n"); // get each row (=station) as separate array entry
-        for (int i = 1; i < rows.length; i++) { // first line is table header ==> i = 1 to skip it
-            String[] columns = rows[i].split(";"); // get each column for each row as array entry
-            if (columns[2].equals(stationId)) { // add only the steigs which correspond to the queried station
-                // columns[5] == RBL_NUMMER (the only one required for API query)
-                // to avoid double stations, only add the station if the ID doesn't already exist
-                String id = columns[5].substring(1, columns[5].length() - 1);
-                if (!steige.contains(id)) steige.add(id); // "1234" --> 1234
-            }
+    private void populateListView() {
+        List<Steig> steigs = selectedStation.getSteigs();
+        for (Steig steig : steigs) {
+            SteigWithLineName steigWithLineName = new SteigWithLineName();
+            steigWithLineName.setSteig(steig);
+            steigWithLineName.setLineNameAndDirection("U6 Siebenhirten"); // TODO replace with retrieved name
+            steigDisplay.add(steigWithLineName);
         }
-        //noinspection unchecked
-        new GetSteigNames().execute(steige);
+
+        SteigListAdapter sa = new SteigListAdapter(getApplicationContext(), steigDisplay);
+        list.setAdapter(sa);
     }
 
     private AdapterView.OnItemClickListener listListener() {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                String steigId = steigDisplay.get(position).getId();
-                Halteobjekt h = steigDisplay.get(position);
-                String stationDir = h.getName();
-                Intent extraData = new Intent().putExtra(Const.EXTRA_STATION_INFO, new String[]{stationName, stationDir, steigId, h.getArrayIndex()});
+                SteigWithLineName steigWithLineName = steigDisplay.get(position);
+
+                Intent extraData = new Intent()
+                        .putExtra(Keys.Extra.LINE_NAME_AND_DIRECTION, steigWithLineName.getLineNameAndDirection())
+                        .putExtra(Keys.Extra.SELECTED_STEIG_ID, steigWithLineName.getSteigId());
                 setResult(Activity.RESULT_OK, extraData);
                 finish();
             }
         };
     }
 
-    private class GetSteigNames extends AsyncTask<List<String>, Void, Integer> {
+    /*private class GetSteigNames extends AsyncTask<List<String>, Void, Integer> {
 
         List<Halteobjekt> halteobjekts;
 
@@ -163,5 +164,5 @@ public class SteigPickerActivity extends AppCompatActivity {
                 list.setAdapter(sa); // set the adapter on the list (==> updates the list automatically)
             }
         }
-    }
+    }*/
 }

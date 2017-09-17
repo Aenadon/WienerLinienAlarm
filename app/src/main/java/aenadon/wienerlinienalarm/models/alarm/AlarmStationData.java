@@ -10,6 +10,7 @@ public class AlarmStationData extends RealmObject {
 
     private Station station;
     private Steig steig;
+    private String lineDirectionName;
 
     public AlarmStationData() {
     }
@@ -28,5 +29,21 @@ public class AlarmStationData extends RealmObject {
 
     public void setSteig(Steig steig) {
         this.steig = steig;
+    }
+
+    public String getLineDirectionName() {
+        return lineDirectionName;
+    }
+
+    public void setLineDirectionName(String lineDirectionName) {
+        this.lineDirectionName = lineDirectionName;
+    }
+
+    public String getRbl() {
+        return steig.getRbl();
+    }
+
+    public String getStringRepresentation() {
+        return station.getName() + "\n" + lineDirectionName;
     }
 }

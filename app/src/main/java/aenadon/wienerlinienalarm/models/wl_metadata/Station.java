@@ -1,5 +1,7 @@
 package aenadon.wienerlinienalarm.models.wl_metadata;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 import io.realm.RealmList;
@@ -8,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 
-public class Station extends RealmObject {
+public class Station extends RealmObject implements Comparable<Station> {
 
     @PrimaryKey
     private String id;
@@ -63,5 +65,10 @@ public class Station extends RealmObject {
         RealmList<Steig> steigList = new RealmList<>();
         steigList.addAll(steigs);
         this.steigs = steigList;
+    }
+
+    @Override
+    public int compareTo(@NonNull Station o) {
+        return this.name.compareTo(o.getName());
     }
 }

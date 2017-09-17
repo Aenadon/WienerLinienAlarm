@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupAlarmReceiver() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Const.INTENT_REFRESH_LIST);
+        intentFilter.addAction(Keys.Intent.REFRESH_LIST);
 
         refreshReceiver = new BroadcastReceiver() {
             @Override
@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent i = new Intent(getActivity(), DialogEditActivity.class);
                     i.putExtra(Keys.Extra.ALARM_MODE, alarmMode);
                     i.putExtra(Const.EXTRA_DB_POSITION, position);
-                    startActivityForResult(i, Const.REQUEST_EDIT_ALARM);
+                    startActivityForResult(i, Keys.RequestCode.EDIT_ALARM);
                 }
             };
         }
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-            if (resultCode == Activity.RESULT_OK && requestCode == Const.REQUEST_EDIT_ALARM) {
+            if (resultCode == Activity.RESULT_OK && requestCode == Keys.RequestCode.EDIT_ALARM) {
                 adapter.notifyDataSetChanged();
             }
         }

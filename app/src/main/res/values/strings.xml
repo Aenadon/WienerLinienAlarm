@@ -77,13 +77,13 @@
     <string name="please_wait">Please wait&#8230;</string>
     <string name="search_for_station">Search for station</string>
     <string name="choose_station">Choose station</string>
-    <string name="choose_steig">Choose lineId and direction</string>
+    <string name="choose_steig">Choose line and direction</string>
 
     <string name="ok">OK</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
 
-    <!--LegacyAlarm settings-->
+    <!--Alarm settings-->
     <string name="alarm_settings">Alarm settings</string>
 
     <string name="delete_alarm_title">Delete alarm?</string>
@@ -112,6 +112,5 @@
     <string name="missing_info_days">-Please choose your alarm days.</string>
     <string name="missing_info_past">-Please choose a time in the future.</string>
     <string name="missing_info_station">-Please choose a station.</string>
-    <string name="title_activity_main2">Main2Activity</string>
 
 </resources>
