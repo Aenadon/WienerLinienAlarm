@@ -36,8 +36,7 @@ public class StationPickerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_station_picker);
 
         Realm realm = Realm.getDefaultInstance();
-        stationsCompleteList.addAll(realm.where(Station.class).findAll());
-        Collections.sort(stationsCompleteList);
+        stationsCompleteList.addAll(realm.where(Station.class).findAllSorted("name"));
         realm.close();
 
         stationsToDisplay.addAll(stationsCompleteList);

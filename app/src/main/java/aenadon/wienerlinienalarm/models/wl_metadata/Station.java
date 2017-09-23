@@ -10,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 
-public class Station extends RealmObject implements Comparable<Station> {
+public class Station extends RealmObject {
 
     @PrimaryKey
     private String id;
@@ -65,10 +65,5 @@ public class Station extends RealmObject implements Comparable<Station> {
         RealmList<Steig> steigList = new RealmList<>();
         steigList.addAll(steigs);
         this.steigs = steigList;
-    }
-
-    @Override
-    public int compareTo(@NonNull Station o) {
-        return this.name.compareTo(o.getName());
     }
 }
