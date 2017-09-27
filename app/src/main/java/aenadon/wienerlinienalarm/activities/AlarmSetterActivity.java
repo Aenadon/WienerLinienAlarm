@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -46,8 +47,10 @@ public class AlarmSetterActivity extends AppCompatActivity {
             findViewById(R.id.choose_vibration_container).setVisibility(View.GONE);
         }
 
-        //noinspection ConstantConditions
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         alarmMode = getIntent().getIntExtra(Keys.Extra.ALARM_MODE, Const.ALARM_ONETIME); // default: onetime
         pickAlarmFrequency(alarmMode); // initial setup
