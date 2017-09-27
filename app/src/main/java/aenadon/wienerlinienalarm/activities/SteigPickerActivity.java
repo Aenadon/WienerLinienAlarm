@@ -1,69 +1,58 @@
 package aenadon.wienerlinienalarm.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import aenadon.wienerlinienalarm.adapter.SteigListAdapter;
-import aenadon.wienerlinienalarm.adapter.SteigWithLineName;
+import aenadon.wienerlinienalarm.adapter.SteigWithDestination;
+import aenadon.wienerlinienalarm.enums.Direction;
+import aenadon.wienerlinienalarm.enums.TransportType;
+import aenadon.wienerlinienalarm.models.routing_xml.XmlSteig;
+import aenadon.wienerlinienalarm.models.routing_xml.RoutingXMLRequest;
+import aenadon.wienerlinienalarm.models.wl_metadata.Line;
 import aenadon.wienerlinienalarm.models.wl_metadata.Station;
 import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
 import aenadon.wienerlinienalarm.utils.Keys;
 import io.realm.Realm;
-import trikita.log.Log;
+import retrofit2.Call;
+import retrofit2.Callback;
+
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import aenadon.wienerlinienalarm.BuildConfig;
 import aenadon.wienerlinienalarm.R;
-import aenadon.wienerlinienalarm.adapter.Halteobjekt;
-import aenadon.wienerlinienalarm.adapter.StationListAdapter;
-import aenadon.wienerlinienalarm.utils.AlertDialogs;
-import aenadon.wienerlinienalarm.utils.CSVWorkUtils;
-import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.ApiProvider;
-import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 public class SteigPickerActivity extends AppCompatActivity {
 
-    private static final List<SteigWithLineName> steigDisplay = new ArrayList<>();
+    private static final List<SteigWithDestination> steigsOnDisplay = new ArrayList<>();
     private Station selectedStation;
     private ListView list;
-    private ProgressDialog warten;
+    SteigListAdapter steigListAdapter;
+
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steig_picker);
+        realm = Realm.getDefaultInstance();
 
-        warten = new ProgressDialog(SteigPickerActivity.this);
-        warten.setMessage(getString(R.string.please_wait));
-        warten.setIndeterminate(true);
-        warten.setCancelable(false);
+        Bundle bundle = getIntent().getExtras();
+        String stationId = bundle.getString(Keys.Extra.SELECTED_STATION_ID);
 
-//        warten.show();
-
-        Bundle b = getIntent().getExtras();
-        String stationId = b.getString(Keys.Extra.SELECTED_STATION_ID);
-
-        Realm realm = Realm.getDefaultInstance();
         selectedStation = realm.where(Station.class).equalTo("id", stationId).findFirst();
-        realm.close();
 
         TextView stationDisplay = (TextView) findViewById(R.id.steig_stationdisplay);
         stationDisplay.setText(selectedStation.getName());
@@ -71,98 +60,102 @@ public class SteigPickerActivity extends AppCompatActivity {
         list = (ListView) findViewById(R.id.steig_resultlist);
         list.setOnItemClickListener(listListener());
 
+        @SuppressLint("InflateParams") View emptyView = getLayoutInflater().inflate(R.layout.list_loading_placeholder, null);
+        ((ViewGroup)list.getParent()).addView(emptyView);
+        list.setEmptyView(emptyView);
+
+        steigListAdapter = new SteigListAdapter(SteigPickerActivity.this, steigsOnDisplay);
         populateListView();
     }
 
     private void populateListView() {
+        steigsOnDisplay.clear();
         List<Steig> steigs = selectedStation.getSteigs();
         for (Steig steig : steigs) {
-            SteigWithLineName steigWithLineName = new SteigWithLineName();
-            steigWithLineName.setSteig(steig);
-            steigWithLineName.setLineNameAndDirection("U6 Siebenhirten"); // TODO replace with retrieved name
-            steigDisplay.add(steigWithLineName);
+            SteigWithDestination steigWithDestination = new SteigWithDestination();
+            steigWithDestination.setSteig(steig);
+            steigsOnDisplay.add(steigWithDestination);
         }
 
-        SteigListAdapter sa = new SteigListAdapter(SteigPickerActivity.this, steigDisplay);
-        list.setAdapter(sa);
+        ApiProvider.getRoutingApi().getXMLStationInfo(selectedStation.getIdForXMLApi()).enqueue(new Callback<RoutingXMLRequest>() {
+            @Override
+            public void onResponse(Call<RoutingXMLRequest> call, Response<RoutingXMLRequest> response) {
+                List<XmlSteig> xmlSteigs = response.body().getStationLines();
+                List<SteigWithDestination> clonedSteigDisplay = new ArrayList<>(steigsOnDisplay);
+
+                for (SteigWithDestination steigWithDestination : clonedSteigDisplay) {
+                    Steig steig = steigWithDestination.getSteig();
+                    String lineNameAndDirection = steigDestinationName(steig, xmlSteigs);
+                    if (lineNameAndDirection == null) {
+                        steigsOnDisplay.remove(steigWithDestination); // same references in both arrays
+                        continue;
+                    }
+                    steigWithDestination.setLineNameAndDirection(lineNameAndDirection);
+                }
+                Collections.sort(steigsOnDisplay);
+                list.setAdapter(steigListAdapter);
+            }
+
+            private String steigDestinationName(Steig steig, List<XmlSteig> xmlSteigs) {
+                String destinationName = null;
+                Line lineOfSteig = steig.getLine();
+
+                if (TransportType.TRAM_WLB.equals(lineOfSteig.getTransportType())) {
+                    String line = lineOfSteig.getLineName();
+                    String destination = getWLBDestination(steig);
+                    destinationName = line + " " + destination;
+                } else {
+                    for (XmlSteig xmlSteig : xmlSteigs) {
+                        if (steigEqualsXmlSteig(steig, xmlSteig)) {
+                            destinationName = xmlSteig.toString();
+                        }
+                    }
+                }
+                return destinationName;
+            }
+
+            // Needs to be hardcoded because the XML API doesn't return those
+            private String getWLBDestination(Steig steig) {
+                Direction direction = steig.getDirection();
+                if (Direction.H.equals(direction)) {
+                    return "Baden Josefspl.";
+                } else {
+                    return "Wien Oper";
+                }
+            }
+
+            private boolean steigEqualsXmlSteig(Steig steig, XmlSteig xmlSteig) {
+                return steig.getLine().getLineName().equals(xmlSteig.getLine()) &&
+                        steig.getDirection().toString().equals(xmlSteig.getDirection());
+            }
+
+            @Override
+            public void onFailure(Call<RoutingXMLRequest> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private AdapterView.OnItemClickListener listListener() {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                SteigWithLineName steigWithLineName = steigDisplay.get(position);
+                SteigWithDestination steigWithDestination = steigsOnDisplay.get(position);
 
                 Intent extraData = new Intent()
-                        .putExtra(Keys.Extra.LINE_NAME_AND_DIRECTION, steigWithLineName.getLineNameAndDirection())
-                        .putExtra(Keys.Extra.SELECTED_STEIG_ID, steigWithLineName.getSteigId());
+                        .putExtra(Keys.Extra.LINE_NAME_AND_DIRECTION, steigWithDestination.getLineNameAndDirection())
+                        .putExtra(Keys.Extra.SELECTED_STEIG_ID, steigWithDestination.getSteigId());
                 setResult(Activity.RESULT_OK, extraData);
                 finish();
             }
         };
     }
 
-    /*private class GetSteigNames extends AsyncTask<List<String>, Void, Integer> {
-
-        List<Halteobjekt> halteobjekts;
-
-        @SuppressWarnings("unchecked")
-        @Override
-        protected Integer doInBackground(List<String>... params) {
-            String apikey = BuildConfig.API_KEY;
-            List<String> steigs = params[0];
-            steigDisplay.clear();
-            for (String steigId : steigs) {
-                try {
-                    if (steigId.equals("")) continue; // or else we get an unexplainable 400
-                    Response<ResponseBody> response = ApiProvider.getRealtimeApi().getRealtime(apikey, steigId).execute();
-                    if (response.isSuccessful()) {
-                        JSONArray monitors = new JSONObject(response.body().string())
-                                .getJSONObject("data")
-                                .getJSONArray("monitors");
-                        if (monitors.length() < 1) {
-                            continue;
-                        }
-                        for (int arrayIndex = 0; arrayIndex < monitors.length(); arrayIndex++) {
-                            JSONObject lineDef = monitors.getJSONObject(arrayIndex)
-                                    .getJSONArray("lines")
-                                    .getJSONObject(0);
-
-
-                            String lineName = lineDef.getString("name");
-                            String lineDirection = (lineName.substring(0, 1).equals("U")) ?  // if it's a UBAHN get our hardcoded direction instead of HÜTTELDORF          * HÜTTELDORF         4
-                                    CSVWorkUtils.getUbahnEndstation(lineName, lineDef.getString("direction")) : lineDef.getString("towards");
-
-                            String lineAndDirName = lineName + " " + lineDirection;
-                            steigDisplay.add(new Halteobjekt(lineAndDirName, steigId, Integer.toString(arrayIndex)));
-                        }
-                    } else {
-                        Log.e("API response unsuccessful: " + response.code());
-                        return Const.NETWORK_SERVER_ERROR;
-                    }
-                } catch (IOException | JSONException e) {
-                    Log.e("API request/JSON fail", e);
-                    return Const.NETWORK_CONNECTION_ERROR;
-                }
-            }
-            Collections.sort(steigDisplay);
-            halteobjekts = steigDisplay;
-            return Const.NETWORK_SUCCESS;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null && !realm.isClosed()) {
+            realm.close();
         }
-
-        @Override
-        protected void onPostExecute(Integer resultCode) {
-            warten.dismiss();
-            if (resultCode == Const.NETWORK_SERVER_ERROR) {
-                AlertDialogs.serverNotAvailable(SteigPickerActivity.this);
-            } else if (resultCode == Const.NETWORK_CONNECTION_ERROR) {
-                AlertDialogs.noConnection(SteigPickerActivity.this);
-            } else if (resultCode == Const.NETWORK_SUCCESS && halteobjekts.isEmpty()) {
-                AlertDialogs.noSteigsAvailable(SteigPickerActivity.this);
-            } else {
-                StationListAdapter sa = new StationListAdapter(getApplicationContext(), halteobjekts);
-                list.setAdapter(sa); // set the adapter on the list (==> updates the list automatically)
-            }
-        }
-    }*/
+    }
 }

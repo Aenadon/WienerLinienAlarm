@@ -37,10 +37,20 @@
         </activity>
         <activity
             android:name=".activities.StationPickerActivity"
-            android:label="@string/choose_station" />
+            android:label="@string/choose_station"
+            android:parentActivityName=".activities.DialogEditActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.DialogEditActivity" />
+        </activity>
         <activity
             android:name=".activities.SteigPickerActivity"
-            android:label="@string/choose_steig" />
+            android:label="@string/choose_steig"
+            android:parentActivityName=".activities.StationPickerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.StationPickerActivity" />
+        </activity>
         <activity
             android:name=".activities.DialogEditActivity"
             android:label="@string/alarm_settings"

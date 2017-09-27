@@ -1,9 +1,14 @@
 package aenadon.wienerlinienalarm.utils;
 
+import org.simpleframework.xml.convert.AnnotationStrategy;
+import org.simpleframework.xml.core.Persister;
+
+import aenadon.wienerlinienalarm.models.routing_xml.RoutingXMLRequest;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -29,7 +34,8 @@ public class ApiProvider {
     public static RoutingApi getRoutingApi() {
         return new Retrofit.Builder()
                 .baseUrl("http://www.wienerlinien.at/ogd_routing/")
-                //TODO .addConverterFactory(SimpleXmlConverterFactory.create())
+                // to prevent crash on empty tags
+                .addConverterFactory(SimpleXmlConverterFactory.createNonStrict(new Persister(new AnnotationStrategy())))
                 .build()
                 .create(RoutingApi.class);
     }
@@ -51,14 +57,16 @@ public class ApiProvider {
     }
 
     public interface RealtimeApi {
-
+        // TODO create JSON serializing objects and use those instead of raw strings
         @GET("monitor")
         Call<ResponseBody> getRealtime(@Query("sender") String apiKey, @Query("rbl") String rbl);
 
     }
 
     public interface RoutingApi {
-        // TODO
-    }
 
+        @GET("XML_DM_REQUEST?type_dm=any")
+        Call<RoutingXMLRequest> getXMLStationInfo(@Query("name_dm") String stationXmlId);
+
+    }
 }

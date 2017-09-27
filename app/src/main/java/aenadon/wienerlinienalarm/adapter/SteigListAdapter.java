@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class SteigListAdapter extends ArrayAdapter<SteigWithLineName> {
+public class SteigListAdapter extends ArrayAdapter<SteigWithDestination> {
 
     private final Context context;
-    private final List<SteigWithLineName> steigs;
+    private final List<SteigWithDestination> steigs;
 
-    public SteigListAdapter(Context context, List<SteigWithLineName> steigs) {
+    public SteigListAdapter(Context context, List<SteigWithDestination> steigs) {
         super(context, -1, steigs);
         this.context = context;
         this.steigs = steigs;

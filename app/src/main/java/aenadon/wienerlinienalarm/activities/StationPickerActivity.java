@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import aenadon.wienerlinienalarm.R;
@@ -30,15 +29,15 @@ public class StationPickerActivity extends AppCompatActivity {
     private final List<Station> stationsCompleteList = new ArrayList<>();
     private StationListAdapter stationAdapter;
 
+    private Realm realm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_picker);
+        realm = Realm.getDefaultInstance();
 
-        Realm realm = Realm.getDefaultInstance();
         stationsCompleteList.addAll(realm.where(Station.class).findAllSorted("name"));
-        realm.close();
-
         stationsToDisplay.addAll(stationsCompleteList);
 
         ListView list = (ListView) findViewById(R.id.station_resultlist);
@@ -103,6 +102,14 @@ public class StationPickerActivity extends AppCompatActivity {
             Intent selectSteigIntent = new Intent(StationPickerActivity.this, SteigPickerActivity.class);
             selectSteigIntent.putExtra(Keys.Extra.SELECTED_STATION_ID, stationsToDisplay.get(position).getId());
             startActivityForResult(selectSteigIntent, Keys.RequestCode.SELECT_STEIG);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null && !realm.isClosed()) {
+            realm.close();
         }
     }
 }
