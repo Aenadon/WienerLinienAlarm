@@ -39,7 +39,7 @@ public class DialogEditActivity extends AppCompatActivity {
     private final Pickers.DaysPicker daysPicker = new Pickers.DaysPicker();
     private final Pickers.RingtonePicker ringtonePicker = new Pickers.RingtonePicker();
     private final Pickers.VibrationPicker vibrationPicker = new Pickers.VibrationPicker();
-    private final Pickers.StationPicker stationPicker = new Pickers.StationPicker();
+    private final Pickers.StationSteigPicker stationSteigPicker = new Pickers.StationSteigPicker();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +99,7 @@ public class DialogEditActivity extends AppCompatActivity {
         outState.putBundle(Const.BUNDLE_DAYS_PICKER, daysPicker.saveState());
         outState.putBundle(Const.BUNDLE_RINGTONE_PICKER, ringtonePicker.saveState());
         outState.putBundle(Const.BUNDLE_VIBRATION_PICKER, vibrationPicker.saveState());
-        outState.putBundle(Const.BUNDLE_STATION_PICKER, stationPicker.saveState());
+        outState.putBundle(Const.BUNDLE_STATION_PICKER, stationSteigPicker.saveState());
         super.onSaveInstanceState(outState);
     }
 
@@ -111,7 +111,7 @@ public class DialogEditActivity extends AppCompatActivity {
         daysPicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DAYS_PICKER));
         ringtonePicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_RINGTONE_PICKER));
         vibrationPicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_VIBRATION_PICKER));
-        stationPicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_STATION_PICKER));
+        stationSteigPicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_STATION_PICKER));
     }
 
     public void onClickHandler(View view) {
@@ -146,7 +146,7 @@ public class DialogEditActivity extends AppCompatActivity {
                 break;
             case R.id.dialog_station_text:
             case R.id.dialog_station_edit:
-                stationPicker.show(DialogEditActivity.this, R.id.dialog_station_text);
+                stationSteigPicker.show(DialogEditActivity.this, R.id.dialog_station_text);
                 break;
             case R.id.dialog_button_cancel:
                 setResult(Activity.RESULT_CANCELED);
@@ -219,7 +219,7 @@ public class DialogEditActivity extends AppCompatActivity {
         if (timePicker.timeChanged(alarmElement)) alarmElement.setTimeAsArray(timePicker.getPickedTime());
         if (ringtonePicker.ringtoneChanged(alarmElement)) alarmElement.setChosenRingtone(ringtonePicker.getPickedRingtone());
         if (vibrationPicker.vibrationChanged(alarmElement)) alarmElement.setChosenVibrationMode(vibrationPicker.getPickedVibrationMode());
-        if (stationPicker.stationChanged(alarmElement)) alarmElement.setStationInfoAsArray(stationPicker.getStationInfoAsArray());
+        if (stationSteigPicker.stationChanged(alarmElement)) alarmElement.setStationInfoAsArray(stationSteigPicker.getStationInfoAsArray());
 
         AlarmUtils.scheduleAlarm(DialogEditActivity.this, alarmElement); // and schedule the changed one
 
@@ -238,7 +238,7 @@ public class DialogEditActivity extends AppCompatActivity {
                     ringtonePicker.setPickedRingtone(DialogEditActivity.this, data);
                     break;
                 case Const.REQUEST_STATION:
-                    stationPicker.setPickedStation(data);
+                    stationSteigPicker.setPicked(data);
                     break;
             }
         }

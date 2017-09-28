@@ -391,14 +391,9 @@ public class Pickers {
 
     }
 
-    public static class StationPicker {
-
-        // {stationName, stationDir, stationId, h.getArrayIndex()}
-        private String pickedStationName;
-        private String pickedStationDir;
-        private String pickedStationId;
-        private int pickedStationArrayIndex;
-
+    public static class StationSteigPicker {
+        private String displayName;
+        private String steigId;
         private int viewResId;
         private TextView viewToUse;
 
@@ -406,75 +401,76 @@ public class Pickers {
             this.viewResId = viewResId;
             viewToUse = (TextView)((Activity)ctx).findViewById(this.viewResId);
 
-            ((Activity)ctx).startActivityForResult(new Intent(ctx, StationPickerActivity.class), Const.REQUEST_STATION);
+            ((Activity)ctx).startActivityForResult(new Intent(ctx, StationPickerActivity.class), Keys.RequestCode.SELECT_STEIG);
         }
 
-        public void setPickedStation(Intent data) {
-            String[] extras = data.getStringArrayExtra(Const.EXTRA_STATION_INFO);
+        public void setPicked(Intent data) {
+            String stationName = data.getStringExtra(Keys.Extra.SELECTED_STATION_NAME);
+            String lineNameAndDirection = data.getStringExtra(Keys.Extra.LINE_NAME_AND_DIRECTION);
 
-            pickedStationName = extras[0];
-            pickedStationDir = extras[1];
-            pickedStationId = extras[2];
-            pickedStationArrayIndex = Integer.parseInt(extras[3]);
-
-            viewToUse.setText(StringDisplay.getStation(pickedStationName, pickedStationDir));
+            displayName = stationName + "\n" + lineNameAndDirection;
+            steigId = data.getStringExtra(Keys.Extra.SELECTED_STEIG_ID);
+            viewToUse.setText(displayName);
         }
 
+        @Deprecated
         public String getPickedStationName() {
-            return pickedStationName;
+            return displayName.split("\n")[0];
         }
 
+        @Deprecated
         public String getPickedStationDir() {
-            return pickedStationDir;
+            return displayName.split("\n")[1];
         }
 
+        @Deprecated
         public String getPickedStationId() {
-            return pickedStationId;
+            return steigId;
         }
 
+        @Deprecated
         public int getPickedStationArrayIndex() {
-            return pickedStationArrayIndex;
+            return 0;
         }
 
+        @Deprecated
         public String[] getStationInfoAsArray() {
-            return new String[]{pickedStationName, pickedStationDir, pickedStationId, Integer.toString(pickedStationArrayIndex)};
+            return new String[]{getPickedStationName(), getPickedStationDir(), getPickedStationId(), Integer.toString(getPickedStationArrayIndex())};
         }
 
         public boolean stationWasSet() {
-            return pickedStationId != null; // if one of them is not null, none are null (all are set at once)
+            return steigId != null;
         }
 
+        @Deprecated
         public boolean stationChanged(LegacyAlarm alarm) {
             // if stationId is NULL OR stationId is SAME, then nothing changed, return false
             // else something changed, return true
-            return !(pickedStationId == null || pickedStationId.equals(alarm.getStationId()));
+            return !(getPickedStationId() == null || getPickedStationId().equals(alarm.getStationId()));
         }
 
-        private final String viewResIdKey = "VIEW_RES_ID";
-        private final String pickedStationNameKey = "PICKED_STATION_NAME_KEY";
-        private final String pickedStationDirKey = "PICKED_STATION_DIR_KEY";
-        private final String pickedStationIdKey = "PICKED_STATION_ID_KEY";
-        private final String pickedStationArrayIndexKey = "PICKED_STATION_ARRAY_INDEX_KEY";
+        private final String VIEW_RES_ID_KEY = "VIEW_RES_ID";
+        private final String STEIG_ID_KEY = "STEIG_ID";
+        private final String DISPLAY_NAME_KEY = "DISPLAY_NAME";
 
         public Bundle saveState() {
             Bundle b = new Bundle();
-            b.putInt(viewResIdKey, viewResId);
-            b.putString(pickedStationNameKey, pickedStationName);
-            b.putString(pickedStationDirKey, pickedStationDir);
-            b.putString(pickedStationIdKey, pickedStationId);
-            b.putInt(pickedStationArrayIndexKey, pickedStationArrayIndex);
+            b.putString(DISPLAY_NAME_KEY, displayName);
+            b.putString(STEIG_ID_KEY, steigId);
+            b.putInt(VIEW_RES_ID_KEY, viewResId);
             return b;
         }
 
         public void restoreState(Context ctx, Bundle b) {
-            viewResId = b.getInt(viewResIdKey);
-            pickedStationName = b.getString(pickedStationNameKey);
-            pickedStationDir = b.getString(pickedStationDirKey);
-            pickedStationId = b.getString(pickedStationIdKey);
-            pickedStationArrayIndex = b.getInt(pickedStationArrayIndexKey);
-
+            viewResId = b.getInt(VIEW_RES_ID_KEY);
             viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
-            if (pickedStationName != null) viewToUse.setText(StringDisplay.getStation(pickedStationName, pickedStationDir));
+
+            displayName = b.getString(DISPLAY_NAME_KEY);
+            steigId = b.getString(STEIG_ID_KEY);
+
+            if (displayName != null) {
+                viewToUse.setText(displayName);
+            }
         }
     }
 

@@ -34,7 +34,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
     private final Pickers.DaysPicker daysPicker = new Pickers.DaysPicker();
     private final Pickers.RingtonePicker ringtonePicker = new Pickers.RingtonePicker();
     private final Pickers.VibrationPicker vibrationPicker = new Pickers.VibrationPicker();
-    private final Pickers.StationPicker stationPicker = new Pickers.StationPicker();
+    private final Pickers.StationSteigPicker stationSteigPicker = new Pickers.StationSteigPicker();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
         outState.putBundle(Const.BUNDLE_DAYS_PICKER, daysPicker.saveState());
         outState.putBundle(Const.BUNDLE_RINGTONE_PICKER, ringtonePicker.saveState());
         outState.putBundle(Const.BUNDLE_VIBRATION_PICKER, vibrationPicker.saveState());
-        outState.putBundle(Const.BUNDLE_STATION_PICKER, stationPicker.saveState());
+        outState.putBundle(Const.BUNDLE_STATION_PICKER, stationSteigPicker.saveState());
         super.onSaveInstanceState(outState);
     }
 
@@ -77,7 +77,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
         daysPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DAYS_PICKER));
         ringtonePicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_RINGTONE_PICKER));
         vibrationPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_VIBRATION_PICKER));
-        stationPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_STATION_PICKER));
+        stationSteigPicker.restoreState(AlarmSetterActivity.this, savedInstanceState.getBundle(Const.BUNDLE_STATION_PICKER));
 
         pickAlarmFrequency(alarmMode);
     }
@@ -111,7 +111,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
                 break;
             case R.id.choose_station_button:
             case R.id.choose_station_text:
-                stationPicker.show(AlarmSetterActivity.this, R.id.choose_station_text);
+                stationSteigPicker.show(AlarmSetterActivity.this, R.id.choose_station_text);
                 break;
             case R.id.choose_ringtone_button:
             case R.id.choose_ringtone_text:
@@ -163,7 +163,7 @@ public class AlarmSetterActivity extends AppCompatActivity {
         String chosenRingtone = ringtonePicker.getPickedRingtone();
         int chosenVibratorMode = vibrationPicker.getPickedVibrationMode();
 
-        if (!stationPicker.stationWasSet()) {
+        if (!stationSteigPicker.stationWasSet()) {
             isError = true;
             errors.add(getString(R.string.missing_info_station));
         }
@@ -223,10 +223,10 @@ public class AlarmSetterActivity extends AppCompatActivity {
         newAlarm.setChosenVibrationMode(chosenVibratorMode);
 
         // {stationName, stationDir, stationId, h.getArrayIndex()}
-        newAlarm.setStationName(stationPicker.getPickedStationName());
-        newAlarm.setStationDirection(stationPicker.getPickedStationDir());
-        newAlarm.setStationId(stationPicker.getPickedStationId());
-        newAlarm.setStationArrayIndex(stationPicker.getPickedStationArrayIndex());
+        newAlarm.setStationName(stationSteigPicker.getPickedStationName());
+        newAlarm.setStationDirection(stationSteigPicker.getPickedStationDir());
+        newAlarm.setStationId(stationSteigPicker.getPickedStationId());
+        newAlarm.setStationArrayIndex(stationSteigPicker.getPickedStationArrayIndex());
 
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction(); // we're doing it synchronously because it does not take much time
@@ -245,10 +245,10 @@ public class AlarmSetterActivity extends AppCompatActivity {
 
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case Const.REQUEST_STATION:
-                    stationPicker.setPickedStation(data);
+                case Keys.RequestCode.SELECT_STEIG:
+                    stationSteigPicker.setPicked(data);
                     break;
-                case Const.REQUEST_RINGTONE:
+                case Keys.RequestCode.SELECT_RINGTONE:
                     ringtonePicker.setPickedRingtone(AlarmSetterActivity.this, data);
                     break;
             }

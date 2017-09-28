@@ -15,7 +15,7 @@ public interface Keys {
 
         String STATION_INFO = "STATION_INFO";
         String DB_POSITION = "DB_POSITION";
-        String STATION_NAME = "stationName";
+        String SELECTED_STATION_NAME = "SELECTED_STATION_NAME";
     }
 
     interface Prefs {
@@ -31,6 +31,7 @@ public interface Keys {
     interface RequestCode {
         int EDIT_ALARM = 0;
         int SELECT_STEIG = 1;
+        int SELECT_RINGTONE = 2;
     }
 
 }

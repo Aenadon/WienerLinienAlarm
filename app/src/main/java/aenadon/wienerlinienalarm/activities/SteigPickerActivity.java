@@ -150,6 +150,7 @@ public class SteigPickerActivity extends AppCompatActivity {
 
                 Intent extraData = new Intent()
                         .putExtra(Keys.Extra.LINE_NAME_AND_DIRECTION, steigWithDestination.getLineNameAndDirection())
+                        .putExtra(Keys.Extra.SELECTED_STATION_NAME, selectedStation.getName())
                         .putExtra(Keys.Extra.SELECTED_STEIG_ID, steigWithDestination.getSteigId());
                 setResult(Activity.RESULT_OK, extraData);
                 finish();
