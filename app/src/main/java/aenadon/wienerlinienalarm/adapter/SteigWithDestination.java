@@ -57,7 +57,11 @@ public class SteigWithDestination implements Comparable<SteigWithDestination> {
                 int lineNumber1 = Integer.parseInt(lineNumber1String);
                 int lineNumber2 = Integer.parseInt(lineNumber2String);
 
-                return lineNumber1 - lineNumber2;
+                int comparison = lineNumber1 - lineNumber2;
+                if (comparison != 0) {
+                    // if both are the same line, we need to sort by destination
+                    return lineNumber1 - lineNumber2;
+                }
             }
         }
         return lnad1.compareTo(lnad2);
