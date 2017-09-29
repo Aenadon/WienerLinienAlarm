@@ -46,7 +46,7 @@
     <string name="alarm_vibration_short">Short</string>
     <string name="alarm_vibration_medium">Medium</string>
     <string name="alarm_vibration_long">Long</string>
-    <string name="alarm_choose_station_direction">Choose station and lineId</string>
+    <string name="alarm_choose_station_direction">Choose station and line</string>
     <string name="alarm_choose_station_button">Select station</string>
     <string name="alarm_no_station_selected">No station selected</string>
 
