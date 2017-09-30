@@ -34,6 +34,7 @@ import java.util.List;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.utils.ApiProvider;
 import retrofit2.Response;
+import trikita.log.Log;
 
 public class SteigPickerActivity extends AppCompatActivity {
 
@@ -86,11 +87,18 @@ public class SteigPickerActivity extends AppCompatActivity {
         ApiProvider.getRoutingApi().getXMLStationInfo(selectedStation.getIdForXMLApi()).enqueue(new Callback<RoutingXMLRequest>() {
             @Override
             public void onResponse(Call<RoutingXMLRequest> call, Response<RoutingXMLRequest> response) {
+                if (!response.isSuccessful()) {
+                    replaceLoadingSpinnerWithError(R.string.server_broken_text);
+                    Log.e("XML Response error (Error code " + response.code() + ")",
+                            "Server message: " + response.message());
+                    return;
+                }
+
                 List<XmlSteig> xmlSteigs = response.body().getStationLines();
 
                 if (xmlSteigs.isEmpty()) {
-                    setResult(Keys.ResultCode.NO_STEIGS_AVAILABLE);
-                    finish();
+                    replaceLoadingSpinnerWithError(R.string.no_steigs_found);
+                    Log.w("No XML lines found for station with ID " + selectedStation.getId() + " / DIVA " + selectedStation.getIdForXMLApi());
                     return;
                 }
 
@@ -107,6 +115,15 @@ public class SteigPickerActivity extends AppCompatActivity {
                 }
                 Collections.sort(steigsOnDisplay);
                 list.setAdapter(steigListAdapter);
+            }
+
+            private void replaceLoadingSpinnerWithError(int errorStringCode) {
+                ListView list = (ListView) findViewById(R.id.steig_resultlist);
+                list.setVisibility(View.GONE);
+
+                TextView errorMessage = (TextView)findViewById(R.id.steig_list_error);
+                errorMessage.setText(errorStringCode);
+                errorMessage.setVisibility(View.VISIBLE);
             }
 
             private String steigDestinationName(Steig steig, List<XmlSteig> xmlSteigs) {
@@ -144,7 +161,8 @@ public class SteigPickerActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<RoutingXMLRequest> call, Throwable t) {
-                t.printStackTrace();
+                replaceLoadingSpinnerWithError(R.string.no_connection_text);
+                Log.e("Client error while retrieving XML Response", t);
             }
         });
     }

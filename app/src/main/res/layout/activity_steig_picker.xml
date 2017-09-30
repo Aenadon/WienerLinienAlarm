@@ -10,7 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="aenadon.wienerlinienalarm.activities.SteigPickerActivity">
 
-    <!--Station name-->
     <TextView
         android:id="@+id/steig_stationdisplay"
         android:layout_width="match_parent"
@@ -26,10 +25,16 @@
         android:padding="5dp"
         android:text="@string/choose_steig" />
 
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/steig_list_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/activity_vertical_margin" />
+
     <ListView
         android:id="@+id/steig_resultlist"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 
 </LinearLayout>
