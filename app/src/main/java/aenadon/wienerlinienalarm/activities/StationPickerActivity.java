@@ -65,7 +65,7 @@ public class StationPickerActivity extends AppCompatActivity {
                 setResult(Activity.RESULT_OK, data);
                 finish();
             } else if (resultCode == Keys.ResultCode.NO_STEIGS_AVAILABLE) {
-                Snackbar.make(findViewById(android.R.id.content), "No steigs,", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(findViewById(android.R.id.content), R.string.no_steigs_found, Snackbar.LENGTH_LONG).show();
             }
         }
     }

@@ -79,6 +79,8 @@
     <string name="choose_station">Choose station</string>
     <string name="choose_steig">Choose line and direction</string>
 
+    <string name="no_steigs_found">No departures available for this station</string>
+
     <string name="ok">OK</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
