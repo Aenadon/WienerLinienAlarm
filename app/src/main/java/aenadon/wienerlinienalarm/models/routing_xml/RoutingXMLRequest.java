@@ -25,12 +25,14 @@ public class RoutingXMLRequest {
         List<XmlSteig> flatListSteigs = new ArrayList<>();
         if (xmlServingLines != null) {
             List<ServingLine> servingLineList = monitorRequest.getServingLines().getLines();
-            for (ServingLine line : servingLineList) {
-                XmlSteig flattedLine = new XmlSteig();
-                flattedLine.setLine(line.getLine());
-                flattedLine.setDirection(line.getDirectionParam().getDirection());
-                flattedLine.setDestination(line.getDestination().replace("Wien ", ""));
-                flatListSteigs.add(flattedLine);
+            if (servingLineList != null) {
+                for (ServingLine line : servingLineList) {
+                    XmlSteig flattedLine = new XmlSteig();
+                    flattedLine.setLine(line.getLine());
+                    flattedLine.setDirection(line.getDirectionParam().getDirection());
+                    flattedLine.setDestination(line.getDestination().replace("Wien ", ""));
+                    flatListSteigs.add(flattedLine);
+                }
             }
         }
         return flatListSteigs;

@@ -87,6 +87,13 @@ public class SteigPickerActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<RoutingXMLRequest> call, Response<RoutingXMLRequest> response) {
                 List<XmlSteig> xmlSteigs = response.body().getStationLines();
+
+                if (xmlSteigs.isEmpty()) {
+                    setResult(Keys.ResultCode.NO_STEIGS_AVAILABLE);
+                    finish();
+                    return;
+                }
+
                 List<SteigWithDestination> clonedSteigDisplay = new ArrayList<>(steigsOnDisplay);
 
                 for (SteigWithDestination steigWithDestination : clonedSteigDisplay) {

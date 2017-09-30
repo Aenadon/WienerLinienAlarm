@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -59,9 +60,13 @@ public class StationPickerActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Keys.RequestCode.SELECT_STEIG && resultCode == Activity.RESULT_OK) {
-            setResult(Activity.RESULT_OK, data);
-            finish();
+        if (requestCode == Keys.RequestCode.SELECT_STEIG) {
+            if (resultCode == Activity.RESULT_OK) {
+                setResult(Activity.RESULT_OK, data);
+                finish();
+            } else if (resultCode == Keys.ResultCode.NO_STEIGS_AVAILABLE) {
+                Snackbar.make(findViewById(android.R.id.content), "No steigs,", Snackbar.LENGTH_LONG).show();
+            }
         }
     }
 

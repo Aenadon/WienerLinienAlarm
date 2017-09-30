@@ -6,7 +6,7 @@ import java.util.List;
 
 class ServingLines {
 
-    @ElementList(entry = "itdServingLine", inline = true)
+    @ElementList(entry = "itdServingLine", inline = true, required = false)
     private List<ServingLine> lines;
 
     List<ServingLine> getLines() {

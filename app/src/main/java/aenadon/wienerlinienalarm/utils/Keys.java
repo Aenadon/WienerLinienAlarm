@@ -34,4 +34,8 @@ public interface Keys {
         int SELECT_RINGTONE = 2;
     }
 
+    interface ResultCode {
+        int NO_STEIGS_AVAILABLE = 1;
+    }
+
 }
