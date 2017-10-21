@@ -7,38 +7,41 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import aenadon.wienerlinienalarm.R;
-import aenadon.wienerlinienalarm.enums.Weekday;
-import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
-import aenadon.wienerlinienalarm.utils.Const;
-import aenadon.wienerlinienalarm.utils.RealmService;
+import aenadon.wienerlinienalarm.enums.AlarmType;
+import aenadon.wienerlinienalarm.models.alarm.Alarm;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class AlarmListAdapter extends BaseAdapter {
 
     private final Context ctx;
-    private final int alarmModePage;
 
-    private final RealmResults<LegacyAlarm> alarms;
+    private final List<Alarm> alarms;
 
-    public AlarmListAdapter(Context c, int alarmModePage) {
-        ctx = c;
-        this.alarmModePage = alarmModePage;
+    public AlarmListAdapter(Context ctx, int alarmModePage) {
+        this.ctx = ctx;
 
-        alarms = RealmService.getAlarms(c, alarmModePage);
+        AlarmType alarmType = AlarmType.values()[alarmModePage];
+        Realm realm = Realm.getDefaultInstance();
+        // TODO sort elements
+        RealmResults<Alarm> realmAlarms = realm.where(Alarm.class)
+                .equalTo("alarmType", alarmType.toString())
+                .findAll();
+        alarms = realm.copyFromRealm(realmAlarms);
+        realm.close();
     }
 
-    @Override public Object getItem(int position) {
-        return null;
+    @Override
+    public Object getItem(int position) {
+        return alarms.get(position);
     }
-    @Override public long getItemId(int position) {
-        return 0;
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -61,39 +64,15 @@ public class AlarmListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder)convertView.getTag();
         }
 
-        LegacyAlarm alarmElement = alarms.get(position);
+        Alarm alarm = alarms.get(position);
 
-        String date;
-        String time = StringDisplay.getTime(alarmElement.getAlarmHour(), alarmElement.getAlarmMinute());
-
-        switch (alarmModePage) {
-            case Const.ALARM_ONETIME:
-                date = StringDisplay.getOnetimeDate(alarmElement.getOneTimeAlarmYear(), alarmElement.getOneTimeAlarmMonth(), alarmElement.getOneTimeAlarmDay());
-                break;
-            case Const.ALARM_RECURRING:
-                date = StringDisplay.getRecurringDays(ctx, setFromArray(alarmElement.getRecurringChosenDays()));
-                break;
-            default:
-                throw new Error("Page index out of range");
-        }
+        String date = StringDisplay.getDate(ctx, alarm);
+        String time = StringDisplay.getTime(alarm.getAlarmTime());
 
         viewHolder.date.setText(date);
         viewHolder.time.setText(time);
 
         return convertView;
-    }
-
-    // TODO remove ASAP
-    @Deprecated
-    private Set<Weekday> setFromArray(boolean[] weekdayArray) {
-        List<Weekday> allWeekdaysList = Arrays.asList(Weekday.values());
-        Set<Weekday> weekdaySet = new HashSet<>();
-        for (int i = 0; i < allWeekdaysList.size(); i++) {
-            if (weekdayArray[i]) {
-                weekdaySet.add(allWeekdaysList.get(i));
-            }
-        }
-        return weekdaySet;
     }
 
     private class ViewHolder {

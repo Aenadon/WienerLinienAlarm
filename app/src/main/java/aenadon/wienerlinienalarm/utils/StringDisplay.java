@@ -6,6 +6,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.text.DateFormat;
@@ -15,17 +16,20 @@ import java.util.Locale;
 import java.util.Set;
 
 import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.enums.Weekday;
+import aenadon.wienerlinienalarm.models.alarm.Alarm;
 
 public class StringDisplay {
 
-    // Used for parsing the display strings on LegacyAlarm set/edit
+    // Used for parsing the display strings on Alarm set/edit
 
-    // Gets the onetime date in the phone's default locale
-    public static String getOnetimeDate(int year, int month, int day) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month, day);
-        return DateFormat.getDateInstance().format(cal.getTime());
+    public static String getDate(Context ctx, Alarm alarm) {
+        if (alarm.getAlarmType() == AlarmType.ONETIME) {
+            return getOnetimeDate(alarm.getOnetimeDate());
+        } else {
+            return getRecurringDays(ctx, alarm.getRecurringDays());
+        }
     }
 
     public static String getOnetimeDate(LocalDate date) {
@@ -48,7 +52,7 @@ public class StringDisplay {
         }
     }
 
-    public static String getTime(int hour, int minute) {
+    private static String getTime(int hour, int minute) {
         return String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
     }
 
@@ -56,13 +60,17 @@ public class StringDisplay {
         return getTime(time[0], time[1]);
     }
 
-    public static String getRingtone(Context c, String chosenRingtone) {
+    public static String getTime(LocalTime time) {
+        return getTime(time.getHour(), time.getMinute());
+    }
+
+    public static String getRingtone(Context ctx, String chosenRingtone) {
         if (chosenRingtone == null) {
-            return c.getString(R.string.alarm_none);
+            return ctx.getString(R.string.alarm_none);
         }
         Uri uri = Uri.parse(chosenRingtone);
-        Ringtone ringtone = RingtoneManager.getRingtone(c, uri);
-        return ringtone.getTitle(c);
+        Ringtone ringtone = RingtoneManager.getRingtone(ctx, uri);
+        return ringtone.getTitle(ctx);
 
     }
 }

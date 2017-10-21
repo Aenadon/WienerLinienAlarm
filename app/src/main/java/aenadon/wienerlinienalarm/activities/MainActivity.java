@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     private BroadcastReceiver refreshReceiver;
 
+    private static AlarmType[] alarmTypes = AlarmType.values();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,11 +182,9 @@ public class MainActivity extends AppCompatActivity {
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private final List<AlarmMenuFragment> fragments = new ArrayList<>();
-        private AlarmType[] alarmTypes;
 
         private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
-            alarmTypes = AlarmType.values();
         }
 
         @Override
@@ -250,13 +250,13 @@ public class MainActivity extends AppCompatActivity {
             list.setOnItemClickListener(launchDialogEditor());
             return rootView;
         }
+
         private AdapterView.OnItemClickListener launchDialogEditor() {
             return new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent i = new Intent(getActivity(), DialogEditActivity.class);
                     i.putExtra(Keys.Extra.ALARM_MODE, alarmType);
-                    i.putExtra(Const.EXTRA_DB_POSITION, position);
                     startActivityForResult(i, Keys.RequestCode.EDIT_ALARM);
                 }
             };

@@ -1,32 +1,6 @@
 package aenadon.wienerlinienalarm.activities;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.TextView;
-
-import java.util.Arrays;
-import java.util.Calendar;
-
-import aenadon.wienerlinienalarm.R;
-import aenadon.wienerlinienalarm.activities.pickers.DatePicker;
-import aenadon.wienerlinienalarm.activities.pickers.TimePicker;
-import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
-import aenadon.wienerlinienalarm.utils.AlarmUtils;
-import aenadon.wienerlinienalarm.utils.AlertDialogs;
-import aenadon.wienerlinienalarm.utils.Const;
-import aenadon.wienerlinienalarm.utils.Keys;
-import aenadon.wienerlinienalarm.activities.pickers.*;
-import aenadon.wienerlinienalarm.utils.RealmService;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class DialogEditActivity extends AppCompatActivity {
     // TODO replace everything with PickerActivity structure

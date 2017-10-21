@@ -207,9 +207,9 @@ public abstract class PickerActivity extends AppCompatActivity {
         realm.beginTransaction();
         Alarm newAlarm = new Alarm();
         newAlarm.setAlarmStationData(stationSteigPicker.getAlarmStationData());
+        newAlarm.setAlarmType(alarmType);
 
         AlarmNotificationInfo notificationInfo = new AlarmNotificationInfo();
-        notificationInfo.setAlarmType(alarmType);
         if (alarmType == AlarmType.ONETIME) {
             notificationInfo.setOnetimeAlarmDate(datePicker.getPickedDate());
         } else {

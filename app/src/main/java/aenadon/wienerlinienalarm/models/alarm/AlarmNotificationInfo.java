@@ -13,9 +13,6 @@ import io.realm.annotations.Required;
 
 public class AlarmNotificationInfo extends RealmObject {
 
-    @Required
-    private String alarmType;
-
     private Integer onetimeAlarmYear;
     private Integer onetimeAlarmMonth;
     private Integer onetimeAlarmDay;
@@ -27,14 +24,6 @@ public class AlarmNotificationInfo extends RealmObject {
 
     private String pickedRingtone;
     private String pickedVibrationMode;
-
-    public AlarmType getAlarmType() {
-        return AlarmType.valueOf(alarmType);
-    }
-
-    public void setAlarmType(AlarmType alarmType) {
-        this.alarmType = alarmType.toString();
-    }
 
     public LocalDate getOnetimeAlarmDate() {
         return LocalDate.of(
