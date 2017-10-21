@@ -22,8 +22,6 @@ import aenadon.wienerlinienalarm.models.alarm.Alarm;
 
 public class StringDisplay {
 
-    // Used for parsing the display strings on Alarm set/edit
-
     public static String getDate(Context ctx, Alarm alarm) {
         if (alarm.getAlarmType() == AlarmType.ONETIME) {
             return getOnetimeDate(alarm.getOnetimeDate());
@@ -52,16 +50,8 @@ public class StringDisplay {
         }
     }
 
-    private static String getTime(int hour, int minute) {
-        return String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
-    }
-
-    public static String getTime(int[] time) {
-        return getTime(time[0], time[1]);
-    }
-
     public static String getTime(LocalTime time) {
-        return getTime(time.getHour(), time.getMinute());
+        return String.format(Locale.getDefault(), "%02d:%02d", time.getHour(), time.getMinute());
     }
 
     public static String getRingtone(Context ctx, String chosenRingtone) {

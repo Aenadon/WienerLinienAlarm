@@ -19,14 +19,12 @@ import aenadon.wienerlinienalarm.utils.StringDisplay;
 
 public class TimePicker extends DialogFragment implements AlarmPicker, TimePickerDialog.OnTimeSetListener {
 
-    private int[] pickedTime = null;
+    private LocalTime pickedTime = null;
 
     private TextView viewToUse;
-    private boolean firstRun = true;
 
-    private static final String viewResIdKey = "VIEW_RES_ID";
-    private static final String chosenTimeKey = "CHOSEN_TIME";
-    private static final String firstRunKey = "FIRST_RUN";
+    private static final String VIEW_RES_ID_KEY = "VIEW_RES_ID";
+    private static final String CHOSEN_TIME_KEY = "CHOSEN_TIME";
 
     public void show() {
         super.show(getActivity().getFragmentManager(), "TimePicker");
@@ -40,8 +38,8 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
 
         int hour, minute;
         if (pickedTime != null) {
-            hour = pickedTime[0];
-            minute = pickedTime[1];
+            hour = pickedTime.getHour();
+            minute = pickedTime.getMinute();
         } else if (prevTime != null) {
             hour = prevTime[0];
             minute = prevTime[1];
@@ -55,29 +53,25 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
     }
 
     public LocalTime getPickedTime() {
-        if (pickedTime != null) {
-            return LocalTime.of(pickedTime[0], pickedTime[1]);
-        }
-        return null;
+        return pickedTime;
     }
 
     @Override
     public Bundle saveState() {
         Bundle saveBundle = new Bundle();
         if (viewToUse != null) {
-            saveBundle.putInt(viewResIdKey, viewToUse.getId());
+            saveBundle.putInt(VIEW_RES_ID_KEY, viewToUse.getId());
         }
-        saveBundle.putIntArray(chosenTimeKey, pickedTime);
-        saveBundle.putBoolean(firstRunKey, firstRun);
+        saveBundle.putIntArray(CHOSEN_TIME_KEY, localTimeToIntArray(pickedTime));
         return saveBundle;
     }
 
     @Override
     public void restoreState(Context ctx, Bundle restoreBundle) {
-        pickedTime = restoreBundle.getIntArray(chosenTimeKey);
-        firstRun = restoreBundle.getBoolean(firstRunKey);
+        int[] pickedTimeArray = restoreBundle.getIntArray(CHOSEN_TIME_KEY);
+        pickedTime = intArrayToLocalTime(pickedTimeArray);
 
-        int viewResId = restoreBundle.getInt(viewResIdKey);
+        int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
         viewToUse = (TextView) ((Activity) ctx).findViewById(viewResId);
         if (pickedTime != null) viewToUse.setText(StringDisplay.getTime(pickedTime));
     }
@@ -94,8 +88,21 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
 
     @Override
     public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute) {
-        pickedTime = new int[]{hourOfDay, minute};
+        pickedTime = LocalTime.of(hourOfDay, minute);
         viewToUse.setText(StringDisplay.getTime(pickedTime));
-        firstRun = false;
+    }
+
+    private LocalTime intArrayToLocalTime(int[] timeArray) {
+        if (timeArray != null && timeArray.length == 2) {
+            return LocalTime.of(timeArray[0], timeArray[1]);
+        }
+        return null;
+    }
+
+    private int[] localTimeToIntArray(LocalTime timeObject) {
+        if (timeObject != null) {
+            return new int[]{timeObject.getHour(), timeObject.getMinute()};
+        }
+        return null;
     }
 }
