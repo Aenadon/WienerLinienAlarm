@@ -159,11 +159,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         if (refreshReceiver != null) {
             unregisterReceiver(refreshReceiver);
             refreshReceiver = null;
         }
-        super.onDestroy();
     }
 
     @Override

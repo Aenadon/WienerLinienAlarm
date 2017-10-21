@@ -298,4 +298,12 @@ public abstract class PickerActivity extends AppCompatActivity {
         vibrationPicker.restoreState(PickerActivity.this, savedInstanceState.getBundle(Keys.Bundle.VIBRATION_PICKER));
         stationSteigPicker.restoreState(PickerActivity.this, savedInstanceState.getBundle(Keys.Bundle.STATION_PICKER));
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null && !realm.isClosed()) {
+            realm.close();
+        }
+    }
 }
