@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="aenadon.wienerlinienalarm.activities.AlarmSetterActivity">
 
     <ScrollView
         android:layout_height="match_parent"
@@ -17,8 +18,7 @@
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            tools:context="aenadon.wienerlinienalarm.activities.AlarmSetterActivity">
+            android:paddingTop="@dimen/activity_vertical_margin">
 
             <TextView
                 android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                      android:checked="true"
                      android:layout_width="0dp"
                      android:layout_height="wrap_content"
-                     android:onClick="onClickHandler"
+                     android:onClick="switchVisibleDatePicker"
                      android:layout_weight="1"/>
 
                  <RadioButton
@@ -46,11 +46,11 @@
                      android:layout_width="0dp"
                      android:layout_height="wrap_content"
                      android:layout_weight="1"
-                     android:onClick="onClickHandler"/>
+                     android:onClick="switchVisibleDatePicker"/>
 
             </RadioGroup>
 
-            <!--Separator--> <View android:layout_width="match_parent" android:layout_height="10dp" />
+            <View android:layout_width="match_parent" android:layout_height="10dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -61,24 +61,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:onClick="launchStationSteigPicker">
                 <Button
                     android:id="@+id/choose_station_button"
                     style="?android:buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/alarm_choose_station_button"
-                    android:onClick="onClickHandler" />
+                    android:clickable="false" />
                 <TextView
                     android:id="@+id/choose_station_text"
                     android:gravity="center"
                     android:text="@string/alarm_no_station_selected"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onClickHandler" />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <!--Separator--> <View android:layout_width="match_parent" android:layout_height="10dp" />
+            <View android:layout_width="match_parent" android:layout_height="10dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -97,21 +97,21 @@
                     android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:onClick="launchDatePicker">
                     <Button
                         android:id="@+id/choose_date_button"
                         style="?android:buttonBarButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/alarm_choose_date"
-                        android:onClick="onClickHandler" />
+                        android:clickable="false" />
                     <TextView
                         android:id="@+id/choose_date_text"
                         android:gravity="center"
                         android:text="@string/alarm_no_date_set"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="onClickHandler" />
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -121,7 +121,8 @@
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:onClick="launchWeekdaysPicker">
 
                     <Button
                         android:id="@+id/choose_days_button"
@@ -129,14 +130,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/alarm_choose_days"
-                        android:onClick="onClickHandler"/>
+                        android:clickable="false" />
                     <TextView
                         android:id="@+id/choose_days_text"
                         android:gravity="center"
                         android:text="@string/alarm_no_days_set"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="onClickHandler" />
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 
@@ -145,27 +145,27 @@
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:onClick="launchTimePicker">
                     <Button
                         android:id="@+id/choose_time_button"
                         style="?android:buttonBarButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/alarm_choose_time"
-                        android:onClick="onClickHandler" />
+                        android:clickable="false"/>
                     <TextView
                         android:id="@+id/choose_time_text"
                         android:gravity="center"
                         android:text="@string/alarm_no_time_set"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="onClickHandler" />
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
 
             </LinearLayout>
 
-            <!--Separator--> <View android:layout_width="match_parent" android:layout_height="10dp" />
+            <View android:layout_width="match_parent" android:layout_height="10dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -182,21 +182,21 @@
                     android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:onClick="launchRingtonePicker">
                     <Button
                         android:id="@+id/choose_ringtone_button"
                         style="?android:buttonBarButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/alarm_choose_ringtone"
-                        android:onClick="onClickHandler" />
+                        android:clickable="false" />
                     <TextView
                         android:id="@+id/choose_ringtone_text"
                         android:gravity="center"
                         android:text="@string/alarm_none"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="onClickHandler" />
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -205,26 +205,25 @@
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:onClick="launchVibrationPicker">
                     <Button
                         android:id="@+id/choose_vibration_button"
                         style="?android:buttonBarButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/alarm_choose_vibration"
-                        android:onClick="onClickHandler" />
+                        android:clickable="false" />
                     <TextView
                         android:id="@+id/choose_vibration_text"
                         android:gravity="center"
                         android:text="@string/alarm_none"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="onClickHandler" />
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
-
     </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
@@ -234,7 +233,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_done"
-        android:onClick="onClickHandler" />
+        android:onClick="saveAlarm" />
 
 
 </android.support.design.widget.CoordinatorLayout>

@@ -5,11 +5,17 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.DateTimeFormatter;
+
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Set;
 
 import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.enums.Weekday;
 
 public class StringDisplay {
 
@@ -22,32 +28,28 @@ public class StringDisplay {
         return DateFormat.getDateInstance().format(cal.getTime());
     }
 
-    public static String getOnetimeDate(int[] date) {
-        return getOnetimeDate(date[0], date[1], date[2]);
+    public static String getOnetimeDate(LocalDate date) {
+        SimpleDateFormat dateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat.toLocalizedPattern());
+        return formatter.format(date);
     }
 
-    public static String getRecurringDays(Context c, boolean[] chosenDays) {
-        String selection;
-        if (!(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4] || chosenDays[5] || chosenDays[6])) {
-            selection = c.getString(R.string.alarm_no_days_set);  // then say "no days selected"
-        } else if (!(chosenDays[0] || chosenDays[1] || chosenDays[2] || chosenDays[3] || chosenDays[4]) && (chosenDays[5] && chosenDays[6])) {
-            selection = c.getString(R.string.weekends);
-        } else if ((chosenDays[0] && chosenDays[1] && chosenDays[2] && chosenDays[3] && chosenDays[4]) && !(chosenDays[5] || chosenDays[6])) {
-            selection = c.getString(R.string.weekdays);
-        } else if (chosenDays[0] && chosenDays[1] && chosenDays[2] && chosenDays[3] && chosenDays[4] && chosenDays[5] && chosenDays[6]) {
-            selection = c.getString(R.string.everyday);
+    public static String getRecurringDays(Context ctx, Set<Weekday> chosenDays) {
+        if (chosenDays.isEmpty()) {
+            return ctx.getString(R.string.alarm_no_days_set);
+        } else if (Weekday.weekdaysOnlySelected(chosenDays)) {
+            return ctx.getString(R.string.weekdays);
+        } else if (Weekday.weekendOnlySelected(chosenDays)){
+            return ctx.getString(R.string.weekends);
+        } else if (chosenDays.size() == 7) {
+            return ctx.getString(R.string.everyday);
         } else {
-            int selectedDays = 0;
-            for (int i = 0; i < 7; i++) {
-                if (chosenDays[i]) selectedDays++;
-            }
-            selection = c.getResources().getQuantityString(R.plurals.days_chosen, selectedDays, selectedDays); // else show the count of days chosen
+            return ctx.getResources().getQuantityString(R.plurals.days_selected, chosenDays.size(), chosenDays.size());
         }
-        return selection;
     }
 
     public static String getTime(int hour, int minute) {
-        return String.format(Locale.ENGLISH, "%02d:%02d", hour, minute);
+        return String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
     }
 
     public static String getTime(int[] time) {
@@ -62,13 +64,5 @@ public class StringDisplay {
         Ringtone ringtone = RingtoneManager.getRingtone(c, uri);
         return ringtone.getTitle(c);
 
-    }
-
-    public static String getVibration(Context c, int vibrationMode) {
-        return c.getString(Const.VIBRATION_STRINGS[vibrationMode]);
-    }
-
-    public static String getStation(String stationName, String stationDir) {
-        return stationName + "\n" + stationDir;
     }
 }

@@ -7,7 +7,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.enums.Weekday;
 import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.RealmService;
@@ -65,7 +71,7 @@ public class AlarmListAdapter extends BaseAdapter {
                 date = StringDisplay.getOnetimeDate(alarmElement.getOneTimeAlarmYear(), alarmElement.getOneTimeAlarmMonth(), alarmElement.getOneTimeAlarmDay());
                 break;
             case Const.ALARM_RECURRING:
-                date = StringDisplay.getRecurringDays(ctx, alarmElement.getRecurringChosenDays());
+                date = StringDisplay.getRecurringDays(ctx, setFromArray(alarmElement.getRecurringChosenDays()));
                 break;
             default:
                 throw new Error("Page index out of range");
@@ -75,6 +81,19 @@ public class AlarmListAdapter extends BaseAdapter {
         viewHolder.time.setText(time);
 
         return convertView;
+    }
+
+    // TODO remove ASAP
+    @Deprecated
+    private Set<Weekday> setFromArray(boolean[] weekdayArray) {
+        List<Weekday> allWeekdaysList = Arrays.asList(Weekday.values());
+        Set<Weekday> weekdaySet = new HashSet<>();
+        for (int i = 0; i < allWeekdaysList.size(); i++) {
+            if (weekdayArray[i]) {
+                weekdaySet.add(allWeekdaysList.get(i));
+            }
+        }
+        return weekdaySet;
     }
 
     private class ViewHolder {

@@ -21,7 +21,7 @@ public interface Keys {
     interface Prefs {
         String PREF_NAME_BATTERY_REMINDER = "BATTERY_REMINDER";
         String BATTERY_REMINDER_DISMISSED = "BATTERY_REMINDER_DISMISSED";
-        String BATTERY_REMINDER_DOZE_DISMISSED = "BATTERY_REMINDER_DOZE_DISMISSED";
+        String BATTERY_REMINDER_DOZE_DISMISSED = "BATTERY_REMINDERn_DOZE_DISMISSED";
     }
 
     interface Intent {
@@ -38,4 +38,12 @@ public interface Keys {
         int NO_STEIGS_AVAILABLE = 1;
     }
 
+    interface Bundle {
+        String DATE_PICKER = "BUNDLE_DATE_PICKER";
+        String TIME_PICKER = "BUNDLE_TIME_PICKER";
+        String DAYS_PICKER = "BUNDLE_DAYS_PICKER";
+        String RINGTONE_PICKER = "BUNDLE_RINGTONE_PICKER";
+        String VIBRATION_PICKER = "BUNDLE_VIBRATION_PICKER";
+        String STATION_PICKER = "BUNDLE_STATION_PICKER";
+    }
 }

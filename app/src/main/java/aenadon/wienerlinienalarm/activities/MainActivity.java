@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static class AlarmMenuFragment extends Fragment {
 
-        private int alarmMode;
+        private int alarmType;
         private AlarmListAdapter adapter;
 
         public void updateUnderlyingList() {
@@ -234,8 +234,8 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             ListView list = (ListView) rootView.findViewById(R.id.alarm_list);
-            alarmMode = getArguments().getInt(Keys.Extra.ALARM_MODE);
-            adapter = new AlarmListAdapter(getActivity(), alarmMode);
+            alarmType = getArguments().getInt(Keys.Extra.ALARM_MODE);
+            adapter = new AlarmListAdapter(getActivity(), alarmType);
             list.setAdapter(adapter);
 
             // http://stackoverflow.com/a/17807347/3673616
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent i = new Intent(getActivity(), DialogEditActivity.class);
-                    i.putExtra(Keys.Extra.ALARM_MODE, alarmMode);
+                    i.putExtra(Keys.Extra.ALARM_MODE, alarmType);
                     i.putExtra(Const.EXTRA_DB_POSITION, position);
                     startActivityForResult(i, Keys.RequestCode.EDIT_ALARM);
                 }

@@ -1,7 +1,11 @@
 package aenadon.wienerlinienalarm.models.alarm;
 
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalTime;
+
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.enums.VibrationMode;
@@ -14,7 +18,10 @@ public class AlarmNotificationInfo extends RealmObject {
     @Required
     private String alarmType;
 
-    private Date onetimeAlarmDate;
+    private int onetimeAlarmYear;
+    private int onetimeAlarmMonth;
+    private int onetimeAlarmDay;
+
     private Byte recurringChosenDays;
 
     private int alarmHour;
@@ -31,36 +38,35 @@ public class AlarmNotificationInfo extends RealmObject {
         this.alarmType = alarmType.toString();
     }
 
-    public Date getOnetimeAlarmDate() {
-        return onetimeAlarmDate;
+    public LocalDate getOnetimeAlarmDate() {
+        return LocalDate.of(
+                onetimeAlarmYear,
+                onetimeAlarmMonth,
+                onetimeAlarmDay
+        );
     }
 
-    public void setOnetimeAlarmDate(Date onetimeAlarmDate) {
-        this.onetimeAlarmDate = onetimeAlarmDate;
+    public void setOnetimeAlarmDate(LocalDate onetimeAlarmDate) {
+        this.onetimeAlarmYear = onetimeAlarmDate.getYear();
+        this.onetimeAlarmMonth = onetimeAlarmDate.getMonthValue();
+        this.onetimeAlarmDay = onetimeAlarmDate.getDayOfMonth();
     }
 
-    public List<Weekday> getRecurringChosenDays() {
+    public Set<Weekday> getRecurringChosenDays() {
         return Weekday.weekdaysFromByte(recurringChosenDays);
     }
 
-    public void setRecurringChosenDays(List<Weekday> recurringChosenDays) {
+    public void setRecurringChosenDays(Set<Weekday> recurringChosenDays) {
         this.recurringChosenDays = Weekday.byteFromWeekdays(recurringChosenDays);
     }
 
-    public int getAlarmHour() {
-        return alarmHour;
+    public LocalTime getAlarmTime() {
+        return LocalTime.of(alarmHour, alarmMinute);
     }
 
-    public void setAlarmHour(int alarmHour) {
-        this.alarmHour = alarmHour;
-    }
-
-    public int getAlarmMinute() {
-        return alarmMinute;
-    }
-
-    public void setAlarmMinute(int alarmMinute) {
-        this.alarmMinute = alarmMinute;
+    public void setAlarmTime(LocalTime alarmTime) {
+        this.alarmHour = alarmTime.getHour();
+        this.alarmMinute = alarmTime.getMinute();
     }
 
     public String getChosenRingtone() {

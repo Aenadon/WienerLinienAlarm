@@ -67,9 +67,9 @@
     <string name="weekends">Weekends</string>
     <string name="everyday">Every day</string>
 
-    <plurals name="days_chosen">
-        <item quantity="one">%d day chosen</item>
-        <item quantity="other">%d days chosen</item>
+    <plurals name="days_selected">
+        <item quantity="one">%d day selected</item>
+        <item quantity="other">%d days selected</item>
     </plurals>
 
     <!--Station/Steig list-->
@@ -109,10 +109,10 @@
     <string name="no_steigs_error_text">No lines are available for this station. Please try again later.</string>
 
     <string name="missing_info_title">Could not create alarm</string>
-    <string name="missing_info_date">-Please choose your alarm date.</string>
-    <string name="missing_info_time">-Please choose your alarm time.</string>
-    <string name="missing_info_days">-Please choose your alarm days.</string>
-    <string name="missing_info_past">-Please choose a time in the future.</string>
-    <string name="missing_info_station">-Please choose a station.</string>
+    <string name="missing_info_date">- No alarm date selected</string>
+    <string name="missing_info_time">- No alarm time selected</string>
+    <string name="missing_info_days">- No recurring days selected</string>
+    <string name="missing_info_past">- Time lies in the past</string>
+    <string name="missing_info_station">- No station selected</string>
 
 </resources>

@@ -15,31 +15,35 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.activities.pickers.DatePicker;
+import aenadon.wienerlinienalarm.activities.pickers.TimePicker;
 import aenadon.wienerlinienalarm.models.alarm.LegacyAlarm;
 import aenadon.wienerlinienalarm.utils.AlarmUtils;
 import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.Keys;
-import aenadon.wienerlinienalarm.utils.Pickers;
+import aenadon.wienerlinienalarm.activities.pickers.*;
 import aenadon.wienerlinienalarm.utils.RealmService;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class DialogEditActivity extends AppCompatActivity {
-
+    // TODO replace everything with PickerActivity structure
+    // everything commented to prevent build errors
+/*
     private RealmResults<LegacyAlarm> alarms;
     private LegacyAlarm alarmElement;
     private int dbPosition;
 
     private final Realm realm = Realm.getDefaultInstance();
 
-    private final Pickers.DatePickerFragment datePicker = new Pickers.DatePickerFragment();
-    private final Pickers.TimePickerFragment timePicker = new Pickers.TimePickerFragment();
-    private final Pickers.DaysPicker daysPicker = new Pickers.DaysPicker();
-    private final Pickers.RingtonePicker ringtonePicker = new Pickers.RingtonePicker();
-    private final Pickers.VibrationPicker vibrationPicker = new Pickers.VibrationPicker();
-    private final Pickers.StationSteigPicker stationSteigPicker = new Pickers.StationSteigPicker();
+    private final DatePicker datePicker = new DatePicker();
+    private final TimePicker timePicker = new TimePicker();
+    private final DaysPicker daysPicker = new DaysPicker();
+    private final RingtonePicker ringtonePicker;//= new RingtonePicker();
+    private final VibrationPicker vibrationPicker;// = new VibrationPicker();
+    private final StationSteigPicker stationSteigPicker;// = new StationSteigPicker();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,7 +242,7 @@ public class DialogEditActivity extends AppCompatActivity {
                     ringtonePicker.setPickedRingtone(DialogEditActivity.this, data);
                     break;
                 case Const.REQUEST_STATION:
-                    stationSteigPicker.setPicked(data);
+                    stationSteigPicker.setPickedSteig(data);
                     break;
             }
         }
@@ -266,5 +270,5 @@ public class DialogEditActivity extends AppCompatActivity {
                 })
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show();
-    }
+    }*/
 }

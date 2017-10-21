@@ -44,8 +44,8 @@ dependencies {
     }
 
     compile 'org.apache.commons:commons-csv:1.5'
-
     compile 'co.trikita:log:1.1.5'
+    compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 
 }
 repositories {
