@@ -3,8 +3,6 @@ package aenadon.wienerlinienalarm.models.alarm;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import aenadon.wienerlinienalarm.enums.AlarmType;
@@ -18,17 +16,17 @@ public class AlarmNotificationInfo extends RealmObject {
     @Required
     private String alarmType;
 
-    private int onetimeAlarmYear;
-    private int onetimeAlarmMonth;
-    private int onetimeAlarmDay;
+    private Integer onetimeAlarmYear;
+    private Integer onetimeAlarmMonth;
+    private Integer onetimeAlarmDay;
 
     private Byte recurringChosenDays;
 
     private int alarmHour;
     private int alarmMinute;
 
-    private String chosenRingtone;
-    private String chosenVibrationMode;
+    private String pickedRingtone;
+    private String pickedVibrationMode;
 
     public AlarmType getAlarmType() {
         return AlarmType.valueOf(alarmType);
@@ -69,19 +67,19 @@ public class AlarmNotificationInfo extends RealmObject {
         this.alarmMinute = alarmTime.getMinute();
     }
 
-    public String getChosenRingtone() {
-        return chosenRingtone;
+    public String getPickedRingtone() {
+        return pickedRingtone;
     }
 
-    public void setChosenRingtone(String chosenRingtone) {
-        this.chosenRingtone = chosenRingtone;
+    public void setPickedRingtone(String pickedRingtone) {
+        this.pickedRingtone = pickedRingtone;
     }
 
-    public VibrationMode getChosenVibrationMode() {
-        return VibrationMode.valueOf(chosenVibrationMode);
+    public VibrationMode getPickedVibrationMode() {
+        return VibrationMode.valueOf(pickedVibrationMode);
     }
 
-    public void setChosenVibrationMode(VibrationMode chosenVibrationMode) {
-        this.chosenVibrationMode = chosenVibrationMode.toString();
+    public void setPickedVibrationMode(VibrationMode pickedVibrationMode) {
+        this.pickedVibrationMode = pickedVibrationMode.toString();
     }
 }

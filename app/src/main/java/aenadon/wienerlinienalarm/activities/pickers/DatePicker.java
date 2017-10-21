@@ -16,7 +16,7 @@ import aenadon.wienerlinienalarm.utils.StringDisplay;
 
 public class DatePicker extends DialogFragment implements AlarmPicker, DatePickerDialog.OnDateSetListener {
 
-    private LocalDate chosenDate = null;
+    private LocalDate pickedDate = null;
     private TextView dateDisplayView;
 
     private static final String VIEW_RES_ID_KEY = "VIEW_RES_ID";
@@ -32,10 +32,10 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
         int year = 0;
         int month = -1;
         int day = 0;
-        if (chosenDate != null) {
-            year += chosenDate.getYear();
-            month += chosenDate.getMonthValue();
-            day += chosenDate.getDayOfMonth();
+        if (pickedDate != null) {
+            year += pickedDate.getYear();
+            month += pickedDate.getMonthValue();
+            day += pickedDate.getDayOfMonth();
         } else if (previousSavedDate != null) {
             year += previousSavedDate.getYear();
             month += previousSavedDate.getMonthValue();
@@ -47,8 +47,8 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
         return dialog;
     }
 
-    public LocalDate getChosenDate() {
-        return chosenDate;
+    public LocalDate getPickedDate() {
+        return pickedDate;
     }
 
     @Override
@@ -57,22 +57,22 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
         if (dateDisplayView != null) {
             saveBundle.putInt(VIEW_RES_ID_KEY, dateDisplayView.getId());
         }
-        saveBundle.putIntArray(CHOSEN_DATE_KEY, localDateToIntArray(chosenDate));
+        saveBundle.putIntArray(CHOSEN_DATE_KEY, localDateToIntArray(pickedDate));
         return saveBundle;
     }
 
     @Override
     public void restoreState(Context ctx, Bundle restoreBundle) {
-        chosenDate = intArrayToLocalDate(restoreBundle.getIntArray(CHOSEN_DATE_KEY));
+        pickedDate = intArrayToLocalDate(restoreBundle.getIntArray(CHOSEN_DATE_KEY));
 
         int dateDisplayViewId = restoreBundle.getInt(VIEW_RES_ID_KEY);
         dateDisplayView = (TextView) ((Activity) ctx).findViewById(dateDisplayViewId);
-        if (chosenDate != null) dateDisplayView.setText(StringDisplay.getOnetimeDate(chosenDate));
+        if (pickedDate != null) dateDisplayView.setText(StringDisplay.getOnetimeDate(pickedDate));
     }
 
     @Override
     public boolean hasError() {
-        return chosenDate == null;
+        return pickedDate == null;
     }
 
     @Override
@@ -83,8 +83,8 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
     @Override
     public void onDateSet(android.widget.DatePicker view, int year, int month, int day) {
         // java.util.Calendar months start at 0, therefore we need +1
-        chosenDate = intArrayToLocalDate(new int[]{year, month + 1, day});
-        dateDisplayView.setText(StringDisplay.getOnetimeDate(chosenDate));
+        pickedDate = intArrayToLocalDate(new int[]{year, month + 1, day});
+        dateDisplayView.setText(StringDisplay.getOnetimeDate(pickedDate));
     }
 
     private LocalDate intArrayToLocalDate(int[] dateArray) {

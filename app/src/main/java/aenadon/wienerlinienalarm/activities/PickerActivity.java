@@ -8,10 +8,16 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.LocalTime;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,14 +28,15 @@ import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.activities.pickers.*;
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
+import aenadon.wienerlinienalarm.models.alarm.AlarmNotificationInfo;
 import aenadon.wienerlinienalarm.utils.Keys;
+import io.realm.Realm;
+import trikita.log.Log;
 
 
 public abstract class PickerActivity extends AppCompatActivity {
 
     protected AlarmType alarmType = AlarmType.ONETIME;
-
-    private Set<AlarmPicker> visiblePickers = new HashSet<>();
 
     protected DatePicker datePicker;
     protected DaysPicker daysPicker;
@@ -37,6 +44,9 @@ public abstract class PickerActivity extends AppCompatActivity {
     protected RingtonePicker ringtonePicker;
     protected VibrationPicker vibrationPicker;
     protected StationSteigPicker stationSteigPicker;
+
+    private Set<AlarmPicker> visiblePickers = new HashSet<>();
+    private Realm realm;
 
     protected abstract int getDateView();
     protected abstract int getTimeView();
@@ -73,6 +83,8 @@ public abstract class PickerActivity extends AppCompatActivity {
         visiblePickers.add(stationSteigPicker);
 
         initializeAlarmMode();
+
+        realm = Realm.getDefaultInstance();
     }
 
     private Bundle getDatePickerBundle() {
@@ -192,12 +204,27 @@ public abstract class PickerActivity extends AppCompatActivity {
             return;
         }
 
+        realm.beginTransaction();
         Alarm newAlarm = new Alarm();
         newAlarm.setAlarmStationData(stationSteigPicker.getAlarmStationData());
-        // TODO newAlarm.setAlarmNotificationInfo();
+
+        AlarmNotificationInfo notificationInfo = new AlarmNotificationInfo();
+        notificationInfo.setAlarmType(alarmType);
+        if (alarmType == AlarmType.ONETIME) {
+            notificationInfo.setOnetimeAlarmDate(datePicker.getPickedDate());
+        } else {
+            notificationInfo.setRecurringChosenDays(daysPicker.getPickedDays());
+        }
+        notificationInfo.setAlarmTime(timePicker.getPickedTime());
+        notificationInfo.setPickedRingtone(ringtonePicker.getPickedRingtone());
+        notificationInfo.setPickedVibrationMode(vibrationPicker.getPickedMode());
+
+        newAlarm.setAlarmNotificationInfo(notificationInfo);
+        realm.copyToRealm(newAlarm);
+        realm.commitTransaction();
+        Log.v("Saved alarm with id " + newAlarm.getId() + " into database");
 
         // TODO Schedule alarm
-        // // AlarmUtils.scheduleAlarm(AlarmSetterActivity.this, newAlarm);
     }
 
     private List<Integer> getErrors() {
@@ -208,13 +235,30 @@ public abstract class PickerActivity extends AppCompatActivity {
             }
         }
 
-        // TODO check for time in the past
-
+        if (alarmType == AlarmType.ONETIME) {
+            LocalDate pickedDate = datePicker.getPickedDate();
+            LocalTime pickedTime = timePicker.getPickedTime();
+            if (pickedDate != null && pickedTime != null) {
+                LocalDateTime dateTime = LocalDateTime.of(pickedDate, pickedTime);
+                if (dateTime.isBefore(LocalDateTime.now())) {
+                    errors.add(R.string.missing_info_past);
+                }
+            }
+        }
         return errors;
     }
 
     private void showErrorDialog(List<Integer> errors) {
-        // TODO show dialog
+        List<String> errorStrings = new ArrayList<>();
+        for (Integer errorCode : errors) {
+            errorStrings.add(getString(errorCode));
+        }
+        String errorBody = TextUtils.join("\n", errorStrings);
+        new AlertDialog.Builder(PickerActivity.this)
+                .setTitle(R.string.missing_info_title)
+                .setMessage(errorBody)
+                .setPositiveButton(R.string.ok, null)
+                .show();
     }
 
     @Override

@@ -13,7 +13,7 @@ import aenadon.wienerlinienalarm.enums.VibrationMode;
 
 public class VibrationPicker implements AlarmPicker {
 
-    private VibrationMode selectedMode = VibrationMode.NONE;
+    private VibrationMode pickedMode = VibrationMode.NONE;
     private VibrationMode[] vibrationModes;
     private TextView viewToUse;
     private AlertDialog vibrationPickerDialog;
@@ -31,11 +31,11 @@ public class VibrationPicker implements AlarmPicker {
                 .setItems(VibrationMode.getMessageCodes(ctx), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        selectedMode = vibrationModes[which];
+                        pickedMode = vibrationModes[which];
                         if (vibrator.hasVibrator()) {
-                            vibrator.vibrate(selectedMode.getDuration());
+                            vibrator.vibrate(pickedMode.getDuration());
                         }
-                        viewToUse.setText(selectedMode.getMessageCode());
+                        viewToUse.setText(pickedMode.getMessageCode());
                     }
                 }).create();
     }
@@ -44,8 +44,8 @@ public class VibrationPicker implements AlarmPicker {
         vibrationPickerDialog.show();
     }
 
-    public VibrationMode getSelectedMode() {
-        return selectedMode;
+    public VibrationMode getPickedMode() {
+        return pickedMode;
     }
 
     @Override
@@ -54,17 +54,17 @@ public class VibrationPicker implements AlarmPicker {
         if (viewToUse != null) {
             saveBundle.putInt(VIEW_RES_ID_KEY, viewToUse.getId());
         }
-        saveBundle.putInt(PICKED_VIBRATION_MODE_KEY, selectedMode.ordinal());
+        saveBundle.putInt(PICKED_VIBRATION_MODE_KEY, pickedMode.ordinal());
         return saveBundle;
     }
 
     @Override
     public void restoreState(Context ctx, Bundle restoreBundle) {
-        selectedMode = vibrationModes[restoreBundle.getInt(PICKED_VIBRATION_MODE_KEY)];
+        pickedMode = vibrationModes[restoreBundle.getInt(PICKED_VIBRATION_MODE_KEY)];
 
         int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
         viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
-        viewToUse.setText(selectedMode.getMessageCode());
+        viewToUse.setText(pickedMode.getMessageCode());
     }
 
     @Override
