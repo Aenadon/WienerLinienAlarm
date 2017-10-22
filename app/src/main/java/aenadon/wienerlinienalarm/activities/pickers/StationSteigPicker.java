@@ -8,11 +8,7 @@ import android.widget.TextView;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.activities.StationPickerActivity;
-import aenadon.wienerlinienalarm.models.alarm.AlarmStationData;
-import aenadon.wienerlinienalarm.models.wl_metadata.Station;
-import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
 import aenadon.wienerlinienalarm.utils.Keys;
-import io.realm.Realm;
 
 public class StationSteigPicker implements AlarmPicker {
     private String displayName;
@@ -43,21 +39,12 @@ public class StationSteigPicker implements AlarmPicker {
         viewToUse.setText(displayName);
     }
 
-    public AlarmStationData getAlarmStationData() {
-        AlarmStationData stationData = new AlarmStationData();
+    public String getPickedSteig() {
+        return steigId;
+    }
 
-        Realm realm = Realm.getDefaultInstance();
-        Steig selectedSteig = realm.where(Steig.class).equalTo("id", steigId).findFirst();
-        Station selectedStation = null;
-        if (selectedSteig != null) {
-            selectedStation = realm.where(Station.class).equalTo("id", selectedSteig.getStationId()).findFirst();
-        }
-        stationData.setStation(selectedStation);
-        stationData.setSteig(selectedSteig);
-
-        realm.close();
-
-        return stationData;
+    public String getDisplayName() {
+        return displayName;
     }
 
     @Override

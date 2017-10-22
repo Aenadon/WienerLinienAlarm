@@ -28,7 +28,8 @@ import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.activities.pickers.*;
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
-import aenadon.wienerlinienalarm.models.alarm.AlarmNotificationInfo;
+import aenadon.wienerlinienalarm.models.wl_metadata.Station;
+import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
 import aenadon.wienerlinienalarm.utils.Keys;
 import io.realm.Realm;
 import trikita.log.Log;
@@ -206,20 +207,28 @@ public abstract class PickerActivity extends AppCompatActivity {
 
         realm.beginTransaction();
         Alarm newAlarm = new Alarm();
-        newAlarm.setAlarmStationData(stationSteigPicker.getAlarmStationData());
+
+        String steigId = stationSteigPicker.getPickedSteig();
+        Steig selectedSteig = realm.where(Steig.class).equalTo("id", steigId).findFirst();
+        Station selectedStation = null;
+        if (selectedSteig != null) {
+            selectedStation = realm.where(Station.class).equalTo("id", selectedSteig.getStationId()).findFirst();
+        }
+        newAlarm.setStation(selectedStation);
+        newAlarm.setSteig(selectedSteig);
+        newAlarm.setLineDirectionDisplayName(stationSteigPicker.getDisplayName());
+
         newAlarm.setAlarmType(alarmType);
 
-        AlarmNotificationInfo notificationInfo = new AlarmNotificationInfo();
         if (alarmType == AlarmType.ONETIME) {
-            notificationInfo.setOnetimeAlarmDate(datePicker.getPickedDate());
+            newAlarm.setOnetimeAlarmDate(datePicker.getPickedDate());
         } else {
-            notificationInfo.setRecurringChosenDays(daysPicker.getPickedDays());
+            newAlarm.setRecurringChosenDays(daysPicker.getPickedDays());
         }
-        notificationInfo.setAlarmTime(timePicker.getPickedTime());
-        notificationInfo.setPickedRingtone(ringtonePicker.getPickedRingtone());
-        notificationInfo.setPickedVibrationMode(vibrationPicker.getPickedMode());
+        newAlarm.setAlarmTime(timePicker.getPickedTime());
+        newAlarm.setPickedRingtone(ringtonePicker.getPickedRingtone());
+        newAlarm.setPickedVibrationMode(vibrationPicker.getPickedMode());
 
-        newAlarm.setAlarmNotificationInfo(notificationInfo);
         realm.copyToRealm(newAlarm);
         realm.commitTransaction();
         Log.v("Saved alarm with id " + newAlarm.getId() + " into database");
@@ -234,7 +243,6 @@ public abstract class PickerActivity extends AppCompatActivity {
                 errors.add(picker.getErrorStringId());
             }
         }
-
         if (alarmType == AlarmType.ONETIME) {
             LocalDate pickedDate = datePicker.getPickedDate();
             LocalTime pickedTime = timePicker.getPickedTime();

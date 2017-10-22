@@ -24,9 +24,9 @@ public class StringDisplay {
 
     public static String getDate(Context ctx, Alarm alarm) {
         if (alarm.getAlarmType() == AlarmType.ONETIME) {
-            return getOnetimeDate(alarm.getOnetimeDate());
+            return getOnetimeDate(alarm.getOnetimeAlarmDate());
         } else {
-            return getRecurringDays(ctx, alarm.getRecurringDays());
+            return getRecurringDays(ctx, alarm.getRecurringChosenDays());
         }
     }
 
