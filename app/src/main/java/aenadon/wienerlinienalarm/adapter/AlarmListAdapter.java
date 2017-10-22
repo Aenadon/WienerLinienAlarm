@@ -15,6 +15,7 @@ import aenadon.wienerlinienalarm.models.alarm.Alarm;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class AlarmListAdapter extends BaseAdapter {
 
@@ -38,12 +39,47 @@ public class AlarmListAdapter extends BaseAdapter {
         // It's probably cheaper memory-wise to open and close a connection when needed
         // than having a Realm DB connection open for the lifetime of this adapter
         Realm realm = Realm.getDefaultInstance();
-        // TODO sort elements
         RealmResults<Alarm> realmAlarms = realm.where(Alarm.class)
                 .equalTo("alarmType", alarmType.toString())
-                .findAll();
+                .findAllSorted(sortingCriteria(alarmType), sortingOrder(alarmType));
         alarms = realm.copyFromRealm(realmAlarms);
         realm.close();
+    }
+
+    private String[] sortingCriteria(AlarmType alarmType) {
+        if (alarmType == AlarmType.ONETIME) {
+            return new String[]{
+                    "onetimeAlarmYear",
+                    "onetimeAlarmMonth",
+                    "onetimeAlarmDay",
+                    "alarmHour",
+                    "alarmMinute"
+            };
+        } else {
+            return new String[]{
+                    "alarmHour",
+                    "alarmMinute",
+                    "recurringChosenDays"
+            };
+        }
+    }
+
+    private Sort[] sortingOrder(AlarmType alarmType) {
+        if (alarmType == AlarmType.ONETIME) {
+            return new Sort[]{
+                    Sort.ASCENDING,
+                    Sort.ASCENDING,
+                    Sort.ASCENDING,
+                    Sort.ASCENDING,
+                    Sort.ASCENDING
+            };
+        } else {
+            return new Sort[]{
+                    Sort.ASCENDING,
+                    Sort.ASCENDING,
+                    Sort.ASCENDING
+            };
+        }
     }
 
     @Override
