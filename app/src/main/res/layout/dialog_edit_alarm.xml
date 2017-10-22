@@ -23,68 +23,80 @@
             android:orientation="vertical"
             android:id="@+id/content">
 
-            <TextView
-                android:id="@+id/dialog_date_title"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/date"
-                android:textAppearance="@style/SectionTitleText" />
-
-            <LinearLayout
-                android:id="@+id/dialog_date_box"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
+                android:id="@+id/dialog_date_container"
+                android:visibility="gone">
                 <TextView
-                    android:id="@+id/dialog_date_text"
-                    android:layout_weight="9"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:textSize="14sp"
-                    android:onClick="launchDatePicker"/>
+                    android:id="@+id/dialog_date_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/date"
+                    android:textAppearance="@style/SectionTitleText" />
 
-                <ImageView
-                    android:id="@+id/dialog_date_edit"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/ic_edit"
-                    android:onClick="launchDatePicker" />
+                <LinearLayout
+                    android:id="@+id/dialog_date_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
+                    <TextView
+                        android:id="@+id/dialog_date_text"
+                        android:layout_weight="9"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:textSize="14sp"
+                        android:onClick="launchDatePicker"/>
+
+                    <ImageView
+                        android:id="@+id/dialog_date_edit"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/ic_edit"
+                        android:onClick="launchDatePicker" />
+
+                </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/dialog_days_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/days"
-                android:textAppearance="@style/SectionTitleText" />
-
-            <LinearLayout
-                android:visibility="gone"
-                android:id="@+id/dialog_days_box"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/dialog_days_container"
+            android:visibility="gone">
                 <TextView
-                    android:id="@+id/dialog_days_text"
-                    android:layout_weight="9"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:textSize="14sp"
-                    android:onClick="launchWeekdaysPicker"/>
+                    android:id="@+id/dialog_days_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/days"
+                    android:textAppearance="@style/SectionTitleText" />
 
-                <ImageView
-                    android:id="@+id/dialog_days_edit"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/ic_edit"
-                    android:onClick="launchWeekdaysPicker"/>
+                <LinearLayout
+                    android:id="@+id/dialog_days_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
+                    <TextView
+                        android:id="@+id/dialog_days_text"
+                        android:layout_weight="9"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:textSize="14sp"
+                        android:onClick="launchWeekdaysPicker"/>
+
+                    <ImageView
+                        android:id="@+id/dialog_days_edit"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/ic_edit"
+                        android:onClick="launchWeekdaysPicker"/>
+
+                </LinearLayout>
             </LinearLayout>
 
             <TextView

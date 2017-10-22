@@ -36,7 +36,7 @@ public class DialogEditActivity extends PickerActivity {
         }
 
         fillPickersWithData(alarmToEdit);
-        fillViewsWithData(alarmToEdit);
+        setupViews(alarmToEdit);
     }
 
     private void fillPickersWithData(Alarm alarm) {
@@ -52,13 +52,17 @@ public class DialogEditActivity extends PickerActivity {
         super.stationSteigPicker.setDisplayName(alarm.getLineDirectionDisplayName());
     }
 
-    private void fillViewsWithData(Alarm alarm) {
+    private void setupViews(Alarm alarm) {
         if (alarm.getAlarmType() == AlarmType.ONETIME) {
             TextView dateView = (TextView) findViewById (R.id.dialog_date_text);
             dateView.setText(StringDisplay.getOnetimeDate(alarm.getOnetimeAlarmDate()));
+
+            findViewById(R.id.dialog_date_container).setVisibility(View.VISIBLE);
         } else {
             TextView daysView = (TextView) findViewById (R.id.dialog_days_text);
             daysView.setText(StringDisplay.getRecurringDays(DialogEditActivity.this, alarm.getRecurringChosenDays()));
+
+            findViewById(R.id.dialog_days_container).setVisibility(View.VISIBLE);
         }
         TextView timeView = (TextView) findViewById (R.id.dialog_time_text);
         TextView ringtoneView = (TextView) findViewById (R.id.dialog_ringtone_text);
