@@ -65,6 +65,9 @@ public abstract class PickerActivity extends AppCompatActivity {
         hideVibratorIfUnavailable();
         setupActionBar();
 
+        alarmType = (AlarmType)getIntent().getSerializableExtra(Keys.Extra.ALARM_TYPE);
+        setCurrentModeDatePicker();
+
         datePicker = new DatePicker();
         datePicker.setArguments(getDatePickerBundle());
 
@@ -82,8 +85,6 @@ public abstract class PickerActivity extends AppCompatActivity {
         visiblePickers.add(ringtonePicker);
         visiblePickers.add(vibrationPicker);
         visiblePickers.add(stationSteigPicker);
-
-        initializeAlarmMode();
 
         realm = Realm.getDefaultInstance();
     }
@@ -113,12 +114,6 @@ public abstract class PickerActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-    }
-
-    private void initializeAlarmMode() {
-        int alarmModeInt = getIntent().getIntExtra(Keys.Extra.ALARM_MODE, AlarmType.ONETIME.ordinal());
-        alarmType = AlarmType.values()[alarmModeInt];
-        setCurrentModeDatePicker();
     }
 
     public void switchVisibleDatePicker(View v) {
@@ -234,6 +229,9 @@ public abstract class PickerActivity extends AppCompatActivity {
         Log.v("Saved alarm with id " + newAlarm.getId() + " into database");
 
         // TODO Schedule alarm
+
+        setResult(Activity.RESULT_OK, new Intent().putExtra(Keys.Extra.ALARM_TYPE, alarmType));
+        finish();
     }
 
     private List<Integer> getErrors() {

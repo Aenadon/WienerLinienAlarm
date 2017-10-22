@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import aenadon.wienerlinienalarm.BuildConfig;
@@ -40,7 +41,6 @@ import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.adapter.AlarmListAdapter;
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.update.UpdateDatasetService;
-import aenadon.wienerlinienalarm.utils.Const;
 import aenadon.wienerlinienalarm.utils.Keys;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private BroadcastReceiver refreshReceiver;
 
-    private static AlarmType[] alarmTypes = AlarmType.values();
+    private static List<AlarmType> alarmTypes = Arrays.asList(AlarmType.values());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +140,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, AlarmSetterActivity.class);
-                i.putExtra(Keys.Extra.ALARM_MODE, tabContainer.getCurrentItem());
+                AlarmType currentlyOpenTab = alarmTypes.get(tabContainer.getCurrentItem());
+                i.putExtra(Keys.Extra.ALARM_TYPE, currentlyOpenTab);
                 startActivityForResult(i, 0);
             }
         });
@@ -173,7 +174,8 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             tabAdapter.notifyDataSetChanged();
             if (data != null) {
-                tabContainer.setCurrentItem(data.getIntExtra(Keys.Extra.ALARM_MODE, 0));
+                AlarmType alarmType = (AlarmType)data.getSerializableExtra(Keys.Extra.ALARM_TYPE);
+                tabContainer.setCurrentItem(alarmType.ordinal());
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -195,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return alarmTypes.length;
+            return alarmTypes.size();
         }
 
         @Override
@@ -208,13 +210,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return getString(alarmTypes[position].getMessageCode());
+            return getString(alarmTypes.get(position).getMessageCode());
         }
     }
 
     public static class AlarmMenuFragment extends Fragment {
 
-        private int alarmType;
+        private AlarmType alarmType;
         private AlarmListAdapter adapter;
 
         public void updateUnderlyingList() {
@@ -224,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
         public static AlarmMenuFragment getInstance(int pageNumber) {
             AlarmMenuFragment fragment = new AlarmMenuFragment();
             Bundle args = new Bundle();
-            args.putInt(Keys.Extra.ALARM_MODE, pageNumber);
+            args.putSerializable(Keys.Extra.ALARM_TYPE, pageNumber);
             fragment.setArguments(args);
             return fragment;
         }
@@ -234,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             ListView list = (ListView) rootView.findViewById(R.id.alarm_list);
-            alarmType = getArguments().getInt(Keys.Extra.ALARM_MODE);
+            alarmType = (AlarmType)getArguments().getSerializable(Keys.Extra.ALARM_TYPE);
             adapter = new AlarmListAdapter(getActivity(), alarmType);
             list.setAdapter(adapter);
 
@@ -256,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent i = new Intent(getActivity(), DialogEditActivity.class);
-                    i.putExtra(Keys.Extra.ALARM_MODE, alarmType);
+                    i.putExtra(Keys.Extra.ALARM_TYPE, alarmType);
                     startActivityForResult(i, Keys.RequestCode.EDIT_ALARM);
                 }
             };

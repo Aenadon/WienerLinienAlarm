@@ -3,7 +3,7 @@ package aenadon.wienerlinienalarm.utils;
 public interface Keys {
 
     interface Extra {
-        String ALARM_MODE = "ALARM_MODE";
+        String ALARM_TYPE = "ALARM_TYPE";
         String SELECTED_STATION_ID = "SELECTED_STATION_ID";
         String SELECTED_STEIG_ID = "SELECTED_STEIG_ID";
 
@@ -13,8 +13,6 @@ public interface Keys {
         String PREV_DATE = "PREV_DATE";
         String PREV_TIME = "PREV_TIME";
 
-        String STATION_INFO = "STATION_INFO";
-        String DB_POSITION = "DB_POSITION";
         String SELECTED_STATION_NAME = "SELECTED_STATION_NAME";
     }
 
@@ -32,10 +30,6 @@ public interface Keys {
         int EDIT_ALARM = 0;
         int SELECT_STEIG = 1;
         int SELECT_RINGTONE = 2;
-    }
-
-    interface ResultCode {
-        int NO_STEIGS_AVAILABLE = 1;
     }
 
     interface Bundle {

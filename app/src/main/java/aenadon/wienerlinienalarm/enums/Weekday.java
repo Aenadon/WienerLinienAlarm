@@ -29,6 +29,10 @@ public enum Weekday {
         return stringResId;
     }
 
+    public static List<Weekday> getAllWeekdaysList() {
+        return allWeekdaysList;
+    }
+
     public static String[] getAllStrings(Context ctx) {
         String[] strings = new String[7];
         for (int i = 0; i < allWeekdaysList.size(); i++) {

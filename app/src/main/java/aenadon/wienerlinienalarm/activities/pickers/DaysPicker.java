@@ -109,7 +109,7 @@ public class DaysPicker implements AlarmPicker {
     }
 
     private boolean[] arrayFromSet(Set<Weekday> weekdays) {
-        List<Weekday> allWeekdaysList = Arrays.asList(Weekday.values());
+        List<Weekday> allWeekdaysList = Weekday.getAllWeekdaysList();
         boolean[] weekdayArray = new boolean[7];
         for (int i = 0; i < allWeekdaysList.size(); i++) {
             if (weekdays.contains(allWeekdaysList.get(i))) {
@@ -120,7 +120,7 @@ public class DaysPicker implements AlarmPicker {
     }
 
     private Set<Weekday> setFromArray(boolean[] weekdayArray) {
-        List<Weekday> allWeekdaysList = Arrays.asList(Weekday.values());
+        List<Weekday> allWeekdaysList = Weekday.getAllWeekdaysList();
         Set<Weekday> weekdaySet = new HashSet<>();
         for (int i = 0; i < allWeekdaysList.size(); i++) {
             if (weekdayArray[i]) {

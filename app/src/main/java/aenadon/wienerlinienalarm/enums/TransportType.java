@@ -1,5 +1,8 @@
 package aenadon.wienerlinienalarm.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum TransportType {
     BUS("ptBusCity"),
     BUS_NIGHT("ptBusNight"),
@@ -10,6 +13,7 @@ public enum TransportType {
     METRO("ptMetro");
 
     private String typeString;
+    private static List<TransportType> transportTypeList = Arrays.asList(TransportType.values());
 
     TransportType(String typeString) {
         this.typeString = typeString;
@@ -20,7 +24,7 @@ public enum TransportType {
     }
 
     public static TransportType findByTypeString(String typeString) {
-        for (TransportType type : values()) {
+        for (TransportType type : transportTypeList) {
             if (type.typeString.equals(typeString)) {
                 return type;
             }

@@ -19,8 +19,8 @@ public class RingtonePicker implements AlarmPicker {
 
     private Context ctx;
 
-    private static final String viewResIdKey = "VIEW_RES_ID";
-    private static final String pickedRingtoneKey = "PICKED_RINGTONE_KEY";
+    private static final String VIEW_RES_ID_KEY = "VIEW_RES_ID";
+    private static final String PICKED_RINGTONE_KEY = "PICKED_RINGTONE_KEY";
 
     public RingtonePicker(Context ctx, String previousRingtone, int viewResId) {
         this.ctx = ctx;
@@ -57,18 +57,18 @@ public class RingtonePicker implements AlarmPicker {
     public Bundle saveState() {
         Bundle saveBundle = new Bundle();
         if (viewToUse != null) {
-            saveBundle.putInt(viewResIdKey, viewToUse.getId());
+            saveBundle.putInt(VIEW_RES_ID_KEY, viewToUse.getId());
         }
-        saveBundle.putString(pickedRingtoneKey, pickedRingtone);
+        saveBundle.putString(PICKED_RINGTONE_KEY, pickedRingtone);
         return saveBundle;
     }
 
     @Override
     public void restoreState(Context ctx, Bundle restoreBundle) {
-        int viewResId = restoreBundle.getInt(viewResIdKey);
+        int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
         viewToUse = (TextView) ((Activity) ctx).findViewById(viewResId);
 
-        pickedRingtone = restoreBundle.getString(pickedRingtoneKey);
+        pickedRingtone = restoreBundle.getString(PICKED_RINGTONE_KEY);
         if (pickedRingtone != null) viewToUse.setText(StringDisplay.getRingtone(ctx, pickedRingtone));
     }
 

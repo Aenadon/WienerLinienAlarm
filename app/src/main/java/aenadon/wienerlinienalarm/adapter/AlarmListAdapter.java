@@ -22,10 +22,9 @@ public class AlarmListAdapter extends BaseAdapter {
 
     private final List<Alarm> alarms;
 
-    public AlarmListAdapter(Context ctx, int alarmModePage) {
+    public AlarmListAdapter(Context ctx, AlarmType alarmType) {
         this.ctx = ctx;
 
-        AlarmType alarmType = AlarmType.values()[alarmModePage];
         Realm realm = Realm.getDefaultInstance();
         // TODO sort elements
         RealmResults<Alarm> realmAlarms = realm.where(Alarm.class)
