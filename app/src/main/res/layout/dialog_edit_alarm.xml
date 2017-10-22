@@ -42,7 +42,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:textSize="14sp"
-                    android:onClick="onClickHandler"/>
+                    android:onClick="launchDatePicker"/>
 
                 <ImageView
                     android:id="@+id/dialog_date_edit"
@@ -50,7 +50,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/ic_edit"
-                    android:onClick="onClickHandler" />
+                    android:onClick="launchDatePicker" />
 
             </LinearLayout>
 
@@ -75,7 +75,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:textSize="14sp"
-                    android:onClick="onClickHandler"/>
+                    android:onClick="launchWeekdaysPicker"/>
 
                 <ImageView
                     android:id="@+id/dialog_days_edit"
@@ -83,7 +83,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/ic_edit"
-                    android:onClick="onClickHandler"/>
+                    android:onClick="launchWeekdaysPicker"/>
 
             </LinearLayout>
 
@@ -104,7 +104,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:textSize="14sp"
-                    android:onClick="onClickHandler"/>
+                    android:onClick="launchTimePicker"/>
 
                 <ImageView
                     android:id="@+id/dialog_time_edit"
@@ -112,7 +112,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/ic_edit"
-                    android:onClick="onClickHandler"/>
+                    android:onClick="launchTimePicker"/>
 
             </LinearLayout>
 
@@ -133,7 +133,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:textSize="14sp"
-                    android:onClick="onClickHandler"/>
+                    android:onClick="launchRingtonePicker"/>
 
                 <ImageView
                     android:id="@+id/dialog_ringtone_edit"
@@ -141,7 +141,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/ic_edit"
-                    android:onClick="onClickHandler"/>
+                    android:onClick="launchRingtonePicker"/>
 
             </LinearLayout>
 
@@ -164,7 +164,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:textSize="14sp"
-                    android:onClick="onClickHandler"/>
+                    android:onClick="launchVibrationPicker"/>
 
                 <ImageView
                     android:id="@+id/dialog_vibration_edit"
@@ -172,7 +172,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/ic_edit"
-                    android:onClick="onClickHandler"/>
+                    android:onClick="launchVibrationPicker"/>
 
             </LinearLayout>
 
@@ -193,7 +193,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:textSize="14sp"
-                    android:onClick="onClickHandler"/>
+                    android:onClick="launchStationSteigPicker"/>
 
                 <ImageView
                     android:id="@+id/dialog_station_edit"
@@ -201,7 +201,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/ic_edit"
-                    android:onClick="onClickHandler"/>
+                    android:onClick="launchStationSteigPicker"/>
 
             </LinearLayout>
 
@@ -221,7 +221,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel"
-                android:onClick="onClickHandler" />
+                android:onClick="dismissDialog" />
             <Button
                 android:layout_weight="1"
                 android:id="@+id/dialog_button_delete"
@@ -229,7 +229,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/delete"
-                android:onClick="onClickHandler" />
+                android:onClick="deleteAlarm" />
             <Button
                 android:layout_weight="1"
                 android:id="@+id/dialog_button_ok"
@@ -237,7 +237,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/ok"
-                android:onClick="onClickHandler" />
+                android:onClick="saveAlarm" />
         </LinearLayout>
 
     </RelativeLayout>

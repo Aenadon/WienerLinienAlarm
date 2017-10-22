@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.widget.TextView;
 
+import org.threeten.bp.LocalDate;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -75,6 +77,10 @@ public class DaysPicker implements AlarmPicker {
 
     public Set<Weekday> getPickedDays() {
         return setFromArray(savedChoice);
+    }
+
+    public void setPickedDays(Set<Weekday> pickedDays) {
+        this.savedChoice = arrayFromSet(pickedDays);
     }
 
     @Override

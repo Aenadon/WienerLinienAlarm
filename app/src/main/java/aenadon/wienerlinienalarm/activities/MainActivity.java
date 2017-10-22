@@ -262,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent i = new Intent(getActivity(), DialogEditActivity.class);
                     i.putExtra(Keys.Extra.ALARM_TYPE, alarmType);
+                    i.putExtra(Keys.Extra.ALARM_ID, adapter.getAlarmId(position));
                     startActivityForResult(i, Keys.RequestCode.EDIT_ALARM);
                 }
             };

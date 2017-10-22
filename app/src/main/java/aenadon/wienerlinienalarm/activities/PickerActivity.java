@@ -47,15 +47,18 @@ public abstract class PickerActivity extends AppCompatActivity {
     protected StationSteigPicker stationSteigPicker;
 
     private Set<AlarmPicker> visiblePickers = new HashSet<>();
-    private Realm realm;
+    protected Realm realm;
 
+    protected abstract boolean isNotEditActivity();
+    protected abstract int getLayout();
     protected abstract int getDateView();
     protected abstract int getTimeView();
     protected abstract int getDaysView();
     protected abstract int getRingtoneView();
     protected abstract int getVibrationView();
     protected abstract int getStationSteigView();
-    protected abstract int getLayout();
+
+    protected abstract Alarm getAlarm();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +87,10 @@ public abstract class PickerActivity extends AppCompatActivity {
         visiblePickers.add(stationSteigPicker);
 
         alarmType = (AlarmType)getIntent().getSerializableExtra(Keys.Extra.ALARM_TYPE);
-        setCurrentModeDatePicker();
+
+        if (isNotEditActivity()) {
+            setCurrentModeDatePicker();
+        }
 
         realm = Realm.getDefaultInstance();
     }
@@ -201,7 +207,7 @@ public abstract class PickerActivity extends AppCompatActivity {
         }
 
         realm.beginTransaction();
-        Alarm newAlarm = new Alarm();
+        Alarm alarm = getAlarm();
 
         String steigId = stationSteigPicker.getPickedSteig();
         Steig selectedSteig = realm.where(Steig.class).equalTo("id", steigId).findFirst();
@@ -209,24 +215,24 @@ public abstract class PickerActivity extends AppCompatActivity {
         if (selectedSteig != null) {
             selectedStation = realm.where(Station.class).equalTo("id", selectedSteig.getStationId()).findFirst();
         }
-        newAlarm.setStation(selectedStation);
-        newAlarm.setSteig(selectedSteig);
-        newAlarm.setLineDirectionDisplayName(stationSteigPicker.getDisplayName());
+        alarm.setStation(selectedStation);
+        alarm.setSteig(selectedSteig);
+        alarm.setLineDirectionDisplayName(stationSteigPicker.getDisplayName());
 
-        newAlarm.setAlarmType(alarmType);
+        alarm.setAlarmType(alarmType);
 
         if (alarmType == AlarmType.ONETIME) {
-            newAlarm.setOnetimeAlarmDate(datePicker.getPickedDate());
+            alarm.setOnetimeAlarmDate(datePicker.getPickedDate());
         } else {
-            newAlarm.setRecurringChosenDays(daysPicker.getPickedDays());
+            alarm.setRecurringChosenDays(daysPicker.getPickedDays());
         }
-        newAlarm.setAlarmTime(timePicker.getPickedTime());
-        newAlarm.setPickedRingtone(ringtonePicker.getPickedRingtone());
-        newAlarm.setPickedVibrationMode(vibrationPicker.getPickedMode());
+        alarm.setAlarmTime(timePicker.getPickedTime());
+        alarm.setPickedRingtone(ringtonePicker.getPickedRingtone());
+        alarm.setPickedVibrationMode(vibrationPicker.getPickedMode());
 
-        realm.copyToRealm(newAlarm);
+        realm.copyToRealm(alarm);
         realm.commitTransaction();
-        Log.v("Saved alarm with id " + newAlarm.getId() + " into database");
+        Log.v("Saved alarm with id " + alarm.getId() + " into database");
 
         // TODO Schedule alarm
 
@@ -236,9 +242,12 @@ public abstract class PickerActivity extends AppCompatActivity {
 
     private List<Integer> getErrors() {
         List<Integer> errors = new ArrayList<>();
-        for (AlarmPicker picker : visiblePickers) {
-            if (picker.hasError()) {
-                errors.add(picker.getErrorStringId());
+        if (isNotEditActivity()) {
+            // can't mess up while editing except choosing a time in the past
+            for (AlarmPicker picker : visiblePickers) {
+                if (picker.hasError()) {
+                    errors.add(picker.getErrorStringId());
+                }
             }
         }
         if (alarmType == AlarmType.ONETIME) {

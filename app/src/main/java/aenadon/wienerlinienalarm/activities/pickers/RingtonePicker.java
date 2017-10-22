@@ -47,6 +47,10 @@ public class RingtonePicker implements AlarmPicker {
         return pickedRingtone;
     }
 
+    public void setPickedRingtone(String pickedRingtone) {
+        this.pickedRingtone = pickedRingtone;
+    }
+
     public void setPickedRingtone(Context ctx, Intent data) {
         Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
         pickedRingtone = (uri != null) ? uri.toString() : null;

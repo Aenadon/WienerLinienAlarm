@@ -4,6 +4,7 @@ public interface Keys {
 
     interface Extra {
         String ALARM_TYPE = "ALARM_TYPE";
+        String ALARM_ID = "ALARM_ID";
         String SELECTED_STATION_ID = "SELECTED_STATION_ID";
         String SELECTED_STEIG_ID = "SELECTED_STEIG_ID";
 

@@ -89,7 +89,12 @@ public class AlarmListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
+        // the alarms don't have long IDs
         return position;
+    }
+
+    public String getAlarmId(int position) {
+        return alarms.get(position).getId();
     }
 
     @Override

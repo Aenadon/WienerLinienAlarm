@@ -1,9 +1,16 @@
 package aenadon.wienerlinienalarm.activities;
 
 import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.models.alarm.Alarm;
 
 public class AlarmSetterActivity extends PickerActivity {
 
+    @Override
+    protected boolean isNotEditActivity() {
+        return true;
+    }
+
+    @Override
     protected int getLayout() {
         return R.layout.activity_alarm_setter;
     }
@@ -36,5 +43,10 @@ public class AlarmSetterActivity extends PickerActivity {
     @Override
     protected int getStationSteigView() {
         return R.id.choose_station_text;
+    }
+
+    @Override
+    protected Alarm getAlarm() {
+        return new Alarm();
     }
 }

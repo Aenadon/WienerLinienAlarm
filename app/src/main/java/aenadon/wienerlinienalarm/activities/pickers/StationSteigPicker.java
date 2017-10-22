@@ -43,8 +43,16 @@ public class StationSteigPicker implements AlarmPicker {
         return steigId;
     }
 
+    public void setPickedSteig(String pickedSteig) {
+        this.steigId = pickedSteig;
+    }
+
     public String getDisplayName() {
         return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     @Override

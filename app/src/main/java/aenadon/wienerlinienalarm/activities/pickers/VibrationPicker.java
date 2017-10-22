@@ -48,6 +48,10 @@ public class VibrationPicker implements AlarmPicker {
         return pickedMode;
     }
 
+    public void setPickedMode(VibrationMode pickedMode) {
+        this.pickedMode = pickedMode;
+    }
+
     @Override
     public Bundle saveState() {
         Bundle saveBundle = new Bundle();

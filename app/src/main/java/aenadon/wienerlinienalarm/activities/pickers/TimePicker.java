@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 
 import java.util.Calendar;
@@ -25,10 +26,6 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
 
     private static final String VIEW_RES_ID_KEY = "VIEW_RES_ID";
     private static final String CHOSEN_TIME_KEY = "CHOSEN_TIME";
-
-    public void show() {
-        super.show(getActivity().getFragmentManager(), "TimePicker");
-    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -54,6 +51,10 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
 
     public LocalTime getPickedTime() {
         return pickedTime;
+    }
+
+    public void setPickedTime(LocalTime pickedTime) {
+        this.pickedTime = pickedTime;
     }
 
     @Override

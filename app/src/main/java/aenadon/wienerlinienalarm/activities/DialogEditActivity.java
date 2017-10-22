@@ -1,248 +1,123 @@
 package aenadon.wienerlinienalarm.activities;
 
-import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.TextView;
 
-public class DialogEditActivity extends AppCompatActivity {
-    // TODO replace everything with PickerActivity structure
-    // everything commented to prevent build errors
-/*
-    private RealmResults<LegacyAlarm> alarms;
-    private LegacyAlarm alarmElement;
-    private int dbPosition;
+import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.enums.AlarmType;
+import aenadon.wienerlinienalarm.models.alarm.Alarm;
+import aenadon.wienerlinienalarm.utils.Keys;
+import aenadon.wienerlinienalarm.utils.StringDisplay;
+import trikita.log.Log;
 
-    private final Realm realm = Realm.getDefaultInstance();
+public class DialogEditActivity extends PickerActivity {
 
-    private final DatePicker datePicker = new DatePicker();
-    private final TimePicker timePicker = new TimePicker();
-    private final DaysPicker daysPicker = new DaysPicker();
-    private final RingtonePicker ringtonePicker;//= new RingtonePicker();
-    private final VibrationPicker vibrationPicker;// = new VibrationPicker();
-    private final StationSteigPicker stationSteigPicker;// = new StationSteigPicker();
+    private Alarm alarmToEdit;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_edit_alarm);
-
-        int pageNumber = getIntent().getIntExtra(Keys.Extra.ALARM_MODE, -1);
-        dbPosition = getIntent().getIntExtra(Const.EXTRA_DB_POSITION, -1);
-
-        if (pageNumber == -1 || dbPosition == -1) {
-            throw new Error("WTF?"); // no way!!!!
+        String alarmId = getIntent().getStringExtra(Keys.Extra.ALARM_ID);
+        if (alarmId == null || alarmId.trim().isEmpty()) {
+            Log.e("Alarm ID is null!");
+            finish();
+            return;
+        }
+        alarmToEdit = super.realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+        if (alarmToEdit == null) {
+            Log.e("Alarm with ID " + alarmId + " couldn't be retrieved => is null!");
+            finish();
+            return;
         }
 
-        Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        if (!v.hasVibrator()) {
-            findViewById(R.id.dialog_vibration_title).setVisibility(View.GONE);
-            findViewById(R.id.dialog_vibration_box).setVisibility(View.GONE);
-        }
-
-        alarms = RealmService.getAlarms(DialogEditActivity.this, pageNumber);
-        alarmElement = realm.copyFromRealm(alarms.get(dbPosition));
-
-        switch (pageNumber) {
-            case Const.ALARM_ONETIME:
-                // Set date
-                ((TextView)findViewById(R.id.dialog_date_text)).setText(StringDisplay.getOnetimeDate(alarmElement.getOneTimeAlarmYear(), alarmElement.getOneTimeAlarmMonth(), alarmElement.getOneTimeAlarmDay()));
-                break;
-            case Const.ALARM_RECURRING:
-                // Hide date picker, show days picker
-                findViewById(R.id.dialog_date_title).setVisibility(View.GONE);
-                findViewById(R.id.dialog_date_box).setVisibility(View.GONE);
-                findViewById(R.id.dialog_days_title).setVisibility(View.VISIBLE);
-                findViewById(R.id.dialog_days_box).setVisibility(View.VISIBLE);
-                // Set days
-                ((TextView)findViewById(R.id.dialog_days_text)).setText(StringDisplay.getRecurringDays(DialogEditActivity.this, alarmElement.getRecurringChosenDays()));
-                break;
-            default:
-                throw new Error("Non-existent alarm mode");
-        }
-        // Set time
-        ((TextView)findViewById(R.id.dialog_time_text)).setText(StringDisplay.getTime(alarmElement.getAlarmHour(), alarmElement.getAlarmMinute()));
-        // Set Ringtone
-        ((TextView)findViewById(R.id.dialog_ringtone_text)).setText(StringDisplay.getRingtone(DialogEditActivity.this, alarmElement.getChosenRingtone()));
-        // Set Vibration (only if vibrator is present)
-        if (v.hasVibrator()) ((TextView)findViewById(R.id.dialog_vibration_text)).setText(StringDisplay.getVibration(DialogEditActivity.this, alarmElement.getChosenVibrationMode()));
-        // Set station
-        ((TextView)findViewById(R.id.dialog_station_text)).setText(StringDisplay.getStation(alarmElement.getStationName(), alarmElement.getStationDirection()));
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Const.INTENT_REFRESH_LIST);
+        fillPickersWithData(alarmToEdit);
+        fillViewsWithData(alarmToEdit);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putBundle(Const.BUNDLE_DATE_PICKER, datePicker.saveState());
-        outState.putBundle(Const.BUNDLE_TIME_PICKER, timePicker.saveState());
-        outState.putBundle(Const.BUNDLE_DAYS_PICKER, daysPicker.saveState());
-        outState.putBundle(Const.BUNDLE_RINGTONE_PICKER, ringtonePicker.saveState());
-        outState.putBundle(Const.BUNDLE_VIBRATION_PICKER, vibrationPicker.saveState());
-        outState.putBundle(Const.BUNDLE_STATION_PICKER, stationSteigPicker.saveState());
-        super.onSaveInstanceState(outState);
+    private void fillPickersWithData(Alarm alarm) {
+        if (alarm.getAlarmType() == AlarmType.ONETIME) {
+            super.datePicker.setPickedDate(alarm.getOnetimeAlarmDate());
+        } else {
+            super.daysPicker.setPickedDays(alarm.getRecurringChosenDays());
+        }
+        super.timePicker.setPickedTime(alarm.getAlarmTime());
+        super.ringtonePicker.setPickedRingtone(alarm.getPickedRingtone());
+        super.vibrationPicker.setPickedMode(alarm.getPickedVibrationMode());
+        super.stationSteigPicker.setPickedSteig(alarm.getSteig().getId());
+        super.stationSteigPicker.setDisplayName(alarm.getLineDirectionDisplayName());
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        datePicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DATE_PICKER));
-        timePicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_TIME_PICKER));
-        daysPicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_DAYS_PICKER));
-        ringtonePicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_RINGTONE_PICKER));
-        vibrationPicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_VIBRATION_PICKER));
-        stationSteigPicker.restoreState(DialogEditActivity.this, savedInstanceState.getBundle(Const.BUNDLE_STATION_PICKER));
+    private void fillViewsWithData(Alarm alarm) {
+        if (alarm.getAlarmType() == AlarmType.ONETIME) {
+            TextView dateView = (TextView) findViewById (R.id.dialog_date_text);
+            dateView.setText(StringDisplay.getOnetimeDate(alarm.getOnetimeAlarmDate()));
+        } else {
+            TextView daysView = (TextView) findViewById (R.id.dialog_days_text);
+            daysView.setText(StringDisplay.getRecurringDays(DialogEditActivity.this, alarm.getRecurringChosenDays()));
+        }
+        TextView timeView = (TextView) findViewById (R.id.dialog_time_text);
+        TextView ringtoneView = (TextView) findViewById (R.id.dialog_ringtone_text);
+        TextView vibrationView = (TextView) findViewById (R.id.dialog_vibration_text);
+        TextView stationView = (TextView) findViewById (R.id.dialog_station_text);
+
+        timeView.setText(StringDisplay.getTime(alarm.getAlarmTime()));
+        ringtoneView.setText(StringDisplay.getRingtone(DialogEditActivity.this, alarm.getPickedRingtone()));
+        vibrationView.setText(alarm.getPickedVibrationMode().getMessageCode());
+        stationView.setText(alarm.getLineDirectionDisplayName());
     }
 
-    public void onClickHandler(View view) {
-        switch (view.getId()) {
-            case R.id.dialog_date_text:
-            case R.id.dialog_date_edit:
-                Bundle a = new Bundle();
-                a.putInt(Const.EXTRA_VIEW_TO_USE, R.id.dialog_date_text);
-                a.putIntArray(Const.EXTRA_PREV_DATE, alarmElement.getOneTimeDateAsArray());
-                datePicker.setArguments(a);
-                datePicker.show(getFragmentManager(), "DatePickerFragment");
-                break;
-            case R.id.dialog_days_text:
-            case R.id.dialog_days_edit:
-                daysPicker.show(DialogEditActivity.this, alarmElement.getRecurringChosenDays(), R.id.dialog_days_text);
-                break;
-            case R.id.dialog_time_text:
-            case R.id.dialog_time_edit:
-                Bundle b = new Bundle();
-                b.putInt(Const.EXTRA_VIEW_TO_USE, R.id.dialog_time_text);
-                b.putIntArray(Const.EXTRA_PREV_TIME, alarmElement.getTimeAsArray());
-                timePicker.setArguments(b);
-                timePicker.show(getFragmentManager(), "TimePickerFragment");
-                break;
-            case R.id.dialog_ringtone_text:
-            case R.id.dialog_ringtone_edit:
-                ringtonePicker.show(DialogEditActivity.this, alarmElement.getChosenRingtone(), R.id.dialog_ringtone_text);
-                break;
-            case R.id.dialog_vibration_text:
-            case R.id.dialog_vibration_edit:
-                vibrationPicker.show(DialogEditActivity.this, R.id.dialog_vibration_text);
-                break;
-            case R.id.dialog_station_text:
-            case R.id.dialog_station_edit:
-                stationSteigPicker.show(DialogEditActivity.this, R.id.dialog_station_text);
-                break;
-            case R.id.dialog_button_cancel:
-                setResult(Activity.RESULT_CANCELED);
-                finish();
-                break;
-            case R.id.dialog_button_delete:
-                confirmDelete();
-                break;
-            case R.id.dialog_button_ok:
-                done();
-                break;
-        }
-    }
-
-    private void done() {
-        // Errorcheck
-        boolean isError = false;
-        String error = ""; // only one error at a time possible
-
-        int[] chosenDate = datePicker.getChosenDate();
-        int[] chosenTime = timePicker.getPickedTime();
-        boolean[] chosenDays = daysPicker.getPickedDays();
-
-        // Mode-specific checks
-        switch (alarmElement.getAlarmMode()) {
-            case Const.ALARM_ONETIME:
-                Calendar now = Calendar.getInstance();
-                Calendar calDate = Calendar.getInstance();
-
-                int[] tempChosenDate = (chosenDate != null) ? chosenDate : alarmElement.getOneTimeDateAsArray();
-                int[] tempChosenTime = (chosenTime != null) ? chosenTime : alarmElement.getTimeAsArray();
-
-                calDate.set(tempChosenDate[0], tempChosenDate[1], tempChosenDate[2], tempChosenTime[0], tempChosenTime[1], 0); // 0 seconds
-                if (calDate.compareTo(now) < 0) {
-                    isError = true;
-                    error = getString(R.string.missing_info_past);
-                }
-                break;
-            case Const.ALARM_RECURRING:
-                boolean[] tempChosenDays = (chosenDays != null) ? chosenDays : alarmElement.getRecurringChosenDays();
-                if (Arrays.equals(tempChosenDays, new boolean[7])) { // compare with empty array
-                    isError = true;
-                    error = getString(R.string.missing_info_days);
-                }
-                break;
-            default:
-                throw new Error("Non-existent alarm mode");
-        }
-        // If error:
-        if (isError) {
-            AlertDialogs.missingInfo(DialogEditActivity.this, error);
-            return; // if error, we're done here
-        }
-
-        realm.beginTransaction();
-        alarmElement = realm.copyToRealmOrUpdate(alarmElement);
-
-        AlarmUtils.cancelAlarm(DialogEditActivity.this, alarmElement); // cancel the old alarm
-
-        switch(alarmElement.getAlarmMode()) {
-            case Const.ALARM_ONETIME:
-                if (datePicker.dateChanged(alarmElement)) alarmElement.setOneTimeDateAsArray(datePicker.getChosenDate());
-                break;
-            case Const.ALARM_RECURRING:
-                if (daysPicker.daysChanged(alarmElement)) alarmElement.setRecurringChosenDays(daysPicker.getPickedDays());
-                break;
-            default:
-                throw new Error("Non-existent alarm mode");
-        }
-        if (timePicker.timeChanged(alarmElement)) alarmElement.setTimeAsArray(timePicker.getPickedTime());
-        if (ringtonePicker.ringtoneChanged(alarmElement)) alarmElement.setChosenRingtone(ringtonePicker.getPickedRingtone());
-        if (vibrationPicker.vibrationChanged(alarmElement)) alarmElement.setChosenVibrationMode(vibrationPicker.getPickedVibrationMode());
-        if (stationSteigPicker.stationChanged(alarmElement)) alarmElement.setStationInfoAsArray(stationSteigPicker.getStationInfoAsArray());
-
-        AlarmUtils.scheduleAlarm(DialogEditActivity.this, alarmElement); // and schedule the changed one
-
-        realm.commitTransaction();
-
-        setResult(Activity.RESULT_OK);
+    public void dismissDialog(View v) {
         finish();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case Const.REQUEST_RINGTONE:
-                    ringtonePicker.setPickedRingtone(DialogEditActivity.this, data);
-                    break;
-                case Const.REQUEST_STATION:
-                    stationSteigPicker.setPickedSteig(data);
-                    break;
-            }
-        }
+    public void deleteAlarm(View v) {
+        // TODO
     }
 
-    private void confirmDelete() {
-        new AlertDialog.Builder(DialogEditActivity.this)
-                .setTitle(getString(R.string.delete_alarm_title))
-                .setMessage(getString(R.string.delete_alarm_message))
-                .setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+    @Override
+    protected boolean isNotEditActivity() {
+        return false;
+    }
 
-                        if (alarmElement.isValid()) {
-                            AlarmUtils.cancelAlarm(DialogEditActivity.this, alarmElement);
+    @Override
+    protected int getLayout() {
+        return R.layout.dialog_edit_alarm;
+    }
 
-                            realm.beginTransaction();
-                            alarms.deleteFromRealm(dbPosition);
-                            realm.commitTransaction();
-                        }
+    @Override
+    protected int getDateView() {
+        return R.id.dialog_date_text;
+    }
 
-                        setResult(Activity.RESULT_OK);
-                        finish();
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel), null)
-                .show();
-    }*/
+    @Override
+    protected int getTimeView() {
+        return R.id.dialog_time_text;
+    }
+
+    @Override
+    protected int getDaysView() {
+        return R.id.dialog_days_text;
+    }
+
+    @Override
+    protected int getRingtoneView() {
+        return R.id.dialog_ringtone_text;
+    }
+
+    @Override
+    protected int getVibrationView() {
+        return R.id.dialog_vibration_text;
+    }
+
+    @Override
+    protected int getStationSteigView() {
+        return R.id.dialog_station_text;
+    }
+
+    @Override
+    protected Alarm getAlarm() {
+        return alarmToEdit;
+    }
 }
