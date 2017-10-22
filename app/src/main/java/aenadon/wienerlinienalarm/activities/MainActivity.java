@@ -226,7 +226,10 @@ public class MainActivity extends AppCompatActivity {
         public static AlarmMenuFragment getInstance(int pageNumber) {
             AlarmMenuFragment fragment = new AlarmMenuFragment();
             Bundle args = new Bundle();
-            args.putSerializable(Keys.Extra.ALARM_TYPE, pageNumber);
+
+            AlarmType passedAlarmType = alarmTypes.get(pageNumber);
+            args.putSerializable(Keys.Extra.ALARM_TYPE, passedAlarmType);
+
             fragment.setArguments(args);
             return fragment;
         }

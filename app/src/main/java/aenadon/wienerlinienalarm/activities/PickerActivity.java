@@ -65,9 +65,6 @@ public abstract class PickerActivity extends AppCompatActivity {
         hideVibratorIfUnavailable();
         setupActionBar();
 
-        alarmType = (AlarmType)getIntent().getSerializableExtra(Keys.Extra.ALARM_TYPE);
-        setCurrentModeDatePicker();
-
         datePicker = new DatePicker();
         datePicker.setArguments(getDatePickerBundle());
 
@@ -85,6 +82,9 @@ public abstract class PickerActivity extends AppCompatActivity {
         visiblePickers.add(ringtonePicker);
         visiblePickers.add(vibrationPicker);
         visiblePickers.add(stationSteigPicker);
+
+        alarmType = (AlarmType)getIntent().getSerializableExtra(Keys.Extra.ALARM_TYPE);
+        setCurrentModeDatePicker();
 
         realm = Realm.getDefaultInstance();
     }

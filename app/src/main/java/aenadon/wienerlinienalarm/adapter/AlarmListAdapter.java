@@ -19,12 +19,24 @@ import io.realm.RealmResults;
 public class AlarmListAdapter extends BaseAdapter {
 
     private final Context ctx;
-
-    private final List<Alarm> alarms;
+    private AlarmType alarmType;
+    private List<Alarm> alarms;
 
     public AlarmListAdapter(Context ctx, AlarmType alarmType) {
         this.ctx = ctx;
+        this.alarmType = alarmType;
+        getAlarmsFromDatabase(alarmType);
+    }
 
+    @Override
+    public void notifyDataSetChanged() {
+        getAlarmsFromDatabase(alarmType);
+        super.notifyDataSetChanged();
+    }
+
+    private void getAlarmsFromDatabase(AlarmType alarmType) {
+        // It's probably cheaper memory-wise to open and close a connection when needed
+        // than having a Realm DB connection open for the lifetime of this adapter
         Realm realm = Realm.getDefaultInstance();
         // TODO sort elements
         RealmResults<Alarm> realmAlarms = realm.where(Alarm.class)
@@ -38,6 +50,7 @@ public class AlarmListAdapter extends BaseAdapter {
     public Object getItem(int position) {
         return alarms.get(position);
     }
+
     @Override
     public long getItemId(int position) {
         return position;
@@ -75,7 +88,7 @@ public class AlarmListAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        TextView date;      // @+id/alarm_list_date
-        TextView time;      // @+id/alarm_list_time
+        TextView date;
+        TextView time;
     }
 }
