@@ -1,7 +1,10 @@
 package aenadon.wienerlinienalarm.activities;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
 
@@ -73,7 +76,21 @@ public class DialogEditActivity extends PickerActivity {
     }
 
     public void deleteAlarm(View v) {
-        // TODO
+        new AlertDialog.Builder(DialogEditActivity.this)
+                .setTitle(R.string.delete_alarm_title)
+                .setMessage(R.string.delete_alarm_message)
+                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        realm.beginTransaction();
+                        alarmToEdit.deleteFromRealm();
+                        realm.commitTransaction();
+                        setResult(Activity.RESULT_OK);
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
     }
 
     @Override
