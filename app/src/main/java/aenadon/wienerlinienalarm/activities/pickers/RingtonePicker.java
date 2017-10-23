@@ -22,9 +22,8 @@ public class RingtonePicker implements AlarmPicker {
     private static final String VIEW_RES_ID_KEY = "VIEW_RES_ID";
     private static final String PICKED_RINGTONE_KEY = "PICKED_RINGTONE_KEY";
 
-    public RingtonePicker(Context ctx, String previousRingtone, int viewResId) {
+    public RingtonePicker(Context ctx, int viewResId) {
         this.ctx = ctx;
-        this.previousRingtone = previousRingtone;
 
         viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
     }

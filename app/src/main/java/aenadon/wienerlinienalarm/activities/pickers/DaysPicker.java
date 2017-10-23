@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.widget.TextView;
 
-import org.threeten.bp.LocalDate;
-
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +17,7 @@ import aenadon.wienerlinienalarm.utils.StringDisplay;
 
 public class DaysPicker implements AlarmPicker {
 
-    private boolean[] savedChoice;
+    private boolean[] savedChoice = new boolean[7];
     private boolean[] dialogTemporaryChoice;
     private TextView viewToUse;
 
@@ -31,14 +28,8 @@ public class DaysPicker implements AlarmPicker {
     private static final String CHOICE_KEY = "CHOICE";
     private static final String TEMP_CHOICE_KEY = "TEMP_CHOICE";
 
-    public DaysPicker(final Context ctx, Set<Weekday> previousChoice, int viewResId) {
+    public DaysPicker(final Context ctx, int viewResId) {
         this.weekdayStrings = Weekday.getAllStrings(ctx);
-        if (previousChoice != null) {
-            boolean[] previousChoiceArray = arrayFromSet(previousChoice);
-            this.savedChoice = previousChoiceArray.clone();
-        } else {
-            this.savedChoice = new boolean[7];
-        }
         this.dialogTemporaryChoice = savedChoice.clone();
 
         this.viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);

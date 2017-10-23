@@ -74,8 +74,8 @@ public abstract class PickerActivity extends AppCompatActivity {
         timePicker = new TimePicker();
         timePicker.setArguments(getTimePickerBundle());
 
-        daysPicker = new DaysPicker(PickerActivity.this, null, getDaysView());
-        ringtonePicker = new RingtonePicker(PickerActivity.this, null, getRingtoneView());
+        daysPicker = new DaysPicker(PickerActivity.this, getDaysView());
+        ringtonePicker = new RingtonePicker(PickerActivity.this, getRingtoneView());
         vibrationPicker = new VibrationPicker(PickerActivity.this, getVibrationView());
         stationSteigPicker = new StationSteigPicker(PickerActivity.this, getStationSteigView());
 

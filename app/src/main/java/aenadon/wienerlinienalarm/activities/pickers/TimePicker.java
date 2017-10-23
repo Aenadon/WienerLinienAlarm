@@ -25,10 +25,14 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
     private static final String CHOSEN_TIME_KEY = "CHOSEN_TIME";
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         int viewResId = getArguments().getInt(Keys.Extra.VIEW_TO_USE);
         viewToUse = (TextView) getActivity().findViewById(viewResId);
+    }
 
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         int hour, minute;
         if (pickedTime != null) {
             hour = pickedTime.getHour();

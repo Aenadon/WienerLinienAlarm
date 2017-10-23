@@ -25,14 +25,12 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int dateDisplayViewId = getArguments().getInt(Keys.Extra.VIEW_TO_USE);
-        viewToUse = (TextView) getActivity().findViewById(dateDisplayViewId);
+        int viewResId = getArguments().getInt(Keys.Extra.VIEW_TO_USE);
+        viewToUse = (TextView) getActivity().findViewById(viewResId);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        LocalDate previousSavedDate = intArrayToLocalDate(getArguments().getIntArray(Keys.Extra.PREV_DATE));
-
         // DatePickerDialog uses java.util.Calendar whose months start at 0
         int year = 0;
         int month = -1;
@@ -41,10 +39,6 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
             year += pickedDate.getYear();
             month += pickedDate.getMonthValue();
             day += pickedDate.getDayOfMonth();
-        } else if (previousSavedDate != null) {
-            year += previousSavedDate.getYear();
-            month += previousSavedDate.getMonthValue();
-            day += previousSavedDate.getDayOfMonth();
         }
 
         DatePickerDialog dialog = new DatePickerDialog(getActivity(), DatePicker.this, year, month, day);
