@@ -51,7 +51,6 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
     @Override
     @DebugLog
     protected NetworkStatus doInBackground(Void... params) {
-        // TODO add loading screen activity for first launch + do in background from then on
         try {
             boolean datasetUnchanged = !checkForUpdateService.datasetChanged();
             if (datasetUnchanged) {
@@ -77,7 +76,7 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
             Log.e("Error while reading/parsing CSV", e);
             throw new RuntimeException(e);
         } finally {
-            if (realm != null) {
+            if (realm != null && !realm.isClosed()) {
                 realm.close();
             }
         }

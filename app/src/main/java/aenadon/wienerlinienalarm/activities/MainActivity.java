@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showBatteryWarningDialog() {
+        // TODO merge dialogs
         final SharedPreferences batteryReminderPrefs = MainActivity.this.getPreferences(MODE_PRIVATE);
         final String BATTERY_REMINDER = "BATTERY_REMINDER";
         final String BATTERY_REMINDER_DOZE = "BATTERY_REMINDER_DOZE";
