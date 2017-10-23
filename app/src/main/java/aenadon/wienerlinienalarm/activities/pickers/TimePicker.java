@@ -8,10 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
-
-import java.util.Calendar;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.utils.Keys;
@@ -31,19 +28,15 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         int viewResId = getArguments().getInt(Keys.Extra.VIEW_TO_USE);
         viewToUse = (TextView) getActivity().findViewById(viewResId);
-        int[] prevTime = getArguments().getIntArray(Keys.Extra.PREV_TIME);
 
         int hour, minute;
         if (pickedTime != null) {
             hour = pickedTime.getHour();
             minute = pickedTime.getMinute();
-        } else if (prevTime != null) {
-            hour = prevTime[0];
-            minute = prevTime[1];
         } else {
-            Calendar c = Calendar.getInstance();
-            hour = c.get(Calendar.HOUR_OF_DAY);
-            minute = c.get(Calendar.MINUTE);
+            LocalTime now = LocalTime.now();
+            hour = now.getHour();
+            minute = now.getMinute();
         }
 
         return new TimePickerDialog(getActivity(), this, hour, minute, true);

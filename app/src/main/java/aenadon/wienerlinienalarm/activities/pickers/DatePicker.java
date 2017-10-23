@@ -33,7 +33,7 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LocalDate previousSavedDate = intArrayToLocalDate(getArguments().getIntArray(Keys.Extra.PREV_DATE));
 
-        // Calendar months start at 0, therefore we need -1
+        // DatePickerDialog uses java.util.Calendar whose months start at 0
         int year = 0;
         int month = -1;
         int day = 0;
@@ -91,7 +91,7 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
 
     @Override
     public void onDateSet(android.widget.DatePicker view, int year, int month, int day) {
-        // java.util.Calendar months start at 0, therefore we need +1
+        // DatePickerDialog uses java.util.Calendar whose months start at 0
         pickedDate = intArrayToLocalDate(new int[]{year, month + 1, day});
         viewToUse.setText(StringDisplay.getOnetimeDate(pickedDate));
     }
