@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 
 import aenadon.wienerlinienalarm.R;
 
+@Deprecated
 public class AlertDialogs {
 
     // This class stores some often-used dialog boxes

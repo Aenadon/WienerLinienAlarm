@@ -44,22 +44,20 @@ public class AlarmScheduler {
     }
 
     public String scheduleAlarmAndReturnMessage() {
-        ZonedDateTime alarmTime = getNextAlarm();
-        PendingIntent alarmPendingIntent = getPendingIntent();
+        ZonedDateTime alarmMoment = getNextAlarmMoment();
+        PendingIntent alarmPendingIntent = buildPendingIntent();
 
-        if (alarmManager == null) {
-            Log.e("Alarm manager null, aborting alarm scheduling");
-            return "Alarm manager error"; // TODO return correct error string
-        } else if (alarmTime == null) {
-            Log.e("Alarm time null, aborting alarm scheduling");
-            return "Alarm time null"; // TODO return correct error string
-        } else if (alarmPendingIntent == null) {
-            Log.e("Alarm PendingIntent null, aborting alarm scheduling");
-            return "Pendingintent null"; // TODO return correct error string
+        if (alarmManager == null || alarmMoment == null || alarmPendingIntent == null) {
+            Log.e("Aborting alarm scheduling due to null value - " +
+                    "\n\talarmManager null: " + (alarmManager == null) +
+                    "\n\talarmTime null: " + (alarmMoment == null) +
+                    "\n\talarmPendingIntent null: " + (alarmPendingIntent == null)
+            );
+            return ctx.getString(R.string.scheduling_error);
         }
-        long alarmMillis = alarmTime.toEpochSecond();
+        long alarmMillis = alarmMoment.toEpochSecond();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // Window set for alarmTime - 30sec to alarmTime + 20sec.
+            // Window set for alarmMoment - 30sec to alarmMoment + 20sec.
             // It will probably never trigger exactly in that window
             // (due to Android's harsh wakeup restrictions) but very soon after
             alarmManager.setWindow(
@@ -78,7 +76,7 @@ public class AlarmScheduler {
 
         addAlarmToPrefs();
 
-        String nextAlarmMessage = StringDisplay.getAlarmMoment(alarmTime);
+        String nextAlarmMessage = StringDisplay.getAlarmMoment(alarmMoment);
         Log.d("Scheduled alarm with id: " + alarm.getId() + " at " + nextAlarmMessage);
 
         return String.format(
@@ -88,7 +86,7 @@ public class AlarmScheduler {
         );
     }
 
-    private ZonedDateTime getNextAlarm() {
+    private ZonedDateTime getNextAlarmMoment() {
         // as WienerLinien only operate in Austria, any other time zone does not make sense
         ZoneId europeanCentralTime = ZoneId.of("Europe/Vienna");
         if (alarm.getAlarmType() == AlarmType.ONETIME) {
@@ -119,7 +117,7 @@ public class AlarmScheduler {
                 }
             }
             if (offset == -1) {
-                Log.e("Offset was never set ==> calculation went wrong");
+                Log.e("Error at calculating day offset");
                 return null;
             }
 
@@ -130,7 +128,7 @@ public class AlarmScheduler {
     }
 
     public void cancelAlarmIfScheduled() {
-        PendingIntent pendingIntent = getPendingIntent();
+        PendingIntent pendingIntent = buildPendingIntent();
         pendingIntent.cancel();
         alarmManager.cancel(pendingIntent);
 
@@ -153,7 +151,7 @@ public class AlarmScheduler {
         Log.v("Alarm with id " + alarm.getId() + " removed from prefs");
     }
 
-    private PendingIntent getPendingIntent() {
+    private PendingIntent buildPendingIntent() {
         Intent i = new Intent(ctx, AlarmReceiver.class);
         i.putExtra(Keys.Extra.ALARM_ID, alarm.getId());
         i.setAction(Keys.Intent.TRIGGER_ALARM);

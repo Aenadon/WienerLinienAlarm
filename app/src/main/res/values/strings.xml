@@ -98,7 +98,8 @@
     <string name="vibration">Vibration</string>
     <string name="station">Station</string>
 
-    <!--Errors!--><!--Errors!--><!--Errors!--><!--Errors!--><!--Errors!-->
+    <string name="scheduling_error">Error while scheduling. Please try again.</string>
+
     <string name="no_connection_title">Connection error :(</string>
     <string name="no_connection_text">The connection to the Wiener Linien servers cannot be established. Please make sure your internet connection is working and try again.</string>
 

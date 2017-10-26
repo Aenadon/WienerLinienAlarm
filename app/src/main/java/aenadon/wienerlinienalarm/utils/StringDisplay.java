@@ -9,10 +9,10 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.temporal.TemporalAccessor;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.Set;
 
 import aenadon.wienerlinienalarm.R;
@@ -21,6 +21,13 @@ import aenadon.wienerlinienalarm.enums.Weekday;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
 
 public class StringDisplay {
+
+    private static SimpleDateFormat dateFormat =
+            (SimpleDateFormat)SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
+    private static SimpleDateFormat timeFormat =
+            (SimpleDateFormat)SimpleDateFormat.getTimeInstance(DateFormat.SHORT);
+    private static SimpleDateFormat dateTimeFormat =
+            (SimpleDateFormat)SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
 
     public static String getDate(Context ctx, Alarm alarm) {
         if (alarm.getAlarmType() == AlarmType.ONETIME) {
@@ -31,9 +38,20 @@ public class StringDisplay {
     }
 
     public static String getOnetimeDate(LocalDate date) {
-        SimpleDateFormat dateFormat = (SimpleDateFormat)SimpleDateFormat.getDateInstance();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat.toLocalizedPattern());
-        return formatter.format(date);
+        return formatTimeObject(date, dateFormat);
+    }
+
+    public static String getTime(LocalTime time) {
+        return formatTimeObject(time, timeFormat);
+    }
+
+    public static String getAlarmMoment(ZonedDateTime nextAlarm) {
+        return formatTimeObject(nextAlarm, dateTimeFormat);
+    }
+
+    private static String formatTimeObject(TemporalAccessor timeObject, SimpleDateFormat format) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format.toLocalizedPattern());
+        return formatter.format(timeObject);
     }
 
     public static String getRecurringDays(Context ctx, Set<Weekday> chosenDays) {
@@ -50,11 +68,6 @@ public class StringDisplay {
         }
     }
 
-    public static String getTime(LocalTime time) {
-        // TODO use DateTimeFormatter
-        return String.format(Locale.getDefault(), "%02d:%02d", time.getHour(), time.getMinute());
-    }
-
     public static String getRingtone(Context ctx, String chosenRingtone) {
         if (chosenRingtone == null) {
             return ctx.getString(R.string.alarm_none);
@@ -63,11 +76,5 @@ public class StringDisplay {
         Ringtone ringtone = RingtoneManager.getRingtone(ctx, uri);
         return ringtone.getTitle(ctx);
 
-    }
-
-    public static String getAlarmMoment(ZonedDateTime nextAlarm) {
-        SimpleDateFormat dateTimeFormat = (SimpleDateFormat)SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat.toLocalizedPattern());
-        return formatter.format(nextAlarm);
     }
 }
