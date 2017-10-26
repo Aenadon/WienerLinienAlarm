@@ -7,8 +7,10 @@ import android.net.Uri;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalTime;
+import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Set;
@@ -49,6 +51,7 @@ public class StringDisplay {
     }
 
     public static String getTime(LocalTime time) {
+        // TODO use DateTimeFormatter
         return String.format(Locale.getDefault(), "%02d:%02d", time.getHour(), time.getMinute());
     }
 
@@ -60,5 +63,11 @@ public class StringDisplay {
         Ringtone ringtone = RingtoneManager.getRingtone(ctx, uri);
         return ringtone.getTitle(ctx);
 
+    }
+
+    public static String getAlarmMoment(ZonedDateTime nextAlarm) {
+        SimpleDateFormat dateTimeFormat = (SimpleDateFormat)SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat.toLocalizedPattern());
+        return formatter.format(nextAlarm);
     }
 }

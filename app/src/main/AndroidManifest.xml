@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <!-- TODO create ACTION_VIEW activity -->
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
@@ -57,10 +58,10 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
 
         <receiver
-            android:name=".utils.AlarmUtils$AlarmReceiver"
+            android:name=".schedule.AlarmReceiver"
             android:enabled="true" />
         <receiver
-            android:name=".utils.AlarmUtils$BootReceiver"
+            android:name=".schedule.BootRescheduler"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
