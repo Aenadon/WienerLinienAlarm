@@ -30,6 +30,7 @@ import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
 import aenadon.wienerlinienalarm.models.wl_metadata.Station;
 import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
+import aenadon.wienerlinienalarm.schedule.AlarmScheduler;
 import aenadon.wienerlinienalarm.utils.Keys;
 import io.realm.Realm;
 import trikita.log.Log;
@@ -109,8 +110,7 @@ public abstract class PickerActivity extends AppCompatActivity {
 
     private void hideVibratorIfUnavailable() {
         Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-        boolean vibratorUnavailable = !vibrator.hasVibrator();
-        if (vibratorUnavailable) {
+        if (vibrator == null || !vibrator.hasVibrator()) {
             findViewById(R.id.choose_vibration_container).setVisibility(View.GONE);
         }
     }
@@ -234,20 +234,29 @@ public abstract class PickerActivity extends AppCompatActivity {
         realm.commitTransaction();
         Log.v("Saved alarm with id " + alarm.getId() + " into database");
 
-        // TODO Schedule alarm
+        AlarmScheduler scheduler = new AlarmScheduler(PickerActivity.this, alarm);
+        String snackbarMessage = scheduler.scheduleAlarmAndReturnMessage();
 
-        setResult(Activity.RESULT_OK, new Intent().putExtra(Keys.Extra.ALARM_TYPE, alarmType));
+        Intent intent = new Intent()
+                .putExtra(Keys.Extra.ALARM_TYPE, alarmType)
+                .putExtra(Keys.Extra.SNACKBAR_MESSAGE, snackbarMessage);
+        setResult(Activity.RESULT_OK, intent);
         finish();
     }
 
     private List<Integer> getErrors() {
         List<Integer> errors = new ArrayList<>();
+        // In Edit mode, the only two things you can mess up are
+        // choosing a past time or unselecting all recurring days
         if (isNotEditActivity()) {
-            // can't mess up while editing except choosing a time in the past
             for (AlarmPicker picker : visiblePickers) {
                 if (picker.hasError()) {
                     errors.add(picker.getErrorStringId());
                 }
+            }
+        } else {
+            if (daysPicker.hasError()) {
+                errors.add(daysPicker.getErrorStringId());
             }
         }
         if (alarmType == AlarmType.ONETIME) {

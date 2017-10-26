@@ -15,6 +15,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateStationData() {
+        // TODO pass applicationcontext instead
         new UpdateDatasetService(MainActivity.this).execute();
     }
 
@@ -177,6 +179,12 @@ public class MainActivity extends AppCompatActivity {
             if (data != null) {
                 AlarmType alarmType = (AlarmType)data.getSerializableExtra(Keys.Extra.ALARM_TYPE);
                 tabContainer.setCurrentItem(alarmType.ordinal());
+            }
+        }
+        if (data != null) {
+            String snackbarMessage = data.getStringExtra(Keys.Extra.SNACKBAR_MESSAGE);
+            if (snackbarMessage != null) {
+                Snackbar.make(findViewById(R.id.fab_main), snackbarMessage, Snackbar.LENGTH_LONG).show();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

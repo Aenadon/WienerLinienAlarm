@@ -40,12 +40,12 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
     private final CSVFormat baseCsvFormat;
     private CheckForUpdateService checkForUpdateService;
 
-    public UpdateDatasetService(Context c) {
-        ctx = c;
+    public UpdateDatasetService(Context ctx) {
+        this.ctx = ctx;
 
         csvApi = ApiProvider.getCSVApi();
         baseCsvFormat = CSVFormat.newFormat(';').withQuote('"').withTrim().withSkipHeaderRecord();
-        checkForUpdateService = new CheckForUpdateService(ctx);
+        checkForUpdateService = new CheckForUpdateService(this.ctx);
     }
 
     @Override
@@ -84,6 +84,7 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
 
     @Override
     protected void onPostExecute(NetworkStatus resultCode) {
+        // TODO replace dialogs with Snackbars
         switch (resultCode) {
             case ERROR_SERVER:
                 AlertDialogs.serverNotAvailable(ctx);

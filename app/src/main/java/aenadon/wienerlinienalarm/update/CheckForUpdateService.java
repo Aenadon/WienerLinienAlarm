@@ -19,6 +19,7 @@ class CheckForUpdateService {
     private ApiProvider.CSVApi csvApi;
 
     CheckForUpdateService(Context ctx) {
+        // TODO initialize prefs here and don't keep context reference
         this.ctx = ctx;
 
         csvApi = ApiProvider.getCSVApi();
