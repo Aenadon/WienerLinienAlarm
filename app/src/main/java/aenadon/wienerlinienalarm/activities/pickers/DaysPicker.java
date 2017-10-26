@@ -72,6 +72,7 @@ public class DaysPicker implements AlarmPicker {
 
     public void setPickedDays(Set<Weekday> pickedDays) {
         this.savedChoice = arrayFromSet(pickedDays);
+        this.dialogTemporaryChoice = savedChoice;
     }
 
     @Override

@@ -13,11 +13,8 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
 import org.threeten.bp.temporal.ChronoUnit;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -132,7 +129,7 @@ public class AlarmScheduler {
         }
     }
 
-    public void cancelAlarm() {
+    public void cancelAlarmIfScheduled() {
         PendingIntent pendingIntent = getPendingIntent();
         pendingIntent.cancel();
         alarmManager.cancel(pendingIntent);

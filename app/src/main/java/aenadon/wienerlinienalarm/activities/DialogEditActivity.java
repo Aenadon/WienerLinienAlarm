@@ -11,6 +11,7 @@ import android.widget.TextView;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
+import aenadon.wienerlinienalarm.schedule.AlarmScheduler;
 import aenadon.wienerlinienalarm.utils.Keys;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
 import trikita.log.Log;
@@ -86,15 +87,25 @@ public class DialogEditActivity extends PickerActivity {
                 .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        realm.beginTransaction();
-                        alarmToEdit.deleteFromRealm();
-                        realm.commitTransaction();
+                        cancelAlarm();
+                        deleteInDatabase();
                         setResult(Activity.RESULT_OK);
                         finish();
                     }
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();
+    }
+
+    private void cancelAlarm() {
+        AlarmScheduler scheduler = new AlarmScheduler(DialogEditActivity.this, alarmToEdit);
+        scheduler.cancelAlarmIfScheduled();
+    }
+
+    private void deleteInDatabase() {
+        realm.beginTransaction();
+        alarmToEdit.deleteFromRealm();
+        realm.commitTransaction();
     }
 
     @Override

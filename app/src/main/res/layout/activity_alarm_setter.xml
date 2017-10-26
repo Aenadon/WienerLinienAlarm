@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="aenadon.wienerlinienalarm.activities.AlarmSetterActivity">
+    tools:context=".activities.PickerActivity">
 
     <ScrollView
         android:layout_height="match_parent"
@@ -233,7 +233,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_done"
-        android:onClick="saveAlarm" />
+        android:onClick="saveAndScheduleAlarm" />
 
 
 </android.support.design.widget.CoordinatorLayout>

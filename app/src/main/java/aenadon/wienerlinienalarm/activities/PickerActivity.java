@@ -199,7 +199,7 @@ public abstract class PickerActivity extends AppCompatActivity {
         stationSteigPicker.show();
     }
 
-    public void saveAlarm(View v) {
+    public void saveAndScheduleAlarm(View v) {
         List<Integer> errors = getErrors();
         if (!errors.isEmpty()) {
             showErrorDialog(errors);
@@ -235,6 +235,7 @@ public abstract class PickerActivity extends AppCompatActivity {
         Log.v("Saved alarm with id " + alarm.getId() + " into database");
 
         AlarmScheduler scheduler = new AlarmScheduler(PickerActivity.this, alarm);
+        scheduler.cancelAlarmIfScheduled();
         String snackbarMessage = scheduler.scheduleAlarmAndReturnMessage();
 
         Intent intent = new Intent()

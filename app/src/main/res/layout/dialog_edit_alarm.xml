@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activities.DialogEditActivity"
+    tools:context=".activities.PickerActivity"
     tools:ignore="ContentDescription">
 
     <RelativeLayout
@@ -226,6 +225,7 @@
             style="?android:buttonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <!--suppress AndroidMissingOnClickHandler -->
             <Button
                 android:layout_weight="1"
                 android:id="@+id/dialog_button_cancel"
@@ -233,7 +233,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel"
-                android:onClick="dismissDialog" />
+                android:onClick="dismissDialog"
+                tools:ignore="OnClick" />
+            <!--suppress AndroidMissingOnClickHandler -->
             <Button
                 android:layout_weight="1"
                 android:id="@+id/dialog_button_delete"
@@ -241,7 +243,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/delete"
-                android:onClick="deleteAlarm" />
+                android:onClick="deleteAlarm"
+                tools:ignore="OnClick" />
             <Button
                 android:layout_weight="1"
                 android:id="@+id/dialog_button_ok"
@@ -249,11 +252,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/ok"
-                android:onClick="saveAlarm" />
+                android:onClick="saveAndScheduleAlarm" />
         </LinearLayout>
 
     </RelativeLayout>
-
-
 
 </ScrollView>
