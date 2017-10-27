@@ -14,7 +14,8 @@ public interface Keys {
     }
 
     interface Prefs {
-        String KEY_SCHEDULER_PREFS = "KEY_SCHEDULER_PREFS";
+        String KEY_SCHEDULED_ALARMS = "KEY_SCHEDULED_ALARMS";
+        String KEY_AUTOINCREMENT_ID = "KEY_AUTOINCREMENT_ID";
 
         String NOTIFICATION_AUTOINCREMENT_ID = "NOTIFICATION_AUTOINCREMENT_ID";
     }

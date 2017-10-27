@@ -32,14 +32,14 @@ import trikita.log.Log;
 public class AlarmScheduler {
 
     private Context ctx;
-    private Alarm alarm;
+    protected Alarm alarm;
     private SharedPreferences prefs;
     private AlarmManager alarmManager;
 
     public AlarmScheduler(Context ctx, Alarm alarm) {
         this.ctx = ctx;
         this.alarm = alarm;
-        this.prefs = ctx.getSharedPreferences(Keys.Prefs.KEY_SCHEDULER_PREFS, Context.MODE_PRIVATE);
+        this.prefs = ctx.getSharedPreferences(Keys.Prefs.KEY_SCHEDULED_ALARMS, Context.MODE_PRIVATE);
         this.alarmManager = (AlarmManager)ctx.getSystemService(Context.ALARM_SERVICE);
     }
 
@@ -159,9 +159,10 @@ public class AlarmScheduler {
     }
 
     private int getNotificationId() {
+        SharedPreferences notificationIdPrefs = ctx.getSharedPreferences(Keys.Prefs.KEY_AUTOINCREMENT_ID, Context.MODE_PRIVATE);
         // should never need more than 100 notifications at once
-        int notificationId = (prefs.getInt(Keys.Prefs.NOTIFICATION_AUTOINCREMENT_ID, -1) + 1) % 100;
-        prefs.edit().putInt(Keys.Prefs.NOTIFICATION_AUTOINCREMENT_ID, notificationId).apply();
+        int notificationId = (notificationIdPrefs.getInt(Keys.Prefs.NOTIFICATION_AUTOINCREMENT_ID, -1) + 1) % 100;
+        notificationIdPrefs.edit().putInt(Keys.Prefs.NOTIFICATION_AUTOINCREMENT_ID, notificationId).apply();
         return notificationId;
     }
 }
