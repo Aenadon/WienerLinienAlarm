@@ -4,7 +4,7 @@ import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
 
 import aenadon.wienerlinienalarm.models.routing_xml.RoutingXMLRequest;
-import aenadon.wienerlinienalarm.realtime.RealtimeData;
+import aenadon.wienerlinienalarm.models.realtime.RealtimeData;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;

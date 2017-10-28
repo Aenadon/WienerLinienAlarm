@@ -1,4 +1,4 @@
-package aenadon.wienerlinienalarm.realtime;
+package aenadon.wienerlinienalarm.models.realtime;
 
 public class Line {
 
