@@ -1,6 +1,6 @@
-package aenadon.wienerlinienalarm.models.realtime;
+package aenadon.wienerlinienalarm.models.realtime.json_model;
 
-class Vehicle {
+public class JsonLine {
 
     private String name;
     private String towards;
@@ -8,6 +8,8 @@ class Vehicle {
     private boolean barrierFree;
     private boolean realtimeSupported;
     private boolean trafficJam;
+
+    private Departures departures;
 
     public String getName() {
         return name;
@@ -47,6 +49,14 @@ class Vehicle {
 
     public void setRealtimeSupported(boolean realtimeSupported) {
         this.realtimeSupported = realtimeSupported;
+    }
+
+    public Departures getDepartures() {
+        return departures;
+    }
+
+    public void setDepartures(Departures departures) {
+        this.departures = departures;
     }
 
     public boolean isTrafficJam() {

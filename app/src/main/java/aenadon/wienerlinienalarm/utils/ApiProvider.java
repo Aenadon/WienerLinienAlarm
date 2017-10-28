@@ -3,8 +3,8 @@ package aenadon.wienerlinienalarm.utils;
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
 
-import aenadon.wienerlinienalarm.models.routing_xml.RoutingXMLRequest;
-import aenadon.wienerlinienalarm.models.realtime.RealtimeData;
+import aenadon.wienerlinienalarm.models.routing_xml.xml_model.RoutingXMLRequest;
+import aenadon.wienerlinienalarm.models.realtime.json_model.RealtimeData;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;

@@ -1,4 +1,4 @@
-package aenadon.wienerlinienalarm.models.realtime;
+package aenadon.wienerlinienalarm.models.realtime.json_model;
 
 class DepartureTime {
 

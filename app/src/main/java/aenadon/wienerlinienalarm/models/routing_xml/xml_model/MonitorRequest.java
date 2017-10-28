@@ -1,13 +1,13 @@
-package aenadon.wienerlinienalarm.models.routing_xml;
+package aenadon.wienerlinienalarm.models.routing_xml.xml_model;
 
 import org.simpleframework.xml.Element;
 
-class MonitorRequest {
+public class MonitorRequest {
 
     @Element(name = "itdServingLines", required = false)
     private ServingLines servingLines;
 
-    ServingLines getServingLines() {
+    public ServingLines getServingLines() {
         return servingLines;
     }
 

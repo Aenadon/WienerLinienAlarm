@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
@@ -12,7 +13,7 @@ import aenadon.wienerlinienalarm.adapter.SteigWithDestination;
 import aenadon.wienerlinienalarm.enums.Direction;
 import aenadon.wienerlinienalarm.enums.TransportType;
 import aenadon.wienerlinienalarm.models.routing_xml.XmlSteig;
-import aenadon.wienerlinienalarm.models.routing_xml.RoutingXMLRequest;
+import aenadon.wienerlinienalarm.models.routing_xml.xml_model.RoutingXMLRequest;
 import aenadon.wienerlinienalarm.models.wl_metadata.Line;
 import aenadon.wienerlinienalarm.models.wl_metadata.Station;
 import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
@@ -86,7 +87,7 @@ public class SteigPickerActivity extends AppCompatActivity {
 
         ApiProvider.getRoutingApi().getXMLStationInfo(selectedStation.getIdForXMLApi()).enqueue(new Callback<RoutingXMLRequest>() {
             @Override
-            public void onResponse(Call<RoutingXMLRequest> call, Response<RoutingXMLRequest> response) {
+            public void onResponse(@NonNull Call<RoutingXMLRequest> call, @NonNull Response<RoutingXMLRequest> response) {
                 if (!response.isSuccessful()) {
                     replaceLoadingSpinnerWithError(R.string.server_broken_text);
                     Log.e("XML Response error (Error code " + response.code() + ")",
@@ -94,7 +95,7 @@ public class SteigPickerActivity extends AppCompatActivity {
                     return;
                 }
 
-                List<XmlSteig> xmlSteigs = response.body().getStationLines();
+                List<XmlSteig> xmlSteigs = XmlSteig.getStationLines(response.body());
 
                 if (xmlSteigs.isEmpty()) {
                     replaceLoadingSpinnerWithError(R.string.no_steigs_found);
@@ -160,7 +161,7 @@ public class SteigPickerActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<RoutingXMLRequest> call, Throwable t) {
+            public void onFailure(@NonNull Call<RoutingXMLRequest> call, @NonNull Throwable t) {
                 replaceLoadingSpinnerWithError(R.string.no_connection_text);
                 Log.e("Client error while retrieving XML Response", t);
             }

@@ -1,8 +1,8 @@
-package aenadon.wienerlinienalarm.models.routing_xml;
+package aenadon.wienerlinienalarm.models.routing_xml.xml_model;
 
 import org.simpleframework.xml.Attribute;
 
-class DirectionParam {
+public class DirectionParam {
 
     @Attribute(name = "direction")
     private String direction;

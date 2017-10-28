@@ -1,9 +1,9 @@
-package aenadon.wienerlinienalarm.models.routing_xml;
+package aenadon.wienerlinienalarm.models.routing_xml.xml_model;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
-class ServingLine {
+public class ServingLine {
 
     @Attribute(name = "number")
     private String line;
@@ -22,7 +22,7 @@ class ServingLine {
         this.line = line;
     }
 
-    DirectionParam getDirectionParam() {
+    public DirectionParam getDirectionParam() {
         return directionParam;
     }
 
@@ -30,7 +30,7 @@ class ServingLine {
         this.directionParam = directionParam;
     }
 
-    String getDestination() {
+    public String getDestination() {
         return destination;
     }
 

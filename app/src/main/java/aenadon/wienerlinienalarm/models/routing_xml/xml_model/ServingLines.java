@@ -1,15 +1,15 @@
-package aenadon.wienerlinienalarm.models.routing_xml;
+package aenadon.wienerlinienalarm.models.routing_xml.xml_model;
 
 import org.simpleframework.xml.ElementList;
 
 import java.util.List;
 
-class ServingLines {
+public class ServingLines {
 
     @ElementList(entry = "itdServingLine", inline = true, required = false)
     private List<ServingLine> lines;
 
-    List<ServingLine> getLines() {
+    public List<ServingLine> getLines() {
         return lines;
     }
 
