@@ -2,7 +2,6 @@ package aenadon.wienerlinienalarm.activities.pickers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
@@ -28,15 +27,12 @@ public class VibrationPicker implements AlarmPicker {
         final Vibrator vibrator = (Vibrator)ctx.getSystemService(Context.VIBRATOR_SERVICE);
         this.vibrationPickerDialog = new AlertDialog.Builder(ctx)
                 .setTitle(R.string.alarm_choose_vibration_length)
-                .setItems(VibrationMode.getMessageCodes(ctx), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        pickedMode = vibrationModes[which];
-                        if (vibrator.hasVibrator()) {
-                            vibrator.vibrate(pickedMode.getDuration());
-                        }
-                        viewToUse.setText(pickedMode.getMessageCode());
+                .setItems(VibrationMode.getMessageCodes(ctx), (dialog, which) -> {
+                    pickedMode = vibrationModes[which];
+                    if (vibrator.hasVibrator()) {
+                        vibrator.vibrate(pickedMode.getDuration());
                     }
+                    viewToUse.setText(pickedMode.getMessageCode());
                 }).create();
     }
 

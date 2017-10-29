@@ -15,3 +15,9 @@
     @com.squareup.moshi.* <methods>;
 }
 -keep @com.squareup.moshi.JsonQualifier interface *
+
+-dontwarn java.lang.invoke.*
+-dontwarn **$$Lambda$*
+
+-keep class java8.** { *; }
+-dontwarn java8.**

@@ -2,18 +2,18 @@ package aenadon.wienerlinienalarm.activities.pickers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.widget.TextView;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.enums.Weekday;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 
 public class DaysPicker implements AlarmPicker {
 
@@ -36,19 +36,11 @@ public class DaysPicker implements AlarmPicker {
 
         weekdayDialogBuilder = new AlertDialog.Builder(ctx)
                 .setTitle(R.string.alarm_recurring_dialog_expl)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        savedChoice = dialogTemporaryChoice.clone();
-                        viewToUse.setText(StringDisplay.getRecurringDays(ctx, setFromArray(savedChoice)));
-                    }
+                .setPositiveButton(R.string.ok, (dialog, which) -> {
+                    savedChoice = dialogTemporaryChoice.clone();
+                    viewToUse.setText(StringDisplay.getRecurringDays(ctx, setFromArray(savedChoice)));
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialogTemporaryChoice = savedChoice.clone();
-                    }
-                });
+                .setNegativeButton(R.string.cancel, (dialog, which) -> dialogTemporaryChoice = savedChoice.clone());
     }
 
     public void show() {
@@ -58,12 +50,7 @@ public class DaysPicker implements AlarmPicker {
     }
 
     private void updateCheckedItems() {
-        weekdayDialogBuilder.setMultiChoiceItems(weekdayStrings, dialogTemporaryChoice, new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                dialogTemporaryChoice[which] = isChecked;
-            }
-        });
+        weekdayDialogBuilder.setMultiChoiceItems(weekdayStrings, dialogTemporaryChoice, (dialog, which, isChecked) -> dialogTemporaryChoice[which] = isChecked);
     }
 
     public Set<Weekday> getPickedDays() {
@@ -119,12 +106,9 @@ public class DaysPicker implements AlarmPicker {
 
     private Set<Weekday> setFromArray(boolean[] weekdayArray) {
         List<Weekday> allWeekdaysList = Weekday.getAllWeekdaysList();
-        Set<Weekday> weekdaySet = new HashSet<>();
-        for (int i = 0; i < allWeekdaysList.size(); i++) {
-            if (weekdayArray[i]) {
-                weekdaySet.add(allWeekdaysList.get(i));
-            }
-        }
-        return weekdaySet;
+
+        return StreamSupport.stream(allWeekdaysList)
+                .filter(weekday -> weekdayArray[allWeekdaysList.indexOf(weekday)])
+                .collect(Collectors.toSet());
     }
 }

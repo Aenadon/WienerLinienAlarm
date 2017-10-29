@@ -12,6 +12,7 @@ import java.util.Set;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
 import aenadon.wienerlinienalarm.utils.Keys;
 import io.realm.Realm;
+import java8.util.stream.StreamSupport;
 import trikita.log.Log;
 
 public class BootRescheduler extends BroadcastReceiver {
@@ -50,9 +51,7 @@ public class BootRescheduler extends BroadcastReceiver {
 
     private void deleteInvalidAlarms(List<String> invalidAlarms, SharedPreferences preferences) {
         SharedPreferences.Editor prefEditor = preferences.edit();
-        for (String invalidAlarm : invalidAlarms) {
-            prefEditor.remove(invalidAlarm);
-        }
+        StreamSupport.stream(invalidAlarms).forEach(prefEditor::remove);
         prefEditor.apply();
     }
 }

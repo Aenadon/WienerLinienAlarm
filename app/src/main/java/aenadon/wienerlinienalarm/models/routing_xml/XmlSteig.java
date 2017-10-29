@@ -7,6 +7,7 @@ import aenadon.wienerlinienalarm.models.routing_xml.xml_model.MonitorRequest;
 import aenadon.wienerlinienalarm.models.routing_xml.xml_model.RoutingXMLRequest;
 import aenadon.wienerlinienalarm.models.routing_xml.xml_model.ServingLine;
 import aenadon.wienerlinienalarm.models.routing_xml.xml_model.ServingLines;
+import java8.util.stream.StreamSupport;
 
 public class XmlSteig {
 
@@ -50,15 +51,17 @@ public class XmlSteig {
         if (xmlServingLines != null) {
             List<ServingLine> servingLineList = monitorRequest.getServingLines().getLines();
             if (servingLineList != null) {
-                for (ServingLine line : servingLineList) {
-                    XmlSteig flattenedSteig = new XmlSteig();
-                    flattenedSteig.setLine(line.getLine());
-                    flattenedSteig.setDirection(line.getDirectionParam().getDirection());
-                    flattenedSteig.setDestination(line.getDestination().replace("Wien ", ""));
-                    flattenedSteigList.add(flattenedSteig);
-                }
+                StreamSupport.stream(servingLineList).map(XmlSteig::mapLineToSteig).forEach(flattenedSteigList::add);
             }
         }
         return flattenedSteigList;
+    }
+
+    private static XmlSteig mapLineToSteig(ServingLine servingLine) {
+        XmlSteig flattenedSteig = new XmlSteig();
+        flattenedSteig.setLine(servingLine.getLine());
+        flattenedSteig.setDirection(servingLine.getDirectionParam().getDirection());
+        flattenedSteig.setDestination(servingLine.getDestination().replace("Wien ", ""));
+        return flattenedSteig;
     }
 }

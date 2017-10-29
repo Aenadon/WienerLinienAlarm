@@ -1,11 +1,9 @@
 package aenadon.wienerlinienalarm.activities;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -43,6 +41,7 @@ import aenadon.wienerlinienalarm.adapter.AlarmListAdapter;
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.update.UpdateDatasetService;
 import aenadon.wienerlinienalarm.utils.Keys;
+import java8.util.stream.StreamSupport;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showBatteryWarningDialog() {
-        // TODO merge dialogs
+        // TODO merge, refactor dialogs
         final SharedPreferences batteryReminderPrefs = MainActivity.this.getPreferences(MODE_PRIVATE);
         final String BATTERY_REMINDER = "BATTERY_REMINDER";
         final String BATTERY_REMINDER_DOZE = "BATTERY_REMINDER_DOZE";
@@ -87,25 +86,17 @@ public class MainActivity extends AppCompatActivity {
 
         PowerManager pm = (PowerManager)getSystemService(POWER_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !pm.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID) && !batteryReminderDozeDismissed) {
-
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle(getString(R.string.doze_message_title))
                     .setMessage(getString(R.string.doze_message_text))
                     .setView(batteryReminderDialog)
-                    .setPositiveButton(R.string.allow, new DialogInterface.OnClickListener() {
-                        @TargetApi(Build.VERSION_CODES.M)
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent batterySettings = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-                            startActivity(batterySettings);
-                        }
+                    .setPositiveButton(R.string.allow, (dialog, which) -> {
+                        Intent batterySettings = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                        startActivity(batterySettings);
                     })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (batteryReminderCheckbox.isChecked()) {
-                                batteryReminderPrefs.edit().putBoolean(BATTERY_REMINDER_DOZE, true).apply();
-                            }
+                    .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                        if (batteryReminderCheckbox.isChecked()) {
+                            batteryReminderPrefs.edit().putBoolean(BATTERY_REMINDER_DOZE, true).apply();
                         }
                     })
                     .show();
@@ -115,12 +106,9 @@ public class MainActivity extends AppCompatActivity {
                     .setTitle(getString(R.string.battery_message_title))
                     .setMessage(getString(R.string.battery_message_text))
                     .setView(batteryReminderDialog2)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (batteryReminderCheckbox2.isChecked()) {
-                                batteryReminderPrefs.edit().putBoolean(BATTERY_REMINDER, true).apply();
-                            }
+                    .setPositiveButton(R.string.ok, (dialog, which) -> {
+                        if (batteryReminderCheckbox2.isChecked()) {
+                            batteryReminderPrefs.edit().putBoolean(BATTERY_REMINDER, true).apply();
                         }
                     })
                     .show();
@@ -139,14 +127,11 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(tabContainer);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_main);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, AlarmSetterActivity.class);
-                AlarmType currentlyOpenTab = alarmTypes.get(tabContainer.getCurrentItem());
-                i.putExtra(Keys.Extra.ALARM_TYPE, currentlyOpenTab);
-                startActivityForResult(i, 0);
-            }
+        fab.setOnClickListener(view -> {
+            Intent i = new Intent(MainActivity.this, AlarmSetterActivity.class);
+            AlarmType currentlyOpenTab = alarmTypes.get(tabContainer.getCurrentItem());
+            i.putExtra(Keys.Extra.ALARM_TYPE, currentlyOpenTab);
+            startActivityForResult(i, 0);
         });
     }
 
@@ -211,9 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void notifyDataSetChanged() {
-            for (AlarmMenuFragment a : fragments) {
-                a.updateUnderlyingList();
-            }
+            StreamSupport.stream(fragments).forEach(AlarmMenuFragment::updateUnderlyingList);
             super.notifyDataSetChanged();
         }
 
@@ -266,14 +249,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private AdapterView.OnItemClickListener launchDialogEditor() {
-            return new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent i = new Intent(getActivity(), DialogEditActivity.class);
-                    i.putExtra(Keys.Extra.ALARM_TYPE, alarmType);
-                    i.putExtra(Keys.Extra.ALARM_ID, adapter.getAlarmId(position));
-                    startActivityForResult(i, Keys.RequestCode.EDIT_ALARM);
-                }
+            return (parent, view, position, id) -> {
+                Intent i = new Intent(getActivity(), DialogEditActivity.class);
+                i.putExtra(Keys.Extra.ALARM_TYPE, alarmType);
+                i.putExtra(Keys.Extra.ALARM_ID, adapter.getAlarmId(position));
+                startActivityForResult(i, Keys.RequestCode.EDIT_ALARM);
             };
         }
 

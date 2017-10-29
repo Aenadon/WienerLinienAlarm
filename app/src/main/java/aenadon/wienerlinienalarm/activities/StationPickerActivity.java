@@ -23,6 +23,7 @@ import aenadon.wienerlinienalarm.models.wl_metadata.Station;
 import aenadon.wienerlinienalarm.utils.Keys;
 import hugo.weaving.DebugLog;
 import io.realm.Realm;
+import java8.util.stream.StreamSupport;
 
 public class StationPickerActivity extends AppCompatActivity {
 
@@ -79,12 +80,10 @@ public class StationPickerActivity extends AppCompatActivity {
             stationsToDisplay.clear();
 
             String inputText = s.toString();
-            if (inputText.length() > 0) {
-                for (Station station : stationsCompleteList) {
-                    if (stationNameContains(station, inputText)){
-                        stationsToDisplay.add(station);
-                    }
-                }
+            if (!inputText.isEmpty()) {
+                StreamSupport.stream(stationsCompleteList)
+                        .filter(station -> stationNameContains(station, inputText))
+                        .forEach(stationsToDisplay::add);
             } else {
                 stationsToDisplay.addAll(stationsCompleteList);
             }

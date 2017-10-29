@@ -33,6 +33,8 @@ import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
 import aenadon.wienerlinienalarm.schedule.AlarmScheduler;
 import aenadon.wienerlinienalarm.utils.Keys;
 import io.realm.Realm;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 import trikita.log.Log;
 
 
@@ -250,11 +252,9 @@ public abstract class PickerActivity extends AppCompatActivity {
         // In Edit mode, the only two things you can mess up are
         // choosing a past time or unselecting all recurring days
         if (isNotEditActivity()) {
-            for (AlarmPicker picker : visiblePickers) {
-                if (picker.hasError()) {
-                    errors.add(picker.getErrorStringId());
-                }
-            }
+            StreamSupport.stream(visiblePickers)
+                    .filter(AlarmPicker::hasError)
+                    .forEach(picker -> errors.add(picker.getErrorStringId()));
         } else {
             if (daysPicker.hasError()) {
                 errors.add(daysPicker.getErrorStringId());
@@ -274,10 +274,8 @@ public abstract class PickerActivity extends AppCompatActivity {
     }
 
     private void showErrorDialog(List<Integer> errors) {
-        List<String> errorStrings = new ArrayList<>();
-        for (Integer errorCode : errors) {
-            errorStrings.add(getString(errorCode));
-        }
+        List<String> errorStrings = StreamSupport.stream(errors).map(this::getString).collect(Collectors.toList());
+
         String errorBody = TextUtils.join("\n", errorStrings);
         new AlertDialog.Builder(PickerActivity.this)
                 .setTitle(R.string.missing_info_title)

@@ -139,6 +139,7 @@ public class SteigPickerActivity extends AppCompatActivity {
                     for (XmlSteig xmlSteig : xmlSteigs) {
                         if (steigEqualsXmlSteig(steig, xmlSteig)) {
                             destinationName = xmlSteig.toString();
+                            break;
                         }
                     }
                 }
@@ -169,18 +170,15 @@ public class SteigPickerActivity extends AppCompatActivity {
     }
 
     private AdapterView.OnItemClickListener listListener() {
-        return new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView parent, View view, int position, long id) {
-                SteigWithDestination steigWithDestination = steigsOnDisplay.get(position);
+        return (parent, view, position, id) -> {
+            SteigWithDestination steigWithDestination = steigsOnDisplay.get(position);
 
-                Intent extraData = new Intent()
-                        .putExtra(Keys.Extra.LINE_NAME_AND_DIRECTION, steigWithDestination.getLineNameAndDirection())
-                        .putExtra(Keys.Extra.SELECTED_STATION_NAME, selectedStation.getName())
-                        .putExtra(Keys.Extra.SELECTED_STEIG_ID, steigWithDestination.getSteigId());
-                setResult(Activity.RESULT_OK, extraData);
-                finish();
-            }
+            Intent extraData = new Intent()
+                    .putExtra(Keys.Extra.LINE_NAME_AND_DIRECTION, steigWithDestination.getLineNameAndDirection())
+                    .putExtra(Keys.Extra.SELECTED_STATION_NAME, selectedStation.getName())
+                    .putExtra(Keys.Extra.SELECTED_STEIG_ID, steigWithDestination.getSteigId());
+            setResult(Activity.RESULT_OK, extraData);
+            finish();
         };
     }
 

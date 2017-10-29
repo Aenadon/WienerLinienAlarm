@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 apply plugin: 'com.jakewharton.hugo'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 25
@@ -23,10 +24,17 @@ android {
             it.buildConfigField('String', 'API_KEY', WienerLinienAPIDevelopmentKey)
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+retrolambda {
+    javaVersion JavaVersion.VERSION_1_7
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.android.support:design:25.4.0'
 
@@ -42,7 +50,10 @@ dependencies {
     compile 'co.trikita:log:1.1.5'
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 
+    compile 'net.sourceforge.streamsupport:streamsupport:1.5.6'
 }
 repositories {
     mavenCentral()
+    jcenter()
+    maven { url "https://jitpack.io" }
 }
