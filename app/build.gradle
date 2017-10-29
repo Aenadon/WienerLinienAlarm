@@ -30,22 +30,22 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
 
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-scalars:2.3.0'
-    compile 'com.squareup.retrofit2:converter-moshi:2.3.0'
-    compile('com.squareup.retrofit2:converter-simplexml:2.3.0') {
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
+    implementation('com.squareup.retrofit2:converter-simplexml:2.3.0') {
         exclude group: 'stax', module: 'stax-api'
         exclude group: 'xpp3', module: 'xpp3'
     }
 
-    compile 'org.apache.commons:commons-csv:1.5'
-    compile 'co.trikita:log:1.1.5'
-    compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+    implementation 'org.apache.commons:commons-csv:1.5'
+    implementation 'co.trikita:log:1.1.5'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 
-    compile 'net.sourceforge.streamsupport:streamsupport:1.5.6'
+    implementation 'net.sourceforge.streamsupport:streamsupport:1.5.6'
 }
 repositories {
     mavenCentral()
