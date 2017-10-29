@@ -52,7 +52,7 @@
 
     <string name="alarm_recurring_dialog_expl">Alarm should occur every:</string>
 
-    <string name="alarm_next_ring" formatted="false">Next alarm set for %s</string>
+    <string name="alarm_next_ring">Next alarm set for %1$s</string>
 
     <!--All Weekdays-->
     <string name="monday">Monday</string>
@@ -73,7 +73,6 @@
     </plurals>
 
     <!--Station/Steig list-->
-    <string name="updating_stations">Need to update station list, please be patient&#8230;</string>
     <string name="please_wait">Please wait&#8230;</string>
     <string name="search_for_station">Search for station</string>
     <string name="choose_station">Choose station</string>

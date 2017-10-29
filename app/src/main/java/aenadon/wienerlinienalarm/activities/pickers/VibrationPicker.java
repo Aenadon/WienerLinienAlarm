@@ -29,7 +29,7 @@ public class VibrationPicker implements AlarmPicker {
                 .setTitle(R.string.alarm_choose_vibration_length)
                 .setItems(VibrationMode.getMessageCodes(ctx), (dialog, which) -> {
                     pickedMode = vibrationModes[which];
-                    if (vibrator.hasVibrator()) {
+                    if (vibrator != null && vibrator.hasVibrator()) {
                         vibrator.vibrate(pickedMode.getDuration());
                     }
                     viewToUse.setText(pickedMode.getMessageCode());

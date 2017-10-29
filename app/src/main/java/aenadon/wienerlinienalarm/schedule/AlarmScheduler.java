@@ -18,7 +18,6 @@ import org.threeten.bp.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import aenadon.wienerlinienalarm.R;
@@ -79,11 +78,7 @@ public class AlarmScheduler {
         String nextAlarmMessage = StringDisplay.getAlarmMoment(alarmMoment);
         Log.d("Scheduled alarm with id: " + alarm.getId() + " at " + nextAlarmMessage);
 
-        return String.format(
-                Locale.getDefault(),
-                ctx.getString(R.string.alarm_next_ring),
-                nextAlarmMessage
-        );
+        return ctx.getString(R.string.alarm_next_ring, nextAlarmMessage);
     }
 
     private ZonedDateTime getNextAlarmMoment() {

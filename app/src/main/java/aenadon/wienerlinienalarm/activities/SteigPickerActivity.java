@@ -57,8 +57,7 @@ public class SteigPickerActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        Bundle bundle = getIntent().getExtras();
-        String stationId = bundle.getString(Keys.Extra.SELECTED_STATION_ID);
+        String stationId = getIntent().getStringExtra(Keys.Extra.SELECTED_STATION_ID);
 
         selectedStation = realm.where(Station.class).equalTo("id", stationId).findFirst();
 

@@ -1,7 +1,5 @@
 package aenadon.wienerlinienalarm.models.wl_metadata;
 
-import android.support.annotation.NonNull;
-
 import java.util.List;
 
 import io.realm.RealmList;

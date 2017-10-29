@@ -102,7 +102,9 @@ public class StationPickerActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(parent.getWindowToken(), 0);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(parent.getWindowToken(), 0);
+            }
 
             Intent selectSteigIntent = new Intent(StationPickerActivity.this, SteigPickerActivity.class);
             selectSteigIntent.putExtra(Keys.Extra.SELECTED_STATION_ID, stationsToDisplay.get(position).getId());

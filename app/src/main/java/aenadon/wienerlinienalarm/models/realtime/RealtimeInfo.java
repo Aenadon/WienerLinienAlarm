@@ -2,10 +2,8 @@ package aenadon.wienerlinienalarm.models.realtime;
 
 import org.threeten.bp.ZonedDateTime;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import aenadon.wienerlinienalarm.models.realtime.json_model.Monitor;
 import aenadon.wienerlinienalarm.models.realtime.json_model.RealtimeData;
 import aenadon.wienerlinienalarm.models.wl_metadata.Line;
 
