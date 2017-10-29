@@ -24,7 +24,7 @@ public class BootRescheduler extends BroadcastReceiver {
             return;
         }
 
-        SharedPreferences preferences = context.getSharedPreferences(Keys.Prefs.KEY_SCHEDULED_ALARMS, Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences(Keys.Prefs.FILE_SCHEDULED_ALARMS, Context.MODE_PRIVATE);
         Set<String> alarmIds = preferences.getAll().keySet();
 
         Realm realm = Realm.getDefaultInstance();

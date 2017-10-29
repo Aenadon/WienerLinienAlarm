@@ -1,8 +1,12 @@
 package aenadon.wienerlinienalarm.update;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 
+import aenadon.wienerlinienalarm.R;
+import aenadon.wienerlinienalarm.utils.DatasetUpdateStatus;
+import aenadon.wienerlinienalarm.utils.Keys;
 import hugo.weaving.DebugLog;
 import trikita.log.Log;
 
@@ -12,6 +16,7 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import aenadon.wienerlinienalarm.enums.Direction;
@@ -25,7 +30,6 @@ import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
 import aenadon.wienerlinienalarm.update.csv_header.HaltestellenHeader;
 import aenadon.wienerlinienalarm.update.csv_header.LinienHeader;
 import aenadon.wienerlinienalarm.update.csv_header.SteigHeader;
-import aenadon.wienerlinienalarm.utils.AlertDialogs;
 import aenadon.wienerlinienalarm.utils.ApiProvider;
 import io.realm.Realm;
 import retrofit2.Call;
@@ -33,19 +37,19 @@ import retrofit2.Response;
 
 public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
 
-    private final Context ctx;
     private Realm realm;
+    private WeakReference<Context> weakCtx;
 
     private final ApiProvider.CSVApi csvApi;
     private final CSVFormat baseCsvFormat;
     private CheckForUpdateService checkForUpdateService;
 
     public UpdateDatasetService(Context ctx) {
-        this.ctx = ctx;
-
         csvApi = ApiProvider.getCSVApi();
         baseCsvFormat = CSVFormat.newFormat(';').withQuote('"').withTrim().withSkipHeaderRecord();
-        checkForUpdateService = new CheckForUpdateService(this.ctx);
+        checkForUpdateService = new CheckForUpdateService(ctx);
+
+        this.weakCtx = new WeakReference<>(ctx);
     }
 
     @Override
@@ -54,8 +58,11 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
         try {
             boolean datasetUnchanged = !checkForUpdateService.datasetChanged();
             if (datasetUnchanged) {
-                return NetworkStatus.SUCCESS;
+                return NetworkStatus.SUCCESS_NO_UPDATE;
             }
+
+            putStationPickerMessage(R.string.dataset_updating);
+
             String haltestellenCSV = call(csvApi.getHaltestellenCSV()).body();
             String steigCSV = call(csvApi.getSteigeCSV()).body();
             String lineCSV = call(csvApi.getLinienCSV()).body();
@@ -84,14 +91,37 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
 
     @Override
     protected void onPostExecute(NetworkStatus resultCode) {
-        // TODO replace dialogs with Snackbars
         switch (resultCode) {
             case ERROR_SERVER:
-                AlertDialogs.serverNotAvailable(ctx);
+                putStationPickerMessage(R.string.no_connection);
                 break;
             case NO_CONNECTION:
-                AlertDialogs.noConnection(ctx);
+                putStationPickerMessage(R.string.no_internet_snackbar);
                 break;
+            case SUCCESS:
+                Context ctx = weakCtx.get();
+                if (ctx != null) {
+                    Intent datasetUpdatedIntent = new Intent(Keys.Intent.DATASET_UPDATED);
+                    ctx.sendBroadcast(datasetUpdatedIntent);
+                }
+                // fallthrough intended
+            case SUCCESS_NO_UPDATE:
+                deleteStationPickerMessage();
+                break;
+        }
+    }
+
+    private void putStationPickerMessage(int messageCode) {
+        Context ctx = weakCtx.get();
+        if (ctx != null) {
+            DatasetUpdateStatus.putSnackbarMessage(ctx, ctx.getString(messageCode));
+        }
+    }
+
+    private void deleteStationPickerMessage() {
+        Context ctx = weakCtx.get();
+        if (ctx != null) {
+            DatasetUpdateStatus.deleteSnackbarMessage(ctx);
         }
     }
 

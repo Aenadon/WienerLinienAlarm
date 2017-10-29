@@ -1,9 +1,12 @@
 package aenadon.wienerlinienalarm.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -20,6 +23,7 @@ import java.util.List;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.adapter.StationListAdapter;
 import aenadon.wienerlinienalarm.models.wl_metadata.Station;
+import aenadon.wienerlinienalarm.utils.DatasetUpdateStatus;
 import aenadon.wienerlinienalarm.utils.Keys;
 import hugo.weaving.DebugLog;
 import io.realm.Realm;
@@ -31,12 +35,17 @@ public class StationPickerActivity extends AppCompatActivity {
     private final List<Station> stationsCompleteList = new ArrayList<>();
     private StationListAdapter stationAdapter;
 
+    private BroadcastReceiver datasetUpdatedReceiver;
+
     private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_picker);
+
+        setupAlarmReceiver();
+        showSnackbarMessageIfExists();
         realm = Realm.getDefaultInstance();
 
         ActionBar actionBar = getSupportActionBar();
@@ -44,8 +53,7 @@ public class StationPickerActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        stationsCompleteList.addAll(realm.where(Station.class).findAllSorted("name"));
-        stationsToDisplay.addAll(stationsCompleteList);
+        initializeStationLists();
 
         ListView list = findViewById(R.id.station_resultlist);
         list.setOnItemClickListener(new StationListListener());
@@ -55,6 +63,36 @@ public class StationPickerActivity extends AppCompatActivity {
 
         EditText queryBox = findViewById(R.id.station_search_edittext);
         queryBox.addTextChangedListener(new StationSearchTextWatcher());
+    }
+
+    private void showSnackbarMessageIfExists() {
+        String message = DatasetUpdateStatus.getSnackbarMessage(StationPickerActivity.this);
+        if (message != null) {
+            Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
+            DatasetUpdateStatus.deleteSnackbarMessage(StationPickerActivity.this);
+        }
+    }
+
+    private void setupAlarmReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Keys.Intent.DATASET_UPDATED);
+
+        datasetUpdatedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                initializeStationLists();
+                stationAdapter.notifyDataSetChanged();
+                Snackbar.make(findViewById(android.R.id.content), R.string.dataset_updated, Snackbar.LENGTH_LONG).show();
+            }
+        };
+        registerReceiver(datasetUpdatedReceiver, intentFilter);
+    }
+
+    private void initializeStationLists() {
+        stationsCompleteList.clear();
+        stationsCompleteList.addAll(realm.where(Station.class).findAllSorted("name"));
+        stationsToDisplay.clear();
+        stationsToDisplay.addAll(stationsCompleteList);
     }
 
     @Override
@@ -117,6 +155,10 @@ public class StationPickerActivity extends AppCompatActivity {
         super.onDestroy();
         if (realm != null && !realm.isClosed()) {
             realm.close();
+        }
+        if (datasetUpdatedReceiver != null) {
+            unregisterReceiver(datasetUpdatedReceiver);
+            datasetUpdatedReceiver = null;
         }
     }
 }

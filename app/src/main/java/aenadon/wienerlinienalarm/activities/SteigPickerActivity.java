@@ -88,7 +88,7 @@ public class SteigPickerActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<RoutingXMLRequest> call, @NonNull Response<RoutingXMLRequest> response) {
                 if (!response.isSuccessful()) {
-                    replaceLoadingSpinnerWithError(R.string.server_broken_text);
+                    replaceLoadingSpinnerWithError(R.string.no_connection);
                     Log.e("XML Response error (Error code " + response.code() + ")",
                             "Server message: " + response.message());
                     return;
@@ -162,7 +162,7 @@ public class SteigPickerActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<RoutingXMLRequest> call, @NonNull Throwable t) {
-                replaceLoadingSpinnerWithError(R.string.no_connection_text);
+                replaceLoadingSpinnerWithError(R.string.no_connection);
                 Log.e("Client error while retrieving XML Response", t);
             }
         });

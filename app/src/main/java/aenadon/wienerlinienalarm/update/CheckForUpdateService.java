@@ -15,14 +15,12 @@ class CheckForUpdateService {
     private static final String PREF_NAME_CSV_LAST_UPDATED = "CSV_LAST_UPDATED";
     private static final String PREF_KEY_CSV_LAST_UPDATED = "lastUpdated";
 
-    private Context ctx;
     private ApiProvider.CSVApi csvApi;
+    private SharedPreferences lastUpdatedPrefs;
 
     CheckForUpdateService(Context ctx) {
-        // TODO initialize prefs here and don't keep context reference
-        this.ctx = ctx;
-
         csvApi = ApiProvider.getCSVApi();
+        lastUpdatedPrefs = ctx.getSharedPreferences(PREF_NAME_CSV_LAST_UPDATED, Context.MODE_PRIVATE);
     }
 
     boolean datasetChanged() throws NetworkClientException, NetworkServerException {
@@ -38,8 +36,7 @@ class CheckForUpdateService {
     }
 
     private boolean lastUpdatedHasChanged(String newLastUpdatedCsv) {
-        SharedPreferences prefs = getCsvLastUpdatedPrefs();
-        String oldLastUpdatedCsv = prefs.getString(PREF_KEY_CSV_LAST_UPDATED, "");
+        String oldLastUpdatedCsv = lastUpdatedPrefs.getString(PREF_KEY_CSV_LAST_UPDATED, "");
         boolean hasChanged = !oldLastUpdatedCsv.equals(newLastUpdatedCsv);
         if (hasChanged) {
             setCsvLastUpdated(newLastUpdatedCsv);
@@ -48,13 +45,9 @@ class CheckForUpdateService {
     }
 
     private void setCsvLastUpdated(String lastUpdated) {
-        SharedPreferences.Editor editor = getCsvLastUpdatedPrefs().edit();
+        SharedPreferences.Editor editor = lastUpdatedPrefs.edit();
         editor.putString(PREF_KEY_CSV_LAST_UPDATED, lastUpdated);
         editor.apply();
-    }
-
-    private SharedPreferences getCsvLastUpdatedPrefs() {
-        return ctx.getSharedPreferences(PREF_NAME_CSV_LAST_UPDATED, Context.MODE_PRIVATE);
     }
 
 

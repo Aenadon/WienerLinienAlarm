@@ -64,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateStationData() {
-        // TODO pass applicationcontext instead
-        new UpdateDatasetService(MainActivity.this).execute();
+        new UpdateDatasetService(getApplicationContext()).execute();
     }
 
     private void showBatteryWarningDialog() {

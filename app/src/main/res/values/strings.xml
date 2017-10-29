@@ -21,13 +21,13 @@
     <!--Main screen menu-->
     <string name="list_empty">No alarms set</string>
 
-    <!--LegacyAlarm Setup 1-->
+    <!--Alarm Setup 1-->
     <string name="one_time_alarms">One time</string>
     <string name="recurring_alarms">Recurring</string>
 
-    <!--LegacyAlarm Setup 2-->
+    <!--Alarm Setup 2-->
     <string name="activity_alarm_setter">Set Alarm</string>
-    <string name="alarm_frequency">Alarm Frequency</string>
+    <string name="alarm_frequency">Alarmf Frequency</string>
     <string name="alarm_frequency_once">One time</string>
     <string name="alarm_frequency_recurring">Recurring</string>
     <string name="alarm_choose_date">Choose date</string>
@@ -99,20 +99,17 @@
 
     <string name="scheduling_error">Error while scheduling. Please try again.</string>
 
-    <string name="no_connection_title">Connection error :(</string>
-    <string name="no_connection_text">The connection to the Wiener Linien servers cannot be established. Please make sure your internet connection is working and try again.</string>
-
-    <string name="server_broken_title">Server issues :(</string>
-    <string name="server_broken_text">The Wiener Linien servers cannot be reached. Please try again later.</string>
-
-    <string name="no_steigs_error_title">No lines available :(</string>
-    <string name="no_steigs_error_text">No lines are available for this station. Please try again later.</string>
-
     <string name="missing_info_title">Could not create alarm</string>
     <string name="missing_info_date">- No alarm date selected</string>
     <string name="missing_info_time">- No alarm time selected</string>
     <string name="missing_info_days">- No recurring days selected</string>
     <string name="missing_info_past">- Time lies in the past</string>
     <string name="missing_info_station">- No station selected</string>
+
+    <string name="dataset_updating">The dataset is currently being updated&#8230;</string>
+    <string name="dataset_updated">The dataset has just been updated.</string>
+    <string name="no_internet_snackbar">No connection! Please connect to the internet and restart the app.</string>
+    <string name="no_internet">The connection to the Wiener Linien servers cannot be established. Please make sure your internet connection is working and try again.</string>
+    <string name="no_connection">The Wiener Linien servers cannot be reached. Please try again later.</string>
 
 </resources>
