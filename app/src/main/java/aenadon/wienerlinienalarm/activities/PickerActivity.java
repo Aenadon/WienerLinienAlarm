@@ -141,11 +141,11 @@ public abstract class PickerActivity extends AppCompatActivity {
     }
 
     private void setCurrentModeDatePicker() {
-        final RadioButton radioOnetime = (RadioButton)findViewById(R.id.radio_frequency_one_time);
-        final RadioButton radioRecurring = (RadioButton)findViewById(R.id.radio_frequency_recurring);
+        final RadioButton radioOnetime = findViewById(R.id.radio_frequency_one_time);
+        final RadioButton radioRecurring = findViewById(R.id.radio_frequency_recurring);
 
-        LinearLayout chooseDateContainer = (LinearLayout) findViewById(R.id.choose_date_container);
-        LinearLayout chooseDaysContainer = (LinearLayout) findViewById(R.id.choose_days_container);
+        LinearLayout chooseDateContainer = findViewById(R.id.choose_date_container);
+        LinearLayout chooseDaysContainer = findViewById(R.id.choose_days_container);
 
         switch (alarmType) {
             case ONETIME:

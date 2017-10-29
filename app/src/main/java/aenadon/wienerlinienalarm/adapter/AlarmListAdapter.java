@@ -110,8 +110,8 @@ public class AlarmListAdapter extends BaseAdapter {
             LayoutInflater infl = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infl.inflate(R.layout.list_item_alarm, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.date = (TextView) convertView.findViewById(R.id.alarm_list_date);
-            viewHolder.time = (TextView) convertView.findViewById(R.id.alarm_list_time);
+            viewHolder.date = convertView.findViewById(R.id.alarm_list_date);
+            viewHolder.time = convertView.findViewById(R.id.alarm_list_time);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder)convertView.getTag();

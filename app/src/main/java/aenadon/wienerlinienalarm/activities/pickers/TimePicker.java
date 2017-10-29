@@ -28,7 +28,7 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int viewResId = getArguments().getInt(Keys.Extra.VIEW_TO_USE);
-        viewToUse = (TextView) getActivity().findViewById(viewResId);
+        viewToUse = getActivity().findViewById(viewResId);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
         pickedTime = intArrayToLocalTime(pickedTimeArray);
 
         int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
-        viewToUse = (TextView) ((Activity) ctx).findViewById(viewResId);
+        viewToUse = ((Activity) ctx).findViewById(viewResId);
         if (pickedTime != null) viewToUse.setText(StringDisplay.getTime(pickedTime));
     }
 

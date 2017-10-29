@@ -25,7 +25,7 @@ public class RingtonePicker implements AlarmPicker {
     public RingtonePicker(Context ctx, int viewResId) {
         this.ctx = ctx;
 
-        viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+        viewToUse = ((Activity)ctx).findViewById(viewResId);
     }
 
     public void show() {
@@ -69,7 +69,7 @@ public class RingtonePicker implements AlarmPicker {
     @Override
     public void restoreState(Context ctx, Bundle restoreBundle) {
         int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
-        viewToUse = (TextView) ((Activity) ctx).findViewById(viewResId);
+        viewToUse = ((Activity) ctx).findViewById(viewResId);
 
         pickedRingtone = restoreBundle.getString(PICKED_RINGTONE_KEY);
         if (pickedRingtone != null) viewToUse.setText(StringDisplay.getRingtone(ctx, pickedRingtone));

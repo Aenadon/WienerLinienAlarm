@@ -32,7 +32,7 @@ public class StationListAdapter extends ArrayAdapter<Station> {
         if (convertView == null) {
             convertView = infl.inflate(android.R.layout.simple_list_item_1, parent, false);
             resultView = new ResultViewHolder();
-            resultView.textView = (TextView) convertView.findViewById(android.R.id.text1);
+            resultView.textView = convertView.findViewById(android.R.id.text1);
             resultView.textView.setTextColor(0xFF000000); // some devices change the color of the second textview, so hardcoding it should prevent that
             convertView.setTag(resultView);
         } else {

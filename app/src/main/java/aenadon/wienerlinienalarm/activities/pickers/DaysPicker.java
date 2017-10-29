@@ -32,7 +32,7 @@ public class DaysPicker implements AlarmPicker {
         this.weekdayStrings = Weekday.getAllStrings(ctx);
         this.dialogTemporaryChoice = savedChoice.clone();
 
-        this.viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+        this.viewToUse = ((Activity)ctx).findViewById(viewResId);
 
         weekdayDialogBuilder = new AlertDialog.Builder(ctx)
                 .setTitle(R.string.alarm_recurring_dialog_expl)
@@ -79,7 +79,7 @@ public class DaysPicker implements AlarmPicker {
         dialogTemporaryChoice = restoreBundle.getBooleanArray(TEMP_CHOICE_KEY);
 
         int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
-        viewToUse = (TextView) ((Activity) ctx).findViewById(viewResId);
+        viewToUse = ((Activity) ctx).findViewById(viewResId);
         if (savedChoice != null) viewToUse.setText(StringDisplay.getRecurringDays(ctx, setFromArray(savedChoice)));
     }
 

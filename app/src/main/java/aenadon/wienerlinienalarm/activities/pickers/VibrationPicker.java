@@ -21,7 +21,7 @@ public class VibrationPicker implements AlarmPicker {
     private static final String PICKED_VIBRATION_MODE_KEY = "PICKED_VIBRATION_MODE_KEY";
 
     public VibrationPicker(final Context ctx, int viewResId) {
-        this.viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+        this.viewToUse = ((Activity)ctx).findViewById(viewResId);
         this.vibrationModes = VibrationMode.values();
 
         final Vibrator vibrator = (Vibrator)ctx.getSystemService(Context.VIBRATOR_SERVICE);
@@ -63,7 +63,7 @@ public class VibrationPicker implements AlarmPicker {
         pickedMode = vibrationModes[restoreBundle.getInt(PICKED_VIBRATION_MODE_KEY)];
 
         int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
-        viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+        viewToUse = ((Activity)ctx).findViewById(viewResId);
         viewToUse.setText(pickedMode.getMessageCode());
     }
 

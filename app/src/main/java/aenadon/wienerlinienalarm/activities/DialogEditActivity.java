@@ -54,20 +54,20 @@ public class DialogEditActivity extends PickerActivity {
 
     private void setupViews(Alarm alarm) {
         if (alarm.getAlarmType() == AlarmType.ONETIME) {
-            TextView dateView = (TextView) findViewById (R.id.dialog_date_text);
+            TextView dateView = findViewById (R.id.dialog_date_text);
             dateView.setText(StringDisplay.getOnetimeDate(alarm.getOnetimeAlarmDate()));
 
             findViewById(R.id.dialog_date_container).setVisibility(View.VISIBLE);
         } else {
-            TextView daysView = (TextView) findViewById (R.id.dialog_days_text);
+            TextView daysView = findViewById (R.id.dialog_days_text);
             daysView.setText(StringDisplay.getRecurringDays(DialogEditActivity.this, alarm.getRecurringChosenDays()));
 
             findViewById(R.id.dialog_days_container).setVisibility(View.VISIBLE);
         }
-        TextView timeView = (TextView) findViewById (R.id.dialog_time_text);
-        TextView ringtoneView = (TextView) findViewById (R.id.dialog_ringtone_text);
-        TextView vibrationView = (TextView) findViewById (R.id.dialog_vibration_text);
-        TextView stationView = (TextView) findViewById (R.id.dialog_station_text);
+        TextView timeView = findViewById (R.id.dialog_time_text);
+        TextView ringtoneView = findViewById (R.id.dialog_ringtone_text);
+        TextView vibrationView = findViewById (R.id.dialog_vibration_text);
+        TextView stationView = findViewById (R.id.dialog_station_text);
 
         timeView.setText(StringDisplay.getTime(alarm.getAlarmTime()));
         ringtoneView.setText(StringDisplay.getRingtone(DialogEditActivity.this, alarm.getPickedRingtone()));

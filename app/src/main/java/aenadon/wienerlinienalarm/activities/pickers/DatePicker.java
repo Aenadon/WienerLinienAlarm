@@ -26,7 +26,7 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int viewResId = getArguments().getInt(Keys.Extra.VIEW_TO_USE);
-        viewToUse = (TextView) getActivity().findViewById(viewResId);
+        viewToUse = getActivity().findViewById(viewResId);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
         pickedDate = intArrayToLocalDate(restoreBundle.getIntArray(CHOSEN_DATE_KEY));
 
         int dateDisplayViewId = restoreBundle.getInt(VIEW_RES_ID_KEY);
-        viewToUse = (TextView) ((Activity) ctx).findViewById(dateDisplayViewId);
+        viewToUse = ((Activity) ctx).findViewById(dateDisplayViewId);
         if (pickedDate != null) viewToUse.setText(StringDisplay.getOnetimeDate(pickedDate));
     }
 

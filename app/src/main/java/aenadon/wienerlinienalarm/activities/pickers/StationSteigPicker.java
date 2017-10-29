@@ -23,7 +23,7 @@ public class StationSteigPicker implements AlarmPicker {
 
     public StationSteigPicker(Context ctx, int viewResId) {
         this.ctx = ctx;
-        this.viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+        this.viewToUse = ((Activity)ctx).findViewById(viewResId);
     }
 
     public void show() {
@@ -69,7 +69,7 @@ public class StationSteigPicker implements AlarmPicker {
     @Override
     public void restoreState(Context ctx, Bundle restoreBundle) {
         int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
-        viewToUse = (TextView)((Activity)ctx).findViewById(viewResId);
+        viewToUse = ((Activity)ctx).findViewById(viewResId);
 
         displayName = restoreBundle.getString(DISPLAY_NAME_KEY);
         steigId = restoreBundle.getString(STEIG_ID_KEY);

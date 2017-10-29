@@ -47,13 +47,13 @@ public class StationPickerActivity extends AppCompatActivity {
         stationsCompleteList.addAll(realm.where(Station.class).findAllSorted("name"));
         stationsToDisplay.addAll(stationsCompleteList);
 
-        ListView list = (ListView) findViewById(R.id.station_resultlist);
+        ListView list = findViewById(R.id.station_resultlist);
         list.setOnItemClickListener(new StationListListener());
 
         stationAdapter = new StationListAdapter(StationPickerActivity.this, stationsToDisplay);
         list.setAdapter(stationAdapter);
 
-        EditText queryBox = (EditText) findViewById(R.id.station_search_edittext);
+        EditText queryBox = findViewById(R.id.station_search_edittext);
         queryBox.addTextChangedListener(new StationSearchTextWatcher());
     }
 

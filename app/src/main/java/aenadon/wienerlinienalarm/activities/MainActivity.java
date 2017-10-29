@@ -78,11 +78,11 @@ public class MainActivity extends AppCompatActivity {
         final boolean batteryReminderDozeDismissed = batteryReminderPrefs.getBoolean(BATTERY_REMINDER_DOZE, false);
 
         View batteryReminderDialog = View.inflate(MainActivity.this, R.layout.checkbox, null);
-        final CheckBox batteryReminderCheckbox = (CheckBox)batteryReminderDialog.findViewById(R.id.battery_reminder_checkbox);
+        final CheckBox batteryReminderCheckbox = batteryReminderDialog.findViewById(R.id.battery_reminder_checkbox);
         // we need to have 2 separate objects of the view because we can't
         // assign the same instance of the view to two dialog boxes at once
         View batteryReminderDialog2 = View.inflate(MainActivity.this, R.layout.checkbox, null);
-        final CheckBox batteryReminderCheckbox2 = (CheckBox)batteryReminderDialog2.findViewById(R.id.battery_reminder_checkbox);
+        final CheckBox batteryReminderCheckbox2 = batteryReminderDialog2.findViewById(R.id.battery_reminder_checkbox);
 
         PowerManager pm = (PowerManager)getSystemService(POWER_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !pm.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID) && !batteryReminderDozeDismissed) {
@@ -116,17 +116,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViews() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         tabAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        tabContainer = (ViewPager) findViewById(R.id.container);
+        tabContainer = findViewById(R.id.container);
         tabContainer.setAdapter(tabAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(tabContainer);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_main);
+        FloatingActionButton fab = findViewById(R.id.fab_main);
         fab.setOnClickListener(view -> {
             Intent i = new Intent(MainActivity.this, AlarmSetterActivity.class);
             AlarmType currentlyOpenTab = alarmTypes.get(tabContainer.getCurrentItem());
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            ListView list = (ListView) rootView.findViewById(R.id.alarm_list);
+            ListView list = rootView.findViewById(R.id.alarm_list);
             alarmType = (AlarmType)getArguments().getSerializable(Keys.Extra.ALARM_TYPE);
             adapter = new AlarmListAdapter(getActivity(), alarmType);
             list.setAdapter(adapter);

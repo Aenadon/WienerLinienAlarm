@@ -61,10 +61,10 @@ public class SteigPickerActivity extends AppCompatActivity {
 
         selectedStation = realm.where(Station.class).equalTo("id", stationId).findFirst();
 
-        TextView stationDisplay = (TextView) findViewById(R.id.steig_stationdisplay);
+        TextView stationDisplay = findViewById(R.id.steig_stationdisplay);
         stationDisplay.setText(selectedStation.getName());
 
-        list = (ListView) findViewById(R.id.steig_resultlist);
+        list = findViewById(R.id.steig_resultlist);
         list.setOnItemClickListener(listListener());
 
         @SuppressLint("InflateParams") View emptyView = getLayoutInflater().inflate(R.layout.list_loading_placeholder, null);
@@ -118,10 +118,10 @@ public class SteigPickerActivity extends AppCompatActivity {
             }
 
             private void replaceLoadingSpinnerWithError(int errorStringCode) {
-                ListView list = (ListView) findViewById(R.id.steig_resultlist);
+                ListView list = findViewById(R.id.steig_resultlist);
                 list.setVisibility(View.GONE);
 
-                TextView errorMessage = (TextView)findViewById(R.id.steig_list_error);
+                TextView errorMessage = findViewById(R.id.steig_list_error);
                 errorMessage.setText(errorStringCode);
                 errorMessage.setVisibility(View.VISIBLE);
             }
