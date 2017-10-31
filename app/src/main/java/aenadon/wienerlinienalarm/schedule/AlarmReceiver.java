@@ -48,7 +48,11 @@ public class AlarmReceiver extends BroadcastReceiver {
             return null;
         }
         Alarm alarm = realm.copyFromRealm(alarmInstanceDeletable);
+
+        realm.beginTransaction();
         alarmInstanceDeletable.deleteFromRealm();
+        realm.commitTransaction();
+
         realm.close();
 
         return alarm;
