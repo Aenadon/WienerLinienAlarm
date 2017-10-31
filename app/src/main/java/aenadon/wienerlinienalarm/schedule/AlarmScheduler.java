@@ -54,7 +54,7 @@ public class AlarmScheduler {
             );
             return ctx.getString(R.string.scheduling_error);
         }
-        long alarmMillis = alarmMoment.toEpochSecond();
+        long alarmMillis = alarmMoment.toEpochSecond() * 1000;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // Window set for alarmMoment - 30sec to alarmMoment + 20sec.
             // It will probably never trigger exactly in that window
