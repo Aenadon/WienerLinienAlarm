@@ -256,7 +256,7 @@ public abstract class PickerActivity extends AppCompatActivity {
                     .filter(AlarmPicker::hasError)
                     .forEach(picker -> errors.add(picker.getErrorStringId()));
         } else {
-            if (daysPicker.hasError()) {
+            if (alarmType == AlarmType.RECURRING && daysPicker.hasError()) {
                 errors.add(daysPicker.getErrorStringId());
             }
         }
