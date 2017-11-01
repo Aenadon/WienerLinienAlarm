@@ -11,6 +11,8 @@ public interface Keys {
         String VIEW_TO_USE = "VIEW_TO_USE";
         String SELECTED_STATION_NAME = "SELECTED_STATION_NAME";
         String SNACKBAR_MESSAGE = "SNACKBAR_MESSAGE";
+        String NOTIFICATION_ID = "NOTIFICATION_ID";
+        String RETRIES_COUNT = "RETRIES_COUNT";
     }
 
     interface Prefs {

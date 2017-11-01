@@ -10,7 +10,7 @@ import aenadon.wienerlinienalarm.exceptions.NetworkServerException;
 import aenadon.wienerlinienalarm.utils.ApiProvider;
 import retrofit2.Response;
 
-class CheckForUpdateService {
+class CheckForUpdateHelper {
 
     private static final String PREF_NAME_CSV_LAST_UPDATED = "CSV_LAST_UPDATED";
     private static final String PREF_KEY_CSV_LAST_UPDATED = "lastUpdated";
@@ -18,7 +18,7 @@ class CheckForUpdateService {
     private ApiProvider.CSVApi csvApi;
     private SharedPreferences lastUpdatedPrefs;
 
-    CheckForUpdateService(Context ctx) {
+    CheckForUpdateHelper(Context ctx) {
         csvApi = ApiProvider.getCSVApi();
         lastUpdatedPrefs = ctx.getSharedPreferences(PREF_NAME_CSV_LAST_UPDATED, Context.MODE_PRIVATE);
     }

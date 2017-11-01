@@ -24,6 +24,7 @@ import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.enums.Weekday;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
+import aenadon.wienerlinienalarm.realtime.RealtimeNotificationService;
 import aenadon.wienerlinienalarm.utils.Keys;
 import aenadon.wienerlinienalarm.utils.StringDisplay;
 import trikita.log.Log;
@@ -44,7 +45,11 @@ public class AlarmScheduler {
 
     public String scheduleAlarmAndReturnMessage() {
         ZonedDateTime alarmMoment = getNextAlarmMoment();
-        PendingIntent alarmPendingIntent = buildPendingIntent();
+        return scheduleAlarmAndReturnMessage(alarmMoment, 0);
+    }
+
+    public String scheduleAlarmAndReturnMessage(ZonedDateTime alarmMoment, int retriesCount) {
+        PendingIntent alarmPendingIntent = buildPendingIntent(retriesCount);
 
         if (alarmManager == null || alarmMoment == null || alarmPendingIntent == null) {
             Log.e("Aborting alarm scheduling due to null value - " +
@@ -79,6 +84,14 @@ public class AlarmScheduler {
         Log.d("Scheduled alarm with id: " + alarm.getId() + " at " + nextAlarmMessage);
 
         return ctx.getString(R.string.alarm_next_ring, nextAlarmMessage);
+    }
+
+    public void scheduleAlarm() {
+        scheduleAlarmAndReturnMessage();
+    }
+
+    public void scheduleAlarm(ZonedDateTime alarmMoment, int retriesCount) {
+        scheduleAlarmAndReturnMessage(alarmMoment, retriesCount);
     }
 
     private ZonedDateTime getNextAlarmMoment() {
@@ -123,7 +136,7 @@ public class AlarmScheduler {
     }
 
     public void cancelAlarmIfScheduled() {
-        PendingIntent pendingIntent = buildPendingIntent();
+        PendingIntent pendingIntent = buildPendingIntent(0);
         pendingIntent.cancel();
         alarmManager.cancel(pendingIntent);
 
@@ -146,11 +159,17 @@ public class AlarmScheduler {
         Log.v("Alarm with id " + alarm.getId() + " removed from prefs");
     }
 
-    private PendingIntent buildPendingIntent() {
-        Intent i = new Intent(ctx, AlarmReceiver.class);
+    private PendingIntent buildPendingIntent(int retriesCount) {
+        int notificationId = getNotificationId();
+        Intent i = new Intent(ctx, RealtimeNotificationService.class);
         i.putExtra(Keys.Extra.ALARM_ID, alarm.getId());
-        i.setAction(Keys.Intent.TRIGGER_ALARM);
-        return PendingIntent.getBroadcast(ctx, getNotificationId(), i, PendingIntent.FLAG_CANCEL_CURRENT);
+        i.putExtra(Keys.Extra.NOTIFICATION_ID, notificationId);
+        i.putExtra(Keys.Extra.RETRIES_COUNT, retriesCount);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return PendingIntent.getForegroundService(ctx, notificationId, i, PendingIntent.FLAG_CANCEL_CURRENT);
+        } else {
+            return PendingIntent.getService(ctx, getNotificationId(), i, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
     }
 
     private int getNotificationId() {

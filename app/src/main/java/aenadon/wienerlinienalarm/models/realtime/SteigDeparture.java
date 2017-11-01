@@ -5,9 +5,8 @@ import org.threeten.bp.ZonedDateTime;
 import java.util.List;
 
 import aenadon.wienerlinienalarm.models.realtime.json_model.RealtimeData;
-import aenadon.wienerlinienalarm.models.wl_metadata.Line;
 
-public class RealtimeInfo {
+public class SteigDeparture {
 
     private String towards;
     private boolean barrierFree;
@@ -65,7 +64,7 @@ public class RealtimeInfo {
         this.plannedDepartures = plannedDepartures;
     }
 
-    public static List<RealtimeInfo> getAllRealtimeInfo(RealtimeData realtimeData, Line line) {
+    public static List<SteigDeparture> getDepartures(RealtimeData realtimeData) {
         // TODO implement
         return null;
     }

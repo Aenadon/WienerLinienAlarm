@@ -35,19 +35,19 @@ import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
+public class UpdateDatasetTask extends AsyncTask<Void, Void, NetworkStatus> {
 
     private Realm realm;
     private WeakReference<Context> weakCtx;
 
     private final ApiProvider.CSVApi csvApi;
     private final CSVFormat baseCsvFormat;
-    private CheckForUpdateService checkForUpdateService;
+    private CheckForUpdateHelper checkForUpdateHelper;
 
-    public UpdateDatasetService(Context ctx) {
+    public UpdateDatasetTask(Context ctx) {
         csvApi = ApiProvider.getCSVApi();
         baseCsvFormat = CSVFormat.newFormat(';').withQuote('"').withTrim().withSkipHeaderRecord();
-        checkForUpdateService = new CheckForUpdateService(ctx);
+        checkForUpdateHelper = new CheckForUpdateHelper(ctx);
 
         this.weakCtx = new WeakReference<>(ctx);
     }
@@ -56,7 +56,7 @@ public class UpdateDatasetService extends AsyncTask<Void, Void, NetworkStatus> {
     @DebugLog
     protected NetworkStatus doInBackground(Void... params) {
         try {
-            boolean datasetUnchanged = !checkForUpdateService.datasetChanged();
+            boolean datasetUnchanged = !checkForUpdateHelper.datasetChanged();
             if (datasetUnchanged) {
                 return NetworkStatus.SUCCESS_NO_UPDATE;
             }

@@ -58,9 +58,6 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
 
         <receiver
-            android:name=".schedule.AlarmReceiver"
-            android:enabled="true" />
-        <receiver
             android:name=".schedule.BootRescheduler"
             android:enabled="true">
             <intent-filter>
@@ -68,6 +65,7 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".realtime.RealtimeNotificationService" />
     </application>
 
 </manifest>
