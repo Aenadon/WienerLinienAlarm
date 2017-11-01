@@ -11,45 +11,40 @@ import trikita.log.Log;
 
 public class RealtimeNotificationService extends IntentService {
 
-    private Realm realm;
-
     public RealtimeNotificationService() {
         super(RealtimeNotificationService.class.getSimpleName());
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-        realm = Realm.getDefaultInstance();
-    }
-
-    @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        if (intent == null) {
-            Log.e("Intent is null, terminating");
-            return;
-        }
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
 
-        String alarmId = intent.getStringExtra(Keys.Extra.ALARM_ID);
-        if (alarmId == null) {
-            Log.e("Alarm ID was not passed to Service, terminating");
-            return;
-        }
+            if (intent == null) {
+                Log.e("Intent is null, terminating");
+                return;
+            }
 
-        final Alarm alarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
-        if (alarm == null) {
-            Log.e("No existing alarm for ID " + alarmId + ", terminating");
-            return;
-        }
-        Log.d("Retrieving realtime data for " + alarmId + "…");
-        new RealtimeProcessingTask(getApplicationContext(), alarm, intent.getExtras()).execute();
-    }
+            String alarmId = intent.getStringExtra(Keys.Extra.ALARM_ID);
+            if (alarmId == null) {
+                Log.e("Alarm ID was not passed to Service, terminating");
+                return;
+            }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (realm != null && !realm.isClosed()) {
-            realm.close();
+            Alarm alarmOrNull = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+            if (alarmOrNull == null) {
+                Log.e("No existing alarm for ID " + alarmId + ", terminating");
+                return;
+            }
+            final Alarm alarm = realm.copyFromRealm(alarmOrNull);
+
+            Log.d("Retrieving realtime data for " + alarmId + "…");
+            new RealtimeProcessingTask(getApplicationContext(), alarm, intent.getExtras()).execute();
+        } finally {
+            if (realm != null && !realm.isClosed()) {
+                realm.close();
+            }
         }
     }
 }

@@ -62,7 +62,8 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
         notificationBuilder.setContentTitle(ctx.getString(R.string.friday))
                 .setVibrate(new long[]{0, alarm.getPickedVibrationMode().getDuration()})
                 .setLights(0x00FF00, 500, 500)
-                .setSound(ringtoneUri);
+                .setSound(ringtoneUri)
+                .setSmallIcon(R.drawable.ic_tram);
 
         notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
     }
@@ -149,7 +150,12 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
     private void deleteAlarm(Alarm alarm) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        alarm.deleteFromRealm();
+
+        Alarm managedAlarm = realm.where(Alarm.class).equalTo("id", alarm.getId()).findFirst();
+        if (managedAlarm != null) {
+            managedAlarm.deleteFromRealm();
+        }
+
         realm.commitTransaction();
         realm.close();
     }
