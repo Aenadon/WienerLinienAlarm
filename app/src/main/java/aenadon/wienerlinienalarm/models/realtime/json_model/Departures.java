@@ -2,7 +2,7 @@ package aenadon.wienerlinienalarm.models.realtime.json_model;
 
 import java.util.List;
 
-class Departures {
+public class Departures {
 
     private List<Departure> departure;
 

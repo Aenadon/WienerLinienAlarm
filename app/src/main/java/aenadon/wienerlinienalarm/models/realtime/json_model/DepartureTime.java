@@ -1,6 +1,6 @@
 package aenadon.wienerlinienalarm.models.realtime.json_model;
 
-class DepartureTime {
+public class DepartureTime {
 
     private String timePlanned;
     private String timeReal;

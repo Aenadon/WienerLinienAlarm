@@ -1,6 +1,6 @@
 package aenadon.wienerlinienalarm.models.realtime.json_model;
 
-class Vehicle {
+public class Vehicle {
 
     private String name;
     private String towards;

@@ -120,7 +120,7 @@ public class AlarmListAdapter extends BaseAdapter {
         Alarm alarm = alarms.get(position);
 
         String date = StringDisplay.getDate(ctx, alarm);
-        String time = StringDisplay.getTime(alarm.getAlarmTime());
+        String time = StringDisplay.formatLocalTime(alarm.getAlarmTime());
 
         viewHolder.date.setText(date);
         viewHolder.time.setText(time);

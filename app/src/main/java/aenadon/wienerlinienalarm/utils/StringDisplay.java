@@ -31,25 +31,29 @@ public class StringDisplay {
 
     public static String getDate(Context ctx, Alarm alarm) {
         if (alarm.getAlarmType() == AlarmType.ONETIME) {
-            return getOnetimeDate(alarm.getOnetimeAlarmDate());
+            return formatLocalDate(alarm.getOnetimeAlarmDate());
         } else {
             return getRecurringDays(ctx, alarm.getRecurringChosenDays());
         }
     }
 
-    public static String getOnetimeDate(LocalDate date) {
-        return formatTimeObject(date, dateFormat);
+    public static String formatLocalDate(LocalDate date) {
+        return formatTimeInstantObject(date, dateFormat);
     }
 
-    public static String getTime(LocalTime time) {
-        return formatTimeObject(time, timeFormat);
+    public static String formatLocalTime(LocalTime time) {
+        return formatTimeInstantObject(time, timeFormat);
     }
 
-    public static String getAlarmMoment(ZonedDateTime nextAlarm) {
-        return formatTimeObject(nextAlarm, dateTimeFormat);
+    public static String formatZonedDateTimeAsTime(ZonedDateTime nextAlarm) {
+        return formatTimeInstantObject(nextAlarm, timeFormat);
     }
 
-    private static String formatTimeObject(TemporalAccessor timeObject, SimpleDateFormat format) {
+    public static String formatZonedDateTime(ZonedDateTime nextAlarm) {
+        return formatTimeInstantObject(nextAlarm, dateTimeFormat);
+    }
+
+    private static String formatTimeInstantObject(TemporalAccessor timeObject, SimpleDateFormat format) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format.toLocalizedPattern());
         return formatter.format(timeObject);
     }

@@ -9,6 +9,7 @@ import java.util.UUID;
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.enums.VibrationMode;
 import aenadon.wienerlinienalarm.enums.Weekday;
+import aenadon.wienerlinienalarm.models.wl_metadata.Line;
 import aenadon.wienerlinienalarm.models.wl_metadata.Station;
 import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
 import io.realm.RealmObject;
@@ -128,5 +129,9 @@ public class Alarm extends RealmObject {
 
     public String getRbl() {
         return steig.getRbl();
+    }
+
+    public Line getLine() {
+        return steig.getLine();
     }
 }

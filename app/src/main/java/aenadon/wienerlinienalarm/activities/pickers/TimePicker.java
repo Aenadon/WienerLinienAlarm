@@ -71,7 +71,7 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
 
         int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
         viewToUse = ((Activity) ctx).findViewById(viewResId);
-        if (pickedTime != null) viewToUse.setText(StringDisplay.getTime(pickedTime));
+        if (pickedTime != null) viewToUse.setText(StringDisplay.formatLocalTime(pickedTime));
     }
 
     @Override
@@ -87,7 +87,7 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
     @Override
     public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute) {
         pickedTime = LocalTime.of(hourOfDay, minute);
-        viewToUse.setText(StringDisplay.getTime(pickedTime));
+        viewToUse.setText(StringDisplay.formatLocalTime(pickedTime));
     }
 
     private LocalTime intArrayToLocalTime(int[] timeArray) {

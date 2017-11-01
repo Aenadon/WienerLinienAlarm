@@ -30,7 +30,6 @@ public class RealtimeNotificationService extends IntentService {
             return;
         }
 
-        int retries = intent.getIntExtra(Keys.Extra.RETRIES_COUNT, 0);
         String alarmId = intent.getStringExtra(Keys.Extra.ALARM_ID);
         if (alarmId == null) {
             Log.e("Alarm ID was not passed to Service, terminating");
@@ -43,7 +42,7 @@ public class RealtimeNotificationService extends IntentService {
             return;
         }
         Log.d("Retrieving realtime data for " + alarmId + "…");
-        new RealtimeProcessingTask(getApplicationContext(), alarm, retries).execute();
+        new RealtimeProcessingTask(getApplicationContext(), alarm, intent.getExtras()).execute();
     }
 
     @Override

@@ -70,7 +70,7 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
 
         int dateDisplayViewId = restoreBundle.getInt(VIEW_RES_ID_KEY);
         viewToUse = ((Activity) ctx).findViewById(dateDisplayViewId);
-        if (pickedDate != null) viewToUse.setText(StringDisplay.getOnetimeDate(pickedDate));
+        if (pickedDate != null) viewToUse.setText(StringDisplay.formatLocalDate(pickedDate));
     }
 
     @Override
@@ -87,7 +87,7 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
     public void onDateSet(android.widget.DatePicker view, int year, int month, int day) {
         // DatePickerDialog uses java.util.Calendar whose months start at 0
         pickedDate = intArrayToLocalDate(new int[]{year, month + 1, day});
-        viewToUse.setText(StringDisplay.getOnetimeDate(pickedDate));
+        viewToUse.setText(StringDisplay.formatLocalDate(pickedDate));
     }
 
     private LocalDate intArrayToLocalDate(int[] dateArray) {

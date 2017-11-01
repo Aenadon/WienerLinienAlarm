@@ -1,6 +1,6 @@
 package aenadon.wienerlinienalarm.models.realtime.json_model;
 
-class Departure {
+public class Departure {
 
     private DepartureTime departureTime;
     private Vehicle vehicle;

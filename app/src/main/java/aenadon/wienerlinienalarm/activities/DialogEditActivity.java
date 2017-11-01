@@ -55,7 +55,7 @@ public class DialogEditActivity extends PickerActivity {
     private void setupViews(Alarm alarm) {
         if (alarm.getAlarmType() == AlarmType.ONETIME) {
             TextView dateView = findViewById (R.id.dialog_date_text);
-            dateView.setText(StringDisplay.getOnetimeDate(alarm.getOnetimeAlarmDate()));
+            dateView.setText(StringDisplay.formatLocalDate(alarm.getOnetimeAlarmDate()));
 
             findViewById(R.id.dialog_date_container).setVisibility(View.VISIBLE);
         } else {
@@ -69,7 +69,7 @@ public class DialogEditActivity extends PickerActivity {
         TextView vibrationView = findViewById (R.id.dialog_vibration_text);
         TextView stationView = findViewById (R.id.dialog_station_text);
 
-        timeView.setText(StringDisplay.getTime(alarm.getAlarmTime()));
+        timeView.setText(StringDisplay.formatLocalTime(alarm.getAlarmTime()));
         ringtoneView.setText(StringDisplay.getRingtone(DialogEditActivity.this, alarm.getPickedRingtone()));
         vibrationView.setText(alarm.getPickedVibrationMode().getMessageCode());
         stationView.setText(alarm.getLineDirectionDisplayName());

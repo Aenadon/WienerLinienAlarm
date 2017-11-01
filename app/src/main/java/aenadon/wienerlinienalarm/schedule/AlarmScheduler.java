@@ -48,7 +48,15 @@ public class AlarmScheduler {
         return scheduleAlarmAndReturnMessage(alarmMoment, 0);
     }
 
-    public String scheduleAlarmAndReturnMessage(ZonedDateTime alarmMoment, int retriesCount) {
+    public void rescheduleAlarmAtPlannedTime() {
+        scheduleAlarmAndReturnMessage();
+    }
+
+    public void rescheduleAlarmAtPlannedTime(ZonedDateTime alarmMoment, int retriesCount) {
+        scheduleAlarmAndReturnMessage(alarmMoment, retriesCount);
+    }
+
+    private String scheduleAlarmAndReturnMessage(ZonedDateTime alarmMoment, int retriesCount) {
         PendingIntent alarmPendingIntent = buildPendingIntent(retriesCount);
 
         if (alarmManager == null || alarmMoment == null || alarmPendingIntent == null) {
@@ -80,18 +88,10 @@ public class AlarmScheduler {
 
         addAlarmToPrefs();
 
-        String nextAlarmMessage = StringDisplay.getAlarmMoment(alarmMoment);
+        String nextAlarmMessage = StringDisplay.formatZonedDateTime(alarmMoment);
         Log.d("Scheduled alarm with id: " + alarm.getId() + " at " + nextAlarmMessage);
 
         return ctx.getString(R.string.alarm_next_ring, nextAlarmMessage);
-    }
-
-    public void scheduleAlarm() {
-        scheduleAlarmAndReturnMessage();
-    }
-
-    public void scheduleAlarm(ZonedDateTime alarmMoment, int retriesCount) {
-        scheduleAlarmAndReturnMessage(alarmMoment, retriesCount);
     }
 
     private ZonedDateTime getNextAlarmMoment() {
