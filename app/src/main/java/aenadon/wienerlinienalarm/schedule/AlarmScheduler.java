@@ -72,6 +72,7 @@ public class AlarmScheduler {
             // Window set for alarmMoment - 30sec to alarmMoment + 20sec.
             // It will probably never trigger exactly in that window
             // (due to Android's harsh wakeup restrictions) but very soon after
+            // TODO this creates problems with rescheduling recurring alarms
             alarmManager.setWindow(
                     AlarmManager.RTC_WAKEUP,
                     alarmMillis - 1000*30,

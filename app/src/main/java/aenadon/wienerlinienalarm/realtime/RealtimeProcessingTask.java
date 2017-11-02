@@ -47,6 +47,11 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
     private NotificationCompat.Builder notificationBuilder;
     private NotificationManager notificationManager;
 
+    private final String realtimeErrorServerRetryMessage;
+    private final String realtimeErrorServerMessage;
+    private final String realtimeErrorClientRetryMessage;
+    private final String realtimeErrorClientMessage;
+
     RealtimeProcessingTask(Context ctx, Alarm alarm, Bundle extraBundle) {
         realtimeApi = ApiProvider.getRealtimeApi();
         this.alarm = alarm;
@@ -55,7 +60,12 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
         this.notificationId = extraBundle.getInt(Keys.Extra.NOTIFICATION_ID, 0);
 
         this.alarmScheduler = new AlarmScheduler(ctx, alarm);
-        this.notificationBuilder = new NotificationCompat.Builder(ctx, "???"); // TODO channel ID
+        this.notificationBuilder = new NotificationCompat.Builder(ctx, ctx.getString(R.string.notification_channel_realtime));
+
+        this.realtimeErrorServerRetryMessage = ctx.getString(R.string.realtime_error_server_retry);
+        this.realtimeErrorServerMessage = ctx.getString(R.string.realtime_error_server);
+        this.realtimeErrorClientRetryMessage = ctx.getString(R.string.realtime_error_client_retry);
+        this.realtimeErrorClientMessage = ctx.getString(R.string.realtime_error_client);
 
         String ringtoneUriString = alarm.getPickedRingtone();
         Uri ringtoneUri = (ringtoneUriString != null) ? Uri.parse(ringtoneUriString) : null;
@@ -103,16 +113,34 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
             }
 
             return notificationBuilder.build();
-        } catch (NetworkClientException | NetworkServerException e) {
-            Log.e("Realtime request error", e);
+        } catch (NetworkServerException e) {
+            Log.e("Realtime server error", e);
             if (shouldRetry()) {
                 retryInOneMinute();
-                notificationBuilder.setContentText("error Retrying...."); // TODO use message
+                notificationBuilder.setContentText(realtimeErrorServerRetryMessage);
             } else {
-                notificationBuilder.setContentText("error Not retrying"); // TODO use message
+                notificationBuilder.setContentText(realtimeErrorServerMessage);
+            }
+            return notificationBuilder.build();
+        } catch (NetworkClientException e) {
+            Log.e("Realtime client error", e);
+            if (shouldRetry()) {
+                retryInOneMinute();
+                notificationBuilder.setContentText(realtimeErrorClientRetryMessage);
+            } else {
+                notificationBuilder.setContentText(realtimeErrorClientMessage);
             }
             return notificationBuilder.build();
         }
+    }
+
+    private boolean shouldRetry() {
+        return retries <= 2;
+    }
+
+    private void retryInOneMinute() {
+        ZonedDateTime oneMinuteLater = ZonedDateTime.now().plus(1, ChronoUnit.MINUTES);
+        alarmScheduler.rescheduleAlarm(oneMinuteLater, retries + 1);
     }
 
     @Override
@@ -137,15 +165,6 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
             throw new NetworkClientException(e.getMessage(), e);
         }
         return response;
-    }
-
-    private boolean shouldRetry() {
-        return retries <= 2;
-    }
-
-    private void retryInOneMinute() {
-        ZonedDateTime oneMinuteLater = ZonedDateTime.now().plus(1, ChronoUnit.MINUTES);
-        alarmScheduler.rescheduleAlarm(oneMinuteLater, retries + 1);
     }
 
     private void deleteAlarm(Alarm alarm) {

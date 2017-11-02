@@ -5,6 +5,9 @@
 <resources>
     <string name="app_name">&appname;</string>
 
+    <!-- Notification channels for API >= 26 -->
+    <string name="notification_channel_realtime">realtime_notifications</string>
+
     <!--Battery optimization warnings-->
     <string name="battery_message_title">Whitelist permission needed</string>
     <string name="battery_message_text">In order for this app to be able to send you notifications at the desired time, you need to put
@@ -73,7 +76,7 @@
     </plurals>
 
     <!--Station/Steig list-->
-    <string name="please_wait">Please wait&#8230;</string>
+    <string name="please_wait">Please wait…</string>
     <string name="search_for_station">Search for station</string>
     <string name="choose_station">Choose station</string>
     <string name="choose_steig">Choose line and direction</string>
@@ -106,10 +109,15 @@
     <string name="missing_info_past">- Time lies in the past</string>
     <string name="missing_info_station">- No station selected</string>
 
-    <string name="dataset_updating">The dataset is currently being updated&#8230;</string>
+    <string name="dataset_updating">The dataset is currently being updated…</string>
     <string name="dataset_updated">The dataset has just been updated.</string>
     <string name="no_internet_snackbar">No connection! Please connect to the internet and restart the app.</string>
     <string name="no_internet">The connection to the Wiener Linien servers cannot be established. Please make sure your internet connection is working and try again.</string>
     <string name="no_connection">The Wiener Linien servers cannot be reached. Please try again later.</string>
+
+    <string name="realtime_error_server_retry">The Wiener Linien servers cannot be reached, retrying in one minute…</string>
+    <string name="realtime_error_server">The Wiener Linien servers cannot be reached.</string>
+    <string name="realtime_error_client_retry">No connection! Please make sure you are online! Retrying in one minute…</string>
+    <string name="realtime_error_client">No connection! Could not retrieve realtime data.</string>
 
 </resources>
