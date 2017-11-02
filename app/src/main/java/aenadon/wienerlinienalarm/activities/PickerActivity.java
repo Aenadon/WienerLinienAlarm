@@ -40,17 +40,17 @@ import trikita.log.Log;
 
 public abstract class PickerActivity extends AppCompatActivity {
 
-    protected AlarmType alarmType = AlarmType.ONETIME;
+    private AlarmType alarmType = AlarmType.ONETIME;
 
-    protected DatePicker datePicker;
-    protected DaysPicker daysPicker;
-    protected TimePicker timePicker;
-    protected RingtonePicker ringtonePicker;
-    protected VibrationPicker vibrationPicker;
-    protected StationSteigPicker stationSteigPicker;
+    DatePicker datePicker;
+    DaysPicker daysPicker;
+    TimePicker timePicker;
+    RingtonePicker ringtonePicker;
+    VibrationPicker vibrationPicker;
+    StationSteigPicker stationSteigPicker;
 
     private Set<AlarmPicker> visiblePickers = new HashSet<>();
-    protected Realm realm;
+    Realm realm;
 
     protected abstract boolean isNotEditActivity();
     protected abstract int getLayout();

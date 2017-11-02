@@ -61,6 +61,7 @@ public class ApiProvider {
 
     public interface RealtimeApi {
 
+        @SuppressWarnings("SameParameterValue")
         @GET("monitor")
         Call<RealtimeData> getRealtime(@Query("sender") String apiKey, @Query("rbl") String rbl);
 

@@ -32,9 +32,9 @@ import trikita.log.Log;
 public class AlarmScheduler {
 
     private Context ctx;
-    protected Alarm alarm;
     private SharedPreferences prefs;
     private AlarmManager alarmManager;
+    Alarm alarm;
 
     public AlarmScheduler(Context ctx, Alarm alarm) {
         this.ctx = ctx;

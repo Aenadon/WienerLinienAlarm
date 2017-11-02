@@ -15,6 +15,7 @@ public class SteigListAdapter extends ArrayAdapter<SteigWithDestination> {
     private final Context context;
     private final List<SteigWithDestination> steigs;
 
+    @SuppressWarnings("SameParameterValue")
     public SteigListAdapter(Context context, List<SteigWithDestination> steigs) {
         super(context, -1, steigs);
         this.context = context;
@@ -28,6 +29,7 @@ public class SteigListAdapter extends ArrayAdapter<SteigWithDestination> {
         LayoutInflater infl = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
+            assert infl != null;
             convertView = infl.inflate(android.R.layout.simple_list_item_1, parent, false);
             resultView = new ResultViewHolder();
             resultView.textView = convertView.findViewById(android.R.id.text1);

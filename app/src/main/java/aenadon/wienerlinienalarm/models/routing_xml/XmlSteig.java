@@ -19,7 +19,7 @@ public class XmlSteig {
         return line;
     }
 
-    public void setLine(String line) {
+    private void setLine(String line) {
         this.line = line;
     }
 
@@ -27,7 +27,7 @@ public class XmlSteig {
         return direction;
     }
 
-    public void setDirection(String direction) {
+    private void setDirection(String direction) {
         this.direction = direction;
     }
 
@@ -35,7 +35,7 @@ public class XmlSteig {
         return destination;
     }
 
-    public void setDestination(String destination) {
+    private void setDestination(String destination) {
         this.destination = destination;
     }
 

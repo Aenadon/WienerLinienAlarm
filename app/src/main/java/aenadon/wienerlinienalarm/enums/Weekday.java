@@ -18,14 +18,14 @@ public enum Weekday {
     SATURDAY(R.string.saturday),
     SUNDAY(R.string.sunday);
 
-    int stringResId;
+    private int stringResId;
     private static List<Weekday> allWeekdaysList = Arrays.asList(Weekday.values());
 
     Weekday(int stringResId) {
         this.stringResId = stringResId;
     }
 
-    public int getStringResId() {
+    private int getStringResId() {
         return stringResId;
     }
 

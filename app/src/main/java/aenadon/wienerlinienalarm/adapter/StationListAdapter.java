@@ -30,6 +30,7 @@ public class StationListAdapter extends ArrayAdapter<Station> {
         LayoutInflater infl = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
+            assert infl != null;
             convertView = infl.inflate(android.R.layout.simple_list_item_1, parent, false);
             resultView = new ResultViewHolder();
             resultView.textView = convertView.findViewById(android.R.id.text1);

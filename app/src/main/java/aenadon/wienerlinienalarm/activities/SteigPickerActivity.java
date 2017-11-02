@@ -42,7 +42,7 @@ public class SteigPickerActivity extends AppCompatActivity {
     private static final List<SteigWithDestination> steigsOnDisplay = new ArrayList<>();
     private Station selectedStation;
     private ListView list;
-    SteigListAdapter steigListAdapter;
+    private SteigListAdapter steigListAdapter;
 
     private Realm realm;
 

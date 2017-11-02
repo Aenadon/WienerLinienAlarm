@@ -108,6 +108,7 @@ public class AlarmListAdapter extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater infl = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert infl != null;
             convertView = infl.inflate(R.layout.list_item_alarm, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.date = convertView.findViewById(R.id.alarm_list_date);
