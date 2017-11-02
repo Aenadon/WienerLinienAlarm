@@ -8,16 +8,13 @@
     <!-- Notification channels for API >= 26 -->
     <string name="notification_channel_realtime">realtime_notifications</string>
 
-    <!--Battery optimization warnings-->
-    <string name="battery_message_title">Whitelist permission needed</string>
-    <string name="battery_message_text">In order for this app to be able to send you notifications at the desired time, you need to put
-    \"&appname;\" on your battery optimizations whitelist to allow it to run in the background. If you are using a task killer, you have
-    to whitelist the app there as well. Keep in mind that notifications will not work correctly if this app is not whitelisted.</string>
+    <string name="battery_optimization_warning_dialog_title">Battery optimizations</string>
+    <string name="battery_optimization_warning_dialog_text">The usage of task killers/battery optimization tools breaks the functionality
+    of this app. Please consider adding \"&appname;\" to your whitelist in order to let the notifications arrive correctly and on time.\nPLEASE NOTE:
+    Many devices are being shipped with a task killer feature (which is turned on by default), you need to exempt the app from those as well.</string>
+    <string name="battery_optimization_warning_doze">Since Android 6 (Marshmallow), you also need to put \"&appname;\" on the whitelist of the so-called \"Doze mode\". In order to
+    do that, simply press the "Allow" button and then add \"&appname;\" to the list of allowed apps.</string>
 
-    <string name="doze_message_title">Doze Mode</string>
-    <string name="doze_message_text">With Android 6.0, a new feature called \"Doze\" was introduced, preventing apps from running in the
-    background. Additionally to disabling the battery optimizations, you need to also disable Doze mode for \"&appname;\". By selecting
-    \"Allow\", you will be taken to the settings where you can do so.</string>
     <string name="allow">Allow</string>
     <string name="never_show_again">Never show again</string>
 

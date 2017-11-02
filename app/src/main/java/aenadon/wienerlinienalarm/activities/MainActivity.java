@@ -1,7 +1,9 @@
 package aenadon.wienerlinienalarm.activities;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +44,7 @@ import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.update.UpdateDatasetTask;
 import aenadon.wienerlinienalarm.utils.Keys;
 import java8.util.stream.StreamSupport;
+import trikita.log.Log;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,50 +71,84 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showBatteryWarningDialog() {
-        // TODO merge, refactor dialogs
-        final SharedPreferences batteryReminderPrefs = MainActivity.this.getPreferences(MODE_PRIVATE);
-        final String BATTERY_REMINDER = "BATTERY_REMINDER";
-        final String BATTERY_REMINDER_DOZE = "BATTERY_REMINDER_DOZE";
+        boolean isBatteryReminderDismissed = isBatteryReminderDismissed();
 
-        boolean batteryReminderDismissed = batteryReminderPrefs.getBoolean(BATTERY_REMINDER, false);
-        final boolean batteryReminderDozeDismissed = batteryReminderPrefs.getBoolean(BATTERY_REMINDER_DOZE, false);
+        if (shouldShowDozeDialog(isBatteryReminderDismissed)) {
+            batteryWarningWithDoze().show();
+        } else if (!isBatteryReminderDismissed) {
+            batteryWarningWithoutDoze().show();
+        }
+    }
 
+    private boolean shouldShowDozeDialog(boolean batteryReminderDismissed) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            return false;
+        }
+        PowerManager pm = (PowerManager)getSystemService(POWER_SERVICE);
+
+        boolean hasNotWhitelistedApp;
+        if (pm != null) {
+            hasNotWhitelistedApp = !pm.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID);
+        } else {
+            Log.e("PowerManager is null");
+            hasNotWhitelistedApp = true;
+        }
+
+        return hasNotWhitelistedApp && !batteryReminderDismissed;
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private Dialog batteryWarningWithDoze() {
         View batteryReminderDialog = View.inflate(MainActivity.this, R.layout.checkbox, null);
         final CheckBox batteryReminderCheckbox = batteryReminderDialog.findViewById(R.id.battery_reminder_checkbox);
-        // we need to have 2 separate objects of the view because we can't
-        // assign the same instance of the view to two dialog boxes at once
-        View batteryReminderDialog2 = View.inflate(MainActivity.this, R.layout.checkbox, null);
-        final CheckBox batteryReminderCheckbox2 = batteryReminderDialog2.findViewById(R.id.battery_reminder_checkbox);
 
-        PowerManager pm = (PowerManager)getSystemService(POWER_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !pm.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID) && !batteryReminderDozeDismissed) {
-            new AlertDialog.Builder(MainActivity.this)
-                    .setTitle(getString(R.string.doze_message_title))
-                    .setMessage(getString(R.string.doze_message_text))
-                    .setView(batteryReminderDialog)
-                    .setPositiveButton(R.string.allow, (dialog, which) -> {
-                        Intent batterySettings = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-                        startActivity(batterySettings);
-                    })
-                    .setNegativeButton(R.string.cancel, (dialog, which) -> {
-                        if (batteryReminderCheckbox.isChecked()) {
-                            batteryReminderPrefs.edit().putBoolean(BATTERY_REMINDER_DOZE, true).apply();
-                        }
-                    })
-                    .show();
-        }
-        if (!batteryReminderDismissed) {
-            new AlertDialog.Builder(MainActivity.this)
-                    .setTitle(getString(R.string.battery_message_title))
-                    .setMessage(getString(R.string.battery_message_text))
-                    .setView(batteryReminderDialog2)
-                    .setPositiveButton(R.string.ok, (dialog, which) -> {
-                        if (batteryReminderCheckbox2.isChecked()) {
-                            batteryReminderPrefs.edit().putBoolean(BATTERY_REMINDER, true).apply();
-                        }
-                    })
-                    .show();
-        }
+        String messageBody = getString(R.string.battery_optimization_warning_dialog_text) +
+                "\n\n" + getString(R.string.battery_optimization_warning_doze);
+
+        return new AlertDialog.Builder(MainActivity.this)
+                .setTitle(getString(R.string.battery_optimization_warning_dialog_title))
+                .setMessage(messageBody)
+                .setView(batteryReminderDialog)
+                .setPositiveButton(R.string.allow, (dialog, which) -> {
+                    Intent batterySettings = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                    startActivity(batterySettings);
+                })
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                    if (batteryReminderCheckbox.isChecked()) {
+                        dismissBatteryReminder();
+                    }
+                })
+                .create();
+    }
+
+    private Dialog batteryWarningWithoutDoze() {
+        View batteryReminderDialog = View.inflate(MainActivity.this, R.layout.checkbox, null);
+        final CheckBox batteryReminderCheckbox = batteryReminderDialog.findViewById(R.id.battery_reminder_checkbox);
+
+        String messageBody = getString(R.string.battery_optimization_warning_dialog_text);
+
+        return new AlertDialog.Builder(MainActivity.this)
+                .setTitle(getString(R.string.battery_optimization_warning_dialog_title))
+                .setMessage(messageBody)
+                .setView(batteryReminderDialog)
+                .setPositiveButton(R.string.ok, (dialog, which) -> {
+                    if (batteryReminderCheckbox.isChecked()) {
+                        dismissBatteryReminder();
+                    }
+                })
+                .create();
+    }
+
+    private SharedPreferences getBatteryReminderPrefs() {
+        return getSharedPreferences(Keys.Prefs.FILE_BATTERY_REMINDER, MODE_PRIVATE);
+    }
+
+    private boolean isBatteryReminderDismissed() {
+        return getBatteryReminderPrefs().getBoolean(Keys.Prefs.KEY_BATTERY_REMINDER_DISMISSED, false);
+    }
+
+    private void dismissBatteryReminder() {
+        getBatteryReminderPrefs().edit().putBoolean(Keys.Prefs.KEY_BATTERY_REMINDER_DISMISSED, true).apply();
     }
 
     private void setupViews() {
