@@ -52,7 +52,7 @@ public class AlarmScheduler {
         scheduleAlarmAndReturnMessage();
     }
 
-    public void rescheduleAlarmAtPlannedTime(ZonedDateTime alarmMoment, int retriesCount) {
+    public void rescheduleAlarm(ZonedDateTime alarmMoment, int retriesCount) {
         scheduleAlarmAndReturnMessage(alarmMoment, retriesCount);
     }
 
@@ -102,7 +102,7 @@ public class AlarmScheduler {
             return alarmDateTime.atZone(europeanCentralTime);
         } else {
             LocalTime alarmTime = alarm.getAlarmTime();
-            boolean todaysTimeIsInAWeek = alarmTime.isBefore(LocalTime.now());
+            boolean todaysTimeIsInAWeek = alarmTime.isBefore(LocalTime.now()) || alarmTime.equals(LocalTime.now());
 
             DayOfWeek currentDay = LocalDate.now().getDayOfWeek();
 
@@ -152,7 +152,7 @@ public class AlarmScheduler {
         Log.v("Alarm with id " + alarm.getId() + " added to prefs");
     }
 
-    private void removeAlarmFromPrefs() {
+    public void removeAlarmFromPrefs() {
         SharedPreferences.Editor prefEditor = prefs.edit();
         prefEditor.remove(alarm.getId());
         prefEditor.apply();

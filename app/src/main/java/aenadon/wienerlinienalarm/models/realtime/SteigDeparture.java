@@ -1,15 +1,14 @@
 package aenadon.wienerlinienalarm.models.realtime;
 
-import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
+import org.threeten.bp.format.DateTimeFormatterBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import aenadon.wienerlinienalarm.models.realtime.json_model.Departure;
 import aenadon.wienerlinienalarm.models.realtime.json_model.DepartureTime;
-import aenadon.wienerlinienalarm.models.realtime.json_model.Departures;
 import aenadon.wienerlinienalarm.models.realtime.json_model.JsonLine;
 import aenadon.wienerlinienalarm.models.realtime.json_model.Monitor;
 import aenadon.wienerlinienalarm.models.realtime.json_model.RealtimeData;
@@ -113,11 +112,18 @@ public class SteigDeparture {
             }
 
             DepartureTime departureTime = jsonDeparture.getDepartureTime();
-            ZonedDateTime timePlanned = ZonedDateTime.parse(departureTime.getTimePlanned(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-            ZonedDateTime timeReal = ZonedDateTime.parse(departureTime.getTimeReal(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            DateTimeFormatter isoWithZone = new DateTimeFormatterBuilder()
+                    .append(DateTimeFormatter.ISO_DATE_TIME)
+                    .appendOffset("+HHMM", "+0100")
+                    .toFormatter();
 
+
+            ZonedDateTime timePlanned = ZonedDateTime.parse(departureTime.getTimePlanned(), isoWithZone);
             steigDeparture.setPlannedDeparture(timePlanned);
-            steigDeparture.setRealtimeDeparture(timeReal);
+            if (steigDeparture.isRealtimeSupported() && departureTime.getTimeReal() != null) {
+                ZonedDateTime timeReal = ZonedDateTime.parse(departureTime.getTimeReal(), isoWithZone);
+                steigDeparture.setRealtimeDeparture(timeReal);
+            }
 
             steigDepartures.add(steigDeparture);
         }

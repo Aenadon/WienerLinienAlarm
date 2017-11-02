@@ -27,7 +27,7 @@
 
     <!--Alarm Setup 2-->
     <string name="activity_alarm_setter">Set Alarm</string>
-    <string name="alarm_frequency">Alarmf Frequency</string>
+    <string name="alarm_frequency">Alarm Frequency</string>
     <string name="alarm_frequency_once">One time</string>
     <string name="alarm_frequency_recurring">Recurring</string>
     <string name="alarm_choose_date">Choose date</string>

@@ -59,7 +59,7 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
 
         String ringtoneUriString = alarm.getPickedRingtone();
         Uri ringtoneUri = (ringtoneUriString != null) ? Uri.parse(ringtoneUriString) : null;
-        notificationBuilder.setContentTitle(ctx.getString(R.string.friday))
+        notificationBuilder.setContentTitle(alarm.getLineName() + " " + alarm.getStationName())
                 .setVibrate(new long[]{0, alarm.getPickedVibrationMode().getDuration()})
                 .setLights(0x00FF00, 500, 500)
                 .setSound(ringtoneUri)
@@ -80,7 +80,8 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
                 SteigDeparture departure = steigDepartures.get(i);
 
                 ZonedDateTime departureTime;
-                if (departure.isRealtimeSupported() && departure.getRealtimeDeparture() != null) {
+                boolean hasRealtime = departure.isRealtimeSupported() && departure.getRealtimeDeparture() != null;
+                if (hasRealtime) {
                     departureTime = departure.getRealtimeDeparture();
                 } else {
                     departureTime = departure.getPlannedDeparture();
@@ -88,12 +89,12 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
 
                 String towards = departure.getTowards();
                 String formattedDepartureTime = StringDisplay.formatZonedDateTimeAsTime(departureTime);
-                String plannedTimeIndicator = (departure.isRealtimeSupported()) ? "" : "*";
+                String plannedTimeIndicator = hasRealtime ? "" : "*";
 
                 departureTimes.add(towards + "\t" + formattedDepartureTime + plannedTimeIndicator);
             }
             String notificationContentText = TextUtils.join("\n", departureTimes);
-            notificationBuilder.setContentText(notificationContentText);
+            notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(notificationContentText));
 
             if (alarm.getAlarmType() == AlarmType.ONETIME) {
                 deleteAlarm(alarm);
@@ -144,7 +145,7 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
 
     private void retryInOneMinute() {
         ZonedDateTime oneMinuteLater = ZonedDateTime.now().plus(1, ChronoUnit.MINUTES);
-        alarmScheduler.rescheduleAlarmAtPlannedTime(oneMinuteLater, retries + 1);
+        alarmScheduler.rescheduleAlarm(oneMinuteLater, retries + 1);
     }
 
     private void deleteAlarm(Alarm alarm) {
@@ -158,5 +159,7 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
 
         realm.commitTransaction();
         realm.close();
+
+        alarmScheduler.removeAlarmFromPrefs();
     }
 }

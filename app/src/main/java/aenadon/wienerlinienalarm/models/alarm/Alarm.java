@@ -134,4 +134,12 @@ public class Alarm extends RealmObject {
     public Line getLine() {
         return steig.getLine();
     }
+
+    public String getLineName() {
+        return steig.getLine().getLineName();
+    }
+
+    public String getStationName() {
+        return station.getName();
+    }
 }

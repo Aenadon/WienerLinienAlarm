@@ -71,6 +71,6 @@ public class SteigWithDestination implements Comparable<SteigWithDestination> {
 
     private boolean allStringsHaveText(String... strings) {
         return StreamSupport.stream(Arrays.asList(strings))
-                .anyMatch(string -> string == null || string.equals(""));
+                .noneMatch(string -> string == null || string.trim().equals(""));
     }
 }
