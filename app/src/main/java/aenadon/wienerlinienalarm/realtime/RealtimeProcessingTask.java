@@ -29,7 +29,7 @@ import aenadon.wienerlinienalarm.models.realtime.json_model.RealtimeData;
 import aenadon.wienerlinienalarm.schedule.AlarmScheduler;
 import aenadon.wienerlinienalarm.utils.ApiProvider;
 import aenadon.wienerlinienalarm.utils.Keys;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
+import aenadon.wienerlinienalarm.utils.StringFormatter;
 import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -104,7 +104,7 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
                 }
 
                 String towards = departure.getTowards();
-                String formattedDepartureTime = StringDisplay.formatZonedDateTimeAsTime(departureTime);
+                String formattedDepartureTime = StringFormatter.formatZonedDateTimeAsTime(departureTime);
                 String plannedTimeIndicator = hasRealtime ? "" : "*";
 
                 departureTimes.add(towards + " " + formattedDepartureTime + plannedTimeIndicator);

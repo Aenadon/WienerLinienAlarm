@@ -12,7 +12,7 @@ import org.threeten.bp.LocalTime;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.utils.Keys;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
+import aenadon.wienerlinienalarm.utils.StringFormatter;
 
 
 public class TimePicker extends DialogFragment implements AlarmPicker, TimePickerDialog.OnTimeSetListener {
@@ -71,7 +71,7 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
 
         int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
         viewToUse = ((Activity) ctx).findViewById(viewResId);
-        if (pickedTime != null) viewToUse.setText(StringDisplay.formatLocalTime(pickedTime));
+        if (pickedTime != null) viewToUse.setText(StringFormatter.formatLocalTime(pickedTime));
     }
 
     @Override
@@ -87,7 +87,7 @@ public class TimePicker extends DialogFragment implements AlarmPicker, TimePicke
     @Override
     public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute) {
         pickedTime = LocalTime.of(hourOfDay, minute);
-        viewToUse.setText(StringDisplay.formatLocalTime(pickedTime));
+        viewToUse.setText(StringFormatter.formatLocalTime(pickedTime));
     }
 
     private LocalTime intArrayToLocalTime(int[] timeArray) {

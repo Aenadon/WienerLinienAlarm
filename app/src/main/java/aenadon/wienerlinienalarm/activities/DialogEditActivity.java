@@ -16,7 +16,7 @@ import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
 import aenadon.wienerlinienalarm.schedule.AlarmScheduler;
 import aenadon.wienerlinienalarm.utils.Keys;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
+import aenadon.wienerlinienalarm.utils.StringFormatter;
 import trikita.log.Log;
 
 public class DialogEditActivity extends PickerActivity {
@@ -88,12 +88,12 @@ public class DialogEditActivity extends PickerActivity {
     private void setupViews(Alarm alarm) {
         if (alarm.getAlarmType() == AlarmType.ONETIME) {
             TextView dateView = findViewById (R.id.dialog_date_text);
-            dateView.setText(StringDisplay.formatLocalDate(alarm.getOnetimeAlarmDate()));
+            dateView.setText(StringFormatter.formatLocalDate(alarm.getOnetimeAlarmDate()));
 
             findViewById(R.id.dialog_date_container).setVisibility(View.VISIBLE);
         } else {
             TextView daysView = findViewById (R.id.dialog_days_text);
-            daysView.setText(StringDisplay.getRecurringDays(DialogEditActivity.this, alarm.getRecurringChosenDays()));
+            daysView.setText(StringFormatter.getRecurringDays(DialogEditActivity.this, alarm.getRecurringChosenDays()));
 
             findViewById(R.id.dialog_days_container).setVisibility(View.VISIBLE);
         }
@@ -102,8 +102,8 @@ public class DialogEditActivity extends PickerActivity {
         TextView vibrationView = findViewById (R.id.dialog_vibration_text);
         TextView stationView = findViewById (R.id.dialog_station_text);
 
-        timeView.setText(StringDisplay.formatLocalTime(alarm.getAlarmTime()));
-        ringtoneView.setText(StringDisplay.getRingtone(DialogEditActivity.this, alarm.getPickedRingtone()));
+        timeView.setText(StringFormatter.formatLocalTime(alarm.getAlarmTime()));
+        ringtoneView.setText(StringFormatter.getRingtone(DialogEditActivity.this, alarm.getPickedRingtone()));
         vibrationView.setText(alarm.getPickedVibrationMode().getMessageCode());
         stationView.setText(alarm.getLineDirectionDisplayName());
     }

@@ -12,7 +12,7 @@ import java.util.List;
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
+import aenadon.wienerlinienalarm.utils.StringFormatter;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -120,8 +120,8 @@ public class AlarmListAdapter extends BaseAdapter {
 
         Alarm alarm = alarms.get(position);
 
-        String date = StringDisplay.getDate(ctx, alarm);
-        String time = StringDisplay.formatLocalTime(alarm.getAlarmTime());
+        String date = StringFormatter.getDate(ctx, alarm);
+        String time = StringFormatter.formatLocalTime(alarm.getAlarmTime());
 
         viewHolder.date.setText(date);
         viewHolder.time.setText(time);

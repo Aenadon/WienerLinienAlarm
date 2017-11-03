@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import aenadon.wienerlinienalarm.utils.Keys;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
+import aenadon.wienerlinienalarm.utils.StringFormatter;
 
 public class RingtonePicker implements AlarmPicker {
 
@@ -53,7 +53,7 @@ public class RingtonePicker implements AlarmPicker {
     public void setPickedRingtone(Context ctx, Intent data) {
         Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
         pickedRingtone = (uri != null) ? uri.toString() : null;
-        viewToUse.setText(StringDisplay.getRingtone(ctx, pickedRingtone));
+        viewToUse.setText(StringFormatter.getRingtone(ctx, pickedRingtone));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class RingtonePicker implements AlarmPicker {
         viewToUse = ((Activity) ctx).findViewById(viewResId);
 
         pickedRingtone = restoreBundle.getString(PICKED_RINGTONE_KEY);
-        if (pickedRingtone != null) viewToUse.setText(StringDisplay.getRingtone(ctx, pickedRingtone));
+        if (pickedRingtone != null) viewToUse.setText(StringFormatter.getRingtone(ctx, pickedRingtone));
     }
 
     @Override

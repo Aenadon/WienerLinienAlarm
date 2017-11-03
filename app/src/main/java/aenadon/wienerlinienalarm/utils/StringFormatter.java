@@ -20,7 +20,7 @@ import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.enums.Weekday;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
 
-public class StringDisplay {
+public class StringFormatter {
 
     private static SimpleDateFormat dateFormat =
             (SimpleDateFormat)SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);

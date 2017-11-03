@@ -12,7 +12,7 @@ import org.threeten.bp.LocalDate;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.utils.Keys;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
+import aenadon.wienerlinienalarm.utils.StringFormatter;
 
 public class DatePicker extends DialogFragment implements AlarmPicker, DatePickerDialog.OnDateSetListener {
 
@@ -70,7 +70,7 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
 
         int dateDisplayViewId = restoreBundle.getInt(VIEW_RES_ID_KEY);
         viewToUse = ((Activity) ctx).findViewById(dateDisplayViewId);
-        if (pickedDate != null) viewToUse.setText(StringDisplay.formatLocalDate(pickedDate));
+        if (pickedDate != null) viewToUse.setText(StringFormatter.formatLocalDate(pickedDate));
     }
 
     @Override
@@ -87,7 +87,7 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
     public void onDateSet(android.widget.DatePicker view, int year, int month, int day) {
         // DatePickerDialog uses java.util.Calendar whose months start at 0
         pickedDate = intArrayToLocalDate(new int[]{year, month + 1, day});
-        viewToUse.setText(StringDisplay.formatLocalDate(pickedDate));
+        viewToUse.setText(StringFormatter.formatLocalDate(pickedDate));
     }
 
     private LocalDate intArrayToLocalDate(int[] dateArray) {

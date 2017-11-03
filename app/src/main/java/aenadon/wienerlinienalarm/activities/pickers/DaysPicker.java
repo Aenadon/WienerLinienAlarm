@@ -11,7 +11,7 @@ import java.util.Set;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.enums.Weekday;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
+import aenadon.wienerlinienalarm.utils.StringFormatter;
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
@@ -38,7 +38,7 @@ public class DaysPicker implements AlarmPicker {
                 .setTitle(R.string.alarm_recurring_dialog_expl)
                 .setPositiveButton(R.string.ok, (dialog, which) -> {
                     savedChoice = dialogTemporaryChoice.clone();
-                    viewToUse.setText(StringDisplay.getRecurringDays(ctx, setFromArray(savedChoice)));
+                    viewToUse.setText(StringFormatter.getRecurringDays(ctx, setFromArray(savedChoice)));
                 })
                 .setNegativeButton(R.string.cancel, (dialog, which) -> dialogTemporaryChoice = savedChoice.clone());
     }
@@ -80,7 +80,7 @@ public class DaysPicker implements AlarmPicker {
 
         int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
         viewToUse = ((Activity) ctx).findViewById(viewResId);
-        if (savedChoice != null) viewToUse.setText(StringDisplay.getRecurringDays(ctx, setFromArray(savedChoice)));
+        if (savedChoice != null) viewToUse.setText(StringFormatter.getRecurringDays(ctx, setFromArray(savedChoice)));
     }
 
     @Override

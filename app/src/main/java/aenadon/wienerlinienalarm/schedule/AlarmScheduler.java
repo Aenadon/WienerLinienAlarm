@@ -26,7 +26,7 @@ import aenadon.wienerlinienalarm.enums.Weekday;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
 import aenadon.wienerlinienalarm.realtime.RealtimeNotificationService;
 import aenadon.wienerlinienalarm.utils.Keys;
-import aenadon.wienerlinienalarm.utils.StringDisplay;
+import aenadon.wienerlinienalarm.utils.StringFormatter;
 import trikita.log.Log;
 
 public class AlarmScheduler {
@@ -76,7 +76,7 @@ public class AlarmScheduler {
 
         addAlarmToPrefs();
 
-        String nextAlarmMessage = StringDisplay.formatZonedDateTime(alarmMoment);
+        String nextAlarmMessage = StringFormatter.formatZonedDateTime(alarmMoment);
         Log.d("Scheduled alarm with id: " + alarm.getId() + " at " + nextAlarmMessage);
 
         return ctx.getString(R.string.alarm_next_ring, nextAlarmMessage);
