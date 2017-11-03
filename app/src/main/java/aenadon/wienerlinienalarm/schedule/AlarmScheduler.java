@@ -69,22 +69,9 @@ public class AlarmScheduler {
         }
         long alarmMillis = alarmMoment.toEpochSecond() * 1000;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // Window set for alarmMoment - 30sec to alarmMoment + 20sec.
-            // It will probably never trigger exactly in that window
-            // (due to Android's harsh wakeup restrictions) but very soon after
-            // TODO this creates problems with rescheduling recurring alarms
-            alarmManager.setWindow(
-                    AlarmManager.RTC_WAKEUP,
-                    alarmMillis - 1000*30,
-                    1000*30,
-                    alarmPendingIntent
-            );
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmMillis, alarmPendingIntent);
         } else {
-            alarmManager.set(
-                    AlarmManager.RTC_WAKEUP,
-                    alarmMillis,
-                    alarmPendingIntent
-            );
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmMillis, alarmPendingIntent);
         }
 
         addAlarmToPrefs();
