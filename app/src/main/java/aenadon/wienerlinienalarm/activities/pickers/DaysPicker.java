@@ -6,14 +6,15 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.widget.TextView;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
+
 import java.util.List;
 import java.util.Set;
 
 import aenadon.wienerlinienalarm.R;
 import aenadon.wienerlinienalarm.enums.Weekday;
 import aenadon.wienerlinienalarm.utils.StringFormatter;
-import java8.util.stream.Collectors;
-import java8.util.stream.StreamSupport;
 
 public class DaysPicker implements AlarmPicker {
 
@@ -107,7 +108,7 @@ public class DaysPicker implements AlarmPicker {
     private Set<Weekday> setFromArray(boolean[] weekdayArray) {
         List<Weekday> allWeekdaysList = Weekday.getAllWeekdaysList();
 
-        return StreamSupport.stream(allWeekdaysList)
+        return Stream.of(allWeekdaysList)
                 .filter(weekday -> weekdayArray[allWeekdaysList.indexOf(weekday)])
                 .collect(Collectors.toSet());
     }

@@ -2,12 +2,13 @@ package aenadon.wienerlinienalarm.adapter;
 
 import android.support.annotation.NonNull;
 
+import com.annimon.stream.Stream;
+
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
-import java8.util.stream.StreamSupport;
 
 public class SteigWithDestination implements Comparable<SteigWithDestination> {
 
@@ -70,7 +71,7 @@ public class SteigWithDestination implements Comparable<SteigWithDestination> {
     }
 
     private boolean allStringsHaveText(String... strings) {
-        return StreamSupport.stream(Arrays.asList(strings))
+        return Stream.of(Arrays.asList(strings))
                 .noneMatch(string -> string == null || string.trim().equals(""));
     }
 }

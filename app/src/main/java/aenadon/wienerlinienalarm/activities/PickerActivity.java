@@ -15,6 +15,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
+
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
@@ -25,7 +28,13 @@ import java.util.List;
 import java.util.Set;
 
 import aenadon.wienerlinienalarm.R;
-import aenadon.wienerlinienalarm.activities.pickers.*;
+import aenadon.wienerlinienalarm.activities.pickers.AlarmPicker;
+import aenadon.wienerlinienalarm.activities.pickers.DatePicker;
+import aenadon.wienerlinienalarm.activities.pickers.DaysPicker;
+import aenadon.wienerlinienalarm.activities.pickers.RingtonePicker;
+import aenadon.wienerlinienalarm.activities.pickers.StationSteigPicker;
+import aenadon.wienerlinienalarm.activities.pickers.TimePicker;
+import aenadon.wienerlinienalarm.activities.pickers.VibrationPicker;
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
 import aenadon.wienerlinienalarm.models.wl_metadata.Station;
@@ -33,8 +42,6 @@ import aenadon.wienerlinienalarm.models.wl_metadata.Steig;
 import aenadon.wienerlinienalarm.schedule.AlarmScheduler;
 import aenadon.wienerlinienalarm.utils.Keys;
 import io.realm.Realm;
-import java8.util.stream.Collectors;
-import java8.util.stream.StreamSupport;
 import trikita.log.Log;
 
 
@@ -252,7 +259,7 @@ public abstract class PickerActivity extends AppCompatActivity {
         // In Edit mode, the only two things you can mess up are
         // choosing a past time or unselecting all recurring days
         if (isNotEditActivity()) {
-            StreamSupport.stream(visiblePickers)
+            Stream.of(visiblePickers)
                     .filter(AlarmPicker::hasError)
                     .forEach(picker -> errors.add(picker.getErrorStringId()));
         } else {
@@ -274,7 +281,7 @@ public abstract class PickerActivity extends AppCompatActivity {
     }
 
     private void showErrorDialog(List<Integer> errors) {
-        List<String> errorStrings = StreamSupport.stream(errors).map(this::getString).collect(Collectors.toList());
+        List<String> errorStrings = Stream.of(errors).map(this::getString).collect(Collectors.toList());
 
         String errorBody = TextUtils.join("\n", errorStrings);
         new AlertDialog.Builder(PickerActivity.this)

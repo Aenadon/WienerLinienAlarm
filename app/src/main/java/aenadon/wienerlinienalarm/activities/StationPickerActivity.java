@@ -17,6 +17,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.annimon.stream.Stream;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,6 @@ import aenadon.wienerlinienalarm.utils.DatasetUpdateStatus;
 import aenadon.wienerlinienalarm.utils.Keys;
 import hugo.weaving.DebugLog;
 import io.realm.Realm;
-import java8.util.stream.StreamSupport;
 
 public class StationPickerActivity extends AppCompatActivity {
 
@@ -119,7 +120,7 @@ public class StationPickerActivity extends AppCompatActivity {
 
             String inputText = s.toString();
             if (!inputText.isEmpty()) {
-                StreamSupport.stream(stationsCompleteList)
+                Stream.of(stationsCompleteList)
                         .filter(station -> stationNameContains(station, inputText))
                         .forEach(stationsToDisplay::add);
             } else {

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.annimon.stream.Stream;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -12,7 +14,6 @@ import java.util.Set;
 import aenadon.wienerlinienalarm.models.alarm.Alarm;
 import aenadon.wienerlinienalarm.utils.Keys;
 import io.realm.Realm;
-import java8.util.stream.StreamSupport;
 import trikita.log.Log;
 
 public class BootRescheduler extends BroadcastReceiver {
@@ -51,7 +52,7 @@ public class BootRescheduler extends BroadcastReceiver {
 
     private void deleteInvalidAlarms(List<String> invalidAlarms, SharedPreferences preferences) {
         SharedPreferences.Editor prefEditor = preferences.edit();
-        StreamSupport.stream(invalidAlarms).forEach(prefEditor::remove);
+        Stream.of(invalidAlarms).forEach(prefEditor::remove);
         prefEditor.apply();
     }
 }

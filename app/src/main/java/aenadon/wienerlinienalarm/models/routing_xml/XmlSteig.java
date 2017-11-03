@@ -1,5 +1,7 @@
 package aenadon.wienerlinienalarm.models.routing_xml;
 
+import com.annimon.stream.Stream;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +9,6 @@ import aenadon.wienerlinienalarm.models.routing_xml.xml_model.MonitorRequest;
 import aenadon.wienerlinienalarm.models.routing_xml.xml_model.RoutingXMLRequest;
 import aenadon.wienerlinienalarm.models.routing_xml.xml_model.ServingLine;
 import aenadon.wienerlinienalarm.models.routing_xml.xml_model.ServingLines;
-import java8.util.stream.StreamSupport;
 
 public class XmlSteig {
 
@@ -51,7 +52,7 @@ public class XmlSteig {
         if (xmlServingLines != null) {
             List<ServingLine> servingLineList = monitorRequest.getServingLines().getLines();
             if (servingLineList != null) {
-                StreamSupport.stream(servingLineList).map(XmlSteig::mapLineToSteig).forEach(flattenedSteigList::add);
+                Stream.of(servingLineList).map(XmlSteig::mapLineToSteig).forEach(flattenedSteigList::add);
             }
         }
         return flattenedSteigList;

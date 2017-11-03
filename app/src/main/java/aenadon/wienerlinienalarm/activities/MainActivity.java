@@ -33,6 +33,8 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.annimon.stream.Stream;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +45,6 @@ import aenadon.wienerlinienalarm.adapter.AlarmListAdapter;
 import aenadon.wienerlinienalarm.enums.AlarmType;
 import aenadon.wienerlinienalarm.update.UpdateDatasetTask;
 import aenadon.wienerlinienalarm.utils.Keys;
-import java8.util.stream.StreamSupport;
 import trikita.log.Log;
 
 public class MainActivity extends AppCompatActivity {
@@ -232,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void notifyDataSetChanged() {
-            StreamSupport.stream(fragments).forEach(AlarmMenuFragment::updateUnderlyingList);
+            Stream.of(fragments).forEach(AlarmMenuFragment::updateUnderlyingList);
             super.notifyDataSetChanged();
         }
 
