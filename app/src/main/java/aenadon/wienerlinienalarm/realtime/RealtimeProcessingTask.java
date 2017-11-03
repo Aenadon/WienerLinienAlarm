@@ -107,9 +107,12 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
                 String formattedDepartureTime = StringDisplay.formatZonedDateTimeAsTime(departureTime);
                 String plannedTimeIndicator = hasRealtime ? "" : "*";
 
-                departureTimes.add(towards + "\t" + formattedDepartureTime + plannedTimeIndicator);
+                departureTimes.add(towards + " " + formattedDepartureTime + plannedTimeIndicator);
             }
             String notificationContentText = TextUtils.join("\n", departureTimes);
+            if (!departureTimes.isEmpty()) {
+                notificationBuilder.setContentText(departureTimes.get(0));
+            }
             notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(notificationContentText));
 
             if (alarm.getAlarmType() == AlarmType.ONETIME) {
