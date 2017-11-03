@@ -1,6 +1,10 @@
 package aenadon.wienerlinienalarm.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -18,6 +22,7 @@ import trikita.log.Log;
 public class DialogEditActivity extends PickerActivity {
 
     private Alarm alarmToEdit;
+    private BroadcastReceiver alarmTriggeredReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +42,34 @@ public class DialogEditActivity extends PickerActivity {
 
         fillPickersWithData(alarmToEdit);
         setupViews(alarmToEdit);
+
+        if (alarmToEdit.getAlarmType() == AlarmType.ONETIME) {
+            // we only delete onetime alarms directly after
+            // triggering ==> kill edit activity if open
+            setupAlarmTriggeredReceiver();
+        }
+    }
+
+    private void setupAlarmTriggeredReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Keys.Intent.REFRESH_LIST);
+
+        alarmTriggeredReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                finish();
+            }
+        };
+        registerReceiver(alarmTriggeredReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (alarmTriggeredReceiver != null) {
+            unregisterReceiver(alarmTriggeredReceiver);
+            alarmTriggeredReceiver = null;
+        }
     }
 
     private void fillPickersWithData(Alarm alarm) {

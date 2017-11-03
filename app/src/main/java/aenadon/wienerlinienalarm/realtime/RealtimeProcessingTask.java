@@ -3,6 +3,7 @@ package aenadon.wienerlinienalarm.realtime;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.temporal.ChronoUnit;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,15 +39,17 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
 
     private static final String API_KEY = BuildConfig.API_KEY;
 
-    private ApiProvider.RealtimeApi realtimeApi;
-    private Alarm alarm;
+    private final WeakReference<Context> weakCtx;
 
-    private int retries;
-    private int notificationId;
+    private final ApiProvider.RealtimeApi realtimeApi;
+    private final Alarm alarm;
 
-    private AlarmScheduler alarmScheduler;
-    private NotificationCompat.Builder notificationBuilder;
-    private NotificationManager notificationManager;
+    private final int retries;
+    private final int notificationId;
+
+    private final AlarmScheduler alarmScheduler;
+    private final NotificationCompat.Builder notificationBuilder;
+    private final NotificationManager notificationManager;
 
     private final String realtimeErrorServerRetryMessage;
     private final String realtimeErrorServerMessage;
@@ -53,7 +57,9 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
     private final String realtimeErrorClientMessage;
 
     RealtimeProcessingTask(Context ctx, Alarm alarm, Bundle extraBundle) {
-        realtimeApi = ApiProvider.getRealtimeApi();
+        this.weakCtx = new WeakReference<>(ctx);
+
+        this.realtimeApi = ApiProvider.getRealtimeApi();
         this.alarm = alarm;
 
         this.retries = extraBundle.getInt(Keys.Extra.RETRIES_COUNT, 0);
@@ -150,6 +156,11 @@ class RealtimeProcessingTask extends AsyncTask<Void, Void, Notification> {
         } else {
             Log.e("NotificationManager is null! No notification was displayed");
             return;
+        }
+        Context ctx = weakCtx.get();
+        if (ctx != null) {
+            Intent listRefreshIntent = new Intent(Keys.Intent.REFRESH_LIST);
+            ctx.sendBroadcast(listRefreshIntent);
         }
         super.onPostExecute(notification);
     }

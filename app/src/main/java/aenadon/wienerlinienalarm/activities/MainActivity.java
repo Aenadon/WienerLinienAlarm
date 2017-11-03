@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter tabAdapter;
     private ViewPager tabContainer;
 
-    private BroadcastReceiver refreshReceiver;
+    private BroadcastReceiver alarmTriggeredReceiver;
 
     private static List<AlarmType> alarmTypes = Arrays.asList(AlarmType.values());
 
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         updateStationData();
         showBatteryWarningDialog();
         setupViews();
-        setupAlarmReceiver();
+        setupAlarmTriggeredReceiver();
     }
 
     private void updateStationData() {
@@ -171,25 +171,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setupAlarmReceiver() {
+    private void setupAlarmTriggeredReceiver() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Keys.Intent.REFRESH_LIST);
 
-        refreshReceiver = new BroadcastReceiver() {
+        alarmTriggeredReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 tabAdapter.notifyDataSetChanged();
             }
         };
-        registerReceiver(refreshReceiver, intentFilter);
+        registerReceiver(alarmTriggeredReceiver, intentFilter);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (refreshReceiver != null) {
-            unregisterReceiver(refreshReceiver);
-            refreshReceiver = null;
+        if (alarmTriggeredReceiver != null) {
+            unregisterReceiver(alarmTriggeredReceiver);
+            alarmTriggeredReceiver = null;
         }
     }
 
