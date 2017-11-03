@@ -93,10 +93,10 @@ public class UpdateDatasetTask extends AsyncTask<Void, Void, NetworkStatus> {
     protected void onPostExecute(NetworkStatus resultCode) {
         switch (resultCode) {
             case ERROR_SERVER:
-                putStationPickerMessage(R.string.no_connection);
+                putStationPickerMessage(R.string.no_connection_old_dataset);
                 break;
             case NO_CONNECTION:
-                putStationPickerMessage(R.string.no_internet_snackbar);
+                putStationPickerMessage(R.string.no_internet_old_dataset);
                 break;
             case SUCCESS:
                 Context ctx = weakCtx.get();

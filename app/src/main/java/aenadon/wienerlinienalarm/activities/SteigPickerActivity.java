@@ -162,7 +162,7 @@ public class SteigPickerActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<RoutingXMLRequest> call, @NonNull Throwable t) {
-                replaceLoadingSpinnerWithError(R.string.no_connection);
+                replaceLoadingSpinnerWithError(R.string.no_internet);
                 Log.e("Client error while retrieving XML Response", t);
             }
         });

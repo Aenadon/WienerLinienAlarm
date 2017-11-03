@@ -108,8 +108,11 @@
 
     <string name="dataset_updating">The dataset is currently being updated…</string>
     <string name="dataset_updated">The dataset has just been updated.</string>
-    <string name="no_internet_snackbar">No connection! Please connect to the internet and restart the app.</string>
-    <string name="no_connection">The Wiener Linien servers cannot be reached. Please try again later.</string>
+    <string name="no_internet_old_dataset">Could not update dataset. Please connect to the internet and restart the app.</string>
+    <string name="no_connection_old_dataset">The Wiener Linien servers cannot be reached, could not update dataset.</string>
+
+    <string name="no_internet">No connection. Please make sure that you are connected to a network and try again.</string>
+    <string name="no_connection">The Wiener Linien servers did not respond. Please try again later.</string>
 
     <string name="realtime_error_server_retry">The Wiener Linien servers cannot be reached, retrying in one minute…</string>
     <string name="realtime_error_server">The Wiener Linien servers cannot be reached.</string>
