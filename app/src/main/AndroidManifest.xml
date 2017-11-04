@@ -57,6 +57,15 @@
             android:label="@string/alarm_settings"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
 
+        <activity
+            android:name=".activities.OpenSourceLicensesActivity"
+            android:label="@string/open_source_licenses_title"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+
         <receiver
             android:name=".schedule.BootRescheduler"
             android:enabled="true">

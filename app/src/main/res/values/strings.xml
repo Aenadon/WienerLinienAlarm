@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--https://stackoverflow.com/questions/3656371/dynamic-string-using-string-xml/24903097#24903097-->
-<!DOCTYPE resources [<!ENTITY appname "WienerLinien Alarm">]>
+<?xml version="1.0" encoding="utf-8"?><!--https://stackoverflow.com/questions/3656371/dynamic-string-using-string-xml/24903097#24903097--><!DOCTYPE resources [<!ENTITY appname "WienerLinien Alarm">]>
 
 <resources>
     <string name="app_name">&appname;</string>
@@ -118,5 +116,61 @@
     <string name="realtime_error_server">The Wiener Linien servers cannot be reached.</string>
     <string name="realtime_error_client_retry">No connection! Please make sure you are online! Retrying in one minute…</string>
     <string name="realtime_error_client">No connection! Could not retrieve realtime data.</string>
+
+    <string name="open_source_licenses_title">Open Source licenses</string>
+    <string name="open_source_licenses">
+        <![CDATA[
+            <h3>
+                This app is using the following open-source libraries (sorted alphabetically):
+            </h3>
+            <div>
+                <b>Commons-CSV</b><br/>
+                © 2005-2017 The Apache Software Foundation<br/>
+                Licensed under the Apache v2.0 License<br/>
+            </div>
+            <div>
+                <b>Hugo</b><br/>
+                © 2013 JakeWharton<br/>
+                Licensed under the Apache v2.0 License<br/>
+            </div>
+            <div>
+                <b>Lightweight-Stream-API</b><br/>
+                © 2017 aNNiMON<br/>
+                Licensed under the Apache v2.0 License<br/>
+            </div>
+            <div>
+                <b>Log</b><br/>
+                © 2015 zserge<br/>
+                Licensed under the MIT License<br/>
+            </div>
+            <div>
+                <b>Realm Database</b><br/>
+                © 2017 Realm<br/>
+                Licensed under the Apache v2.0 License<br/>
+            </div>
+            <div>
+                <b>Retrofit</b><br/>
+                © 2013 Square, Inc.<br/>
+                Licensed under the Apache v2.0 License<br/>
+            </div>
+            <div>
+                <b>ThreeTenABP</b><br/>
+                © 2015 JakeWharton<br/>
+                Licensed under the Apache v2.0 License<br/>
+            </div>
+            <div>
+                <p>
+                    A copy of the Apache v2.0 License can be found here:
+                </p>
+                <a href="https://www.apache.org/licenses/LICENSE-2.0">https://www.apache.org/licenses/LICENSE-2.0</a>
+            </div>
+            <div>
+                <p>
+                    A copy of the MIT License can be found here:
+                </p>
+                <a href="https://opensource.org/licenses/MIT">https://opensource.org/licenses/MIT</a>
+            </div>
+        ]]>
+    </string>
 
 </resources>
