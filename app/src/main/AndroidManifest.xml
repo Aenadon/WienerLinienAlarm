@@ -24,34 +24,24 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.AlarmSetterActivity"
             android:label="@string/activity_alarm_setter"
-            android:parentActivityName=".activities.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
-        </activity>
+            android:parentActivityName=".activities.MainActivity"/>
         <activity
             android:name=".activities.StationPickerActivity"
             android:label="@string/choose_station"
-            android:parentActivityName=".activities.DialogEditActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.DialogEditActivity" />
-        </activity>
+            android:parentActivityName=".activities.DialogEditActivity"/>
+
         <activity
             android:name=".activities.SteigPickerActivity"
             android:label="@string/choose_steig"
-            android:parentActivityName=".activities.StationPickerActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.StationPickerActivity" />
-        </activity>
+            android:parentActivityName=".activities.StationPickerActivity"/>
+
         <activity
             android:name=".activities.DialogEditActivity"
             android:label="@string/alarm_settings"
@@ -60,11 +50,7 @@
         <activity
             android:name=".activities.OpenSourceLicensesActivity"
             android:label="@string/open_source_licenses_title"
-            android:parentActivityName=".activities.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
-        </activity>
+            android:parentActivityName=".activities.MainActivity" />
 
         <receiver
             android:name=".schedule.BootRescheduler"
