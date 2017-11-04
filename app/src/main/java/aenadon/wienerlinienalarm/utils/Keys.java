@@ -25,9 +25,8 @@ public interface Keys {
     }
 
     interface Intent {
-        String DATASET_UPDATED = "REFRESH_LIST";
+        String DATASET_UPDATED = "DATASET_UPDATED";
         String REFRESH_LIST = "REFRESH_LIST";
-        String TRIGGER_ALARM = "TRIGGER_ALARM";
     }
 
     interface RequestCode {
@@ -43,5 +42,6 @@ public interface Keys {
         String RINGTONE_PICKER = "BUNDLE_RINGTONE_PICKER";
         String VIBRATION_PICKER = "BUNDLE_VIBRATION_PICKER";
         String STATION_PICKER = "BUNDLE_STATION_PICKER";
+        String ALARM_TYPE = "BUNDLE_ALARM_TYPE";
     }
 }

@@ -315,6 +315,8 @@ public abstract class PickerActivity extends AppCompatActivity {
         outState.putBundle(Keys.Bundle.RINGTONE_PICKER, ringtonePicker.saveState());
         outState.putBundle(Keys.Bundle.VIBRATION_PICKER, vibrationPicker.saveState());
         outState.putBundle(Keys.Bundle.STATION_PICKER, stationSteigPicker.saveState());
+
+        outState.putSerializable(Keys.Bundle.ALARM_TYPE, alarmType);
         super.onSaveInstanceState(outState);
     }
 
@@ -327,6 +329,11 @@ public abstract class PickerActivity extends AppCompatActivity {
         ringtonePicker.restoreState(PickerActivity.this, savedInstanceState.getBundle(Keys.Bundle.RINGTONE_PICKER));
         vibrationPicker.restoreState(PickerActivity.this, savedInstanceState.getBundle(Keys.Bundle.VIBRATION_PICKER));
         stationSteigPicker.restoreState(PickerActivity.this, savedInstanceState.getBundle(Keys.Bundle.STATION_PICKER));
+
+        alarmType = (AlarmType)savedInstanceState.getSerializable(Keys.Bundle.ALARM_TYPE);
+        if (isNotEditActivity()) {
+            setCurrentModeDatePicker();
+        }
     }
 
     @Override

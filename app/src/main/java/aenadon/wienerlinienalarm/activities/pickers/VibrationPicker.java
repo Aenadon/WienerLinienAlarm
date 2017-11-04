@@ -64,7 +64,9 @@ public class VibrationPicker implements AlarmPicker {
 
         int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
         viewToUse = ((Activity)ctx).findViewById(viewResId);
-        viewToUse.setText(pickedMode.getMessageCode());
+        if (viewToUse != null) {
+            viewToUse.setText(pickedMode.getMessageCode());
+        }
     }
 
     @Override

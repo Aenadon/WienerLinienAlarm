@@ -81,7 +81,9 @@ public class DaysPicker implements AlarmPicker {
 
         int viewResId = restoreBundle.getInt(VIEW_RES_ID_KEY);
         viewToUse = ((Activity) ctx).findViewById(viewResId);
-        if (savedChoice != null) viewToUse.setText(StringFormatter.getRecurringDays(ctx, setFromArray(savedChoice)));
+        if (viewToUse != null && savedChoice != null) {
+            viewToUse.setText(StringFormatter.getRecurringDays(ctx, setFromArray(savedChoice)));
+        }
     }
 
     @Override

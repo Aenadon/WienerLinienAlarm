@@ -74,7 +74,7 @@ public class StationSteigPicker implements AlarmPicker {
         displayName = restoreBundle.getString(DISPLAY_NAME_KEY);
         steigId = restoreBundle.getString(STEIG_ID_KEY);
 
-        if (displayName != null) {
+        if (viewToUse != null && displayName != null) {
             viewToUse.setText(displayName);
         }
     }

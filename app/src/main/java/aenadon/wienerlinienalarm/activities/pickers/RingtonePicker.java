@@ -72,7 +72,9 @@ public class RingtonePicker implements AlarmPicker {
         viewToUse = ((Activity) ctx).findViewById(viewResId);
 
         pickedRingtone = restoreBundle.getString(PICKED_RINGTONE_KEY);
-        if (pickedRingtone != null) viewToUse.setText(StringFormatter.getRingtone(ctx, pickedRingtone));
+        if (viewToUse != null && pickedRingtone != null) {
+            viewToUse.setText(StringFormatter.getRingtone(ctx, pickedRingtone));
+        }
     }
 
     @Override
