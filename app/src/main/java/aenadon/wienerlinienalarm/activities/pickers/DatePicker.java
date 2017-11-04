@@ -102,7 +102,7 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
             return new int[]{
                     dateObject.getYear(),
                     dateObject.getMonthValue(),
-                    dateObject.getYear()
+                    dateObject.getDayOfMonth()
             };
         }
         return null;
