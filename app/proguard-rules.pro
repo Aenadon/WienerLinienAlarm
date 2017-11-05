@@ -16,8 +16,12 @@
 }
 -keep @com.squareup.moshi.JsonQualifier interface *
 
--dontwarn java.lang.invoke.*
--dontwarn **$$Lambda$*
-
--keep class java8.** { *; }
--dontwarn java8.**
+# Needed for SimpleXML
+# https://stackoverflow.com/a/31318527/3673616
+-libraryjars <java.home>/lib/rt.jar(java/**,javax/**)
+-keep public class org.simpleframework.**{ *; }
+-keep class org.simpleframework.xml.**{ *; }
+-keep class org.simpleframework.xml.core.**{ *; }
+-keep class org.simpleframework.xml.util.**{ *; }
+-keepattributes *Annotation*
+-keepattributes Signature
