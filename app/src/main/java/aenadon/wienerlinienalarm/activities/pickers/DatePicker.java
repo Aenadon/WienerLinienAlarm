@@ -31,18 +31,20 @@ public class DatePicker extends DialogFragment implements AlarmPicker, DatePicke
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // DatePickerDialog uses java.util.Calendar whose months start at 0
         int year = 0;
-        int month = -1;
+        int month = 0;
         int day = 0;
         if (pickedDate != null) {
-            year += pickedDate.getYear();
-            month += pickedDate.getMonthValue();
-            day += pickedDate.getDayOfMonth();
+            year = pickedDate.getYear();
+            month = pickedDate.getMonthValue();
+            day = pickedDate.getDayOfMonth();
         }
 
-        DatePickerDialog dialog = new DatePickerDialog(getActivity(), DatePicker.this, year, month, day);
-        dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        // DatePickerDialog uses java.util.Calendar whose months start at 0
+        DatePickerDialog dialog = new DatePickerDialog(getActivity(), DatePicker.this, year, month - 1, day);
+        // -1000 prevents crash if user selects current date and then opens datepicker again
+        // because !("now" < "now")
+        dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         return dialog;
     }
 
