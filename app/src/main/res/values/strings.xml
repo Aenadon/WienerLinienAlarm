@@ -158,6 +158,12 @@
                 © 2015 JakeWharton<br/>
                 Licensed under the Apache v2.0 License<br/>
             </div>
+             <div>
+                <b>Wiener Linien Piktogramme Wien</b><br/>
+                © 2014 Wiener Linien<br/>
+                <a href="https://www.data.gv.at/katalog/dataset/stadt-wien_wienerlinienpiktogramme">https://www.data.gv.at/katalog/dataset/stadt-wien_wienerlinienpiktogramme</a><br\>
+                Licensed under CC BY 3.0 AT<br/>
+            </div>
             <div>
                 <p>
                     A copy of the Apache v2.0 License can be found here:
@@ -169,6 +175,12 @@
                     A copy of the MIT License can be found here:
                 </p>
                 <a href="https://opensource.org/licenses/MIT">https://opensource.org/licenses/MIT</a>
+            </div>
+            <div>
+                <p>
+                    A copy of the CC BY 3.0 AT can be found here:
+                </p>
+                <a href="https://creativecommons.org/licenses/by/3.0/at/legalcode">https://creativecommons.org/licenses/by/3.0/at/legalcode</a>
             </div>
         ]]>
     </string>
